@@ -1,0 +1,45 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "abdulrhman",
+  "type": "module",
+  "main": "./source/main.js",
+  "scripts": {
+    "start:dev": "cross-env NODE_ENV=development node --watch ./source/main.js --enable-turbo-mode",
+    "start:prod": "cross-env NODE_ENV=production node --watch ./source/main.js --enable-turbo-mode",
+    "test:e2e": "NODE_OPTIONS='--experimental-vm-modules' jest --config ./test/jest-e2e.json --runInBand",
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
+    "format": "npx prettier . --write"
+  },
+  "imports": {
+    "#/*": "./src/*"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "cross-env": "^10.1.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "http-errors": "^2.0.1",
+    "joi": "^18.2.8",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.9.5",
+    "morgan": "^1.12.0",
+    "multer": "^2.3.0",
+    "nodemailer": "^10.0.0",
+    "serve-favicon": "^2.5.1",
+    "winston": "^3.19.0"
+  },
+  "devDependencies": {
+    "@eslint/css": "^2.0.0",
+    "@eslint/js": "^10.0.1",
+    "@eslint/json": "^2.1.0",
+    "@eslint/markdown": "^8.0.3",
+    "eslint": "^10.10.0",
+    "globals": "^17.12.0",
+    "jest": "^30.5.1",
+    "prettier": "3.9.6",
+    "supertest": "^7.2.2"
+  }
+}
