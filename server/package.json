@@ -9,6 +9,7 @@
   "scripts": {
     "start:dev": "cross-env NODE_ENV=development node --watch ./source/main.js --enable-turbo-mode",
     "start:prod": "cross-env NODE_ENV=production node --watch ./source/main.js --enable-turbo-mode",
+    "database:bootstrap": "mongod --dbpath ./source/database/main/mongo",
     "test:e2e": "NODE_OPTIONS='--experimental-vm-modules' jest --config ./test/jest-e2e.json --runInBand",
     "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
     "format": "npx prettier . --write"
