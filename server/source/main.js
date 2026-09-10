@@ -1,9 +1,9 @@
-import { globalErrorHandling } from './common/index.js';
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import { config } from './../configuration/main/configuration.js';
 import { databaseConnection } from './database/index.js';
+import { globalErrorHandling } from './common/index.js';
 import appNavigationRoutes from './app.controller.js';
 
 export const app = express();
