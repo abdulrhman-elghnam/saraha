@@ -6,7 +6,7 @@ import { databaseConnection } from './database/index.js';
 import { globalErrorHandling } from './common/index.js';
 import appNavigationRoutes from './app.controller.js';
 
-export const app = express();
+const app = express();
 
 app.use(
   cors({
@@ -33,3 +33,5 @@ const main = async () => {
   }
 };
 main();
+
+export default app
