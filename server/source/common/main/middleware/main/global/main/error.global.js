@@ -1,12 +1,12 @@
 import { config } from '../../../../../../../configuration/index.js';
-export const globalErrorHandling = (error, req, res, next) => {
+export const globalErrorHandling = (error, request, response, next) => {
   const status = error.cause?.status ?? 500;
   const isProduction = config.ENV === 'production';
   const defaultErrorMessage = 'Something went wrong';
 
   const displayErrorMessage = error.message || defaultErrorMessage;
 
-  return res.status(status).json({
+  return response.status(status).json({
     success: false,
     status,
     message: isProduction && status === 500 ? 'Internal Server Error' : displayErrorMessage,

@@ -1,1 +1,1 @@
-export * from "./main/global/index.js"
+export * from './main/global/index.js';

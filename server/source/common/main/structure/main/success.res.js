@@ -1,10 +1,10 @@
 export const sendSuccess = ({
-  res,
+  response,
   message = 'Success',
   data = undefined,
   statusCode = 200,
 } = {}) => {
-  return res.status(statusCode).json({
+  return response.status(statusCode).json({
     success: true,
     message,
     data,

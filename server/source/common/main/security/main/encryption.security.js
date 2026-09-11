@@ -11,10 +11,10 @@ export const encrypt = (text) => {
   encryptedData += cipher.final('hex');
 
   return `${iv.toString('hex')}:${encryptedData}`;
-}
+};
 
 export const decrypt = (encryptedData) => {
-  const [iv, encryptedText] = encryptedData.split(":"); 
+  const [iv, encryptedText] = encryptedData.split(':');
 
   const binaryLikeIv = Buffer.from(iv, 'hex');
 
@@ -24,4 +24,4 @@ export const decrypt = (encryptedData) => {
   decryptedData += decipher.final('utf-8');
 
   return decryptedData;
-}
+};

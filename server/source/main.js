@@ -9,13 +9,13 @@ import appNavigationRoutes from './app.controller.js';
 const app = express();
 
 app.use(
+  express.json(),
   cors({
     origin: true,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   }),
-  express.json(),
   morgan('dev')
 );
 
@@ -34,4 +34,4 @@ const main = async () => {
 };
 main();
 
-export default app
+export default app;

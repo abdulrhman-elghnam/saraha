@@ -1,1 +1,1 @@
-export * from "./main/configuration.js";
+export * from './main/configuration.js';
