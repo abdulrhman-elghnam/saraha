@@ -1,27 +1,15 @@
 import crypto from 'crypto';
-const IV_LENGTH = 16;
-const ENCRYPTION_SECRET_KEY = Buffer.from('12378978901234567891114567890122');
+import { config } from '../../../../../configuration/index.js';
 
 export const encrypt = (text) => {
-  const iv = crypto.randomBytes(IV_LENGTH);
+  const key = Buffer.from(config.ENCRYPTION_SECRET_KEY, 'hex');
 
-  const cipher = crypto.createCipheriv('aes-256-cbc', ENCRYPTION_SECRET_KEY, iv);
+  const iv = crypto.randomBytes(config.IV_LENGTH);
 
-  let encryptedData = cipher.update(text, 'utf-8', 'hex');
+  const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
+
+  let encryptedData = cipher.update(text, 'utf8', 'hex');
   encryptedData += cipher.final('hex');
 
   return `${iv.toString('hex')}:${encryptedData}`;
-};
-
-export const decrypt = (encryptedData) => {
-  const [iv, encryptedText] = encryptedData.split(':');
-
-  const binaryLikeIv = Buffer.from(iv, 'hex');
-
-  const decipher = crypto.createDecipheriv('aes-256-cbc', ENCRYPTION_SECRET_KEY, binaryLikeIv);
-
-  let decryptedData = decipher.update(encryptedText, 'hex', 'utf8');
-  decryptedData += decipher.final('utf-8');
-
-  return decryptedData;
 };

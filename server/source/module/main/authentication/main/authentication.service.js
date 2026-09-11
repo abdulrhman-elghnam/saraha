@@ -7,7 +7,7 @@ export const signUp = async ({ fullname, username, email, phone, password, DOB }
   if (isFind) ConflictException({ message: 'email is exist' });
   const queryResult = await create({
     data: { fullname, username, email, phone, password, DOB },
-    UserModel,
+    model: UserModel,
   });
   console.log(queryResult);
 };

@@ -24,7 +24,7 @@ app.use(globalErrorHandling);
 const main = async () => {
   try {
     await databaseConnection;
-    console.log({ msg: 'connected successfully' });
+    console.log({ database: 'connected successfully' });
     app.listen(config.PORT, () => {
       console.log({ server: `url http://127.0.0.1:${config.PORT}` });
     });

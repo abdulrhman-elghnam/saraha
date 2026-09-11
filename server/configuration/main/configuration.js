@@ -8,10 +8,14 @@ dotenv.config({
 export const config = {
   ENV: process.env.NODE_ENV,
   PORT: process.env.PORT,
-  BACKEND_URL: process.env.BACKEND_URL,
 
   DATABASE_URI: process.env.DATABASE_URI,
-  DATABASE_NAME: process.env.DATABASE_NAME,
 
   FRONTEND_URL: process.env.FRONTEND_URL,
+
+  ENCRYPTION_SECRET_KEY: process.env.ENCRYPTION_SECRET_KEY,
+  IV_LENGTH: parseInt(process.env.IV_LENGTH),
+  HASH_SALT: parseInt(process.env.HASH_SALT),
+
+  JWT_SECRET_KEY : process.env.JWT_SECRET_KEY
 };

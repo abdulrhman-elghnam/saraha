@@ -74,10 +74,15 @@ export const signUpSchema = Joi.object({
   profileImage: Joi.string().uri().optional().allow(null).messages({
     'string.base': 'Profile image must be a string',
     'string.uri': 'Profile image must be a valid URL',
-  }),
+  }).optional,
 
-  coverImage: Joi.string().uri().optional().allow(null).messages({
-    'string.base': 'Cover image must be a string',
-    'string.uri': 'Cover image must be a valid URL',
-  }),
+  coverImage: Joi.string()
+    .uri()
+    .optional()
+    .allow(null)
+    .messages({
+      'string.base': 'Cover image must be a string',
+      'string.uri': 'Cover image must be a valid URL',
+    })
+    .optional(),
 });
