@@ -4,7 +4,7 @@ import cors from 'cors';
 import { config } from './../configuration/main/configuration.js';
 import { databaseConnection } from './database/index.js';
 import { globalErrorHandling } from './common/index.js';
-import appNavigationRoutes from './app.controller.js';
+import appControllers from './app.controller.js';
 
 const app = express();
 
@@ -19,7 +19,7 @@ app.use(
   morgan('dev')
 );
 
-app.use(appNavigationRoutes);
+app.use(appControllers);
 app.use(globalErrorHandling);
 const main = async () => {
   try {

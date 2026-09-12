@@ -15,7 +15,7 @@
     "format": "npx prettier . --write"
   },
   "imports": {
-    "#/*": "./src/*"
+    "#/*": "./source/*"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

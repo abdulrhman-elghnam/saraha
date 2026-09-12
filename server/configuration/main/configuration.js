@@ -17,5 +17,5 @@ export const config = {
   IV_LENGTH: parseInt(process.env.IV_LENGTH),
   HASH_SALT: parseInt(process.env.HASH_SALT),
 
-  JWT_SECRET_KEY : process.env.JWT_SECRET_KEY
+  JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
 };
