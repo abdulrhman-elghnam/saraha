@@ -1,11 +1,30 @@
+### signup
 POST http://127.0.0.1:8080/authentication/signup
 Content-Type: application/json
 
 {
     "fullName": "Abdulrhman Mohamed",
-    "username": "abdulrhman2f42",
-    "email": "test1tgffrfrbvgfrb@gmail.com",
+    "username": "abdulrhman2vvffgrer42",
+    "email": "test1tgfrfregrrefrbvgvfrb@gmail.com",
     "password": "Abdul@123",
     "confirmPassword": "Abdul@123",
     "DOB": "2000-01-01"
+}
+### login
+POST http://127.0.0.1:8080/authentication/login
+Content-Type:  application/json
+
+{
+    "email": "test1tgfrfregrrefrbvgvfrb@gmail.com",
+    "password": "Abdul@123"
+}
+
+### test
+POST http://127.0.0.1:8080/authentication/test
+Content-Type:  application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhYTU3YzhiMjRiN2IxOTVhNDE2NzFmNCIsImVtYWlsIjoidGVzdDF0Z2ZyZnJlZ3JyZWZyYnZndmZyYkBnbWFpbC5jb20iLCJpYXQiOjE3ODkyMzAyMzIsImV4cCI6MTc4OTgzNTAzMn0.DHCxeJ5ecOj_i-O95t9bGg2eihGXec7zCqa7TxvIVgI
+
+{
+    "email": "test1tgfrfregrrefrbvgfrb@gmail.com",
+    "password": "Abdul@123"
 }

@@ -18,4 +18,5 @@ export const config = {
   HASH_SALT: parseInt(process.env.HASH_SALT),
 
   JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
+  JWT_EXP : process.env.JWT_EXP
 };

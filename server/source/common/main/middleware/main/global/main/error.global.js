@@ -1,4 +1,5 @@
-import { config } from '../../../../../../../configuration/index.js';
+import { config } from "#/configuration/main/configuration.js";
+
 export const globalErrorHandling = (error, request, response, next) => {
   const status = error.cause?.status ?? 500;
   const isProduction = config.ENV === 'production';

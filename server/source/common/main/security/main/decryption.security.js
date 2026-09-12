@@ -1,5 +1,6 @@
+import { config } from '#/configuration/main/configuration.js';
 import crypto from 'crypto';
-import { config } from '../../../../../configuration/index.js';
+
 
 export const decrypt = (encryptedData) => {
   const [iv, encryptedText] = encryptedData.split(':');

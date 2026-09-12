@@ -1,5 +1,6 @@
+import { config } from '#/configuration/main/configuration.js';
 import crypto from 'crypto';
-import { config } from '../../../../../configuration/index.js';
+
 
 export const encrypt = (text) => {
   const key = Buffer.from(config.ENCRYPTION_SECRET_KEY, 'hex');

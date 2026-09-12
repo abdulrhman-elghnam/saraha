@@ -2,10 +2,11 @@ import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
-import { config } from './../configuration/main/configuration.js';
+
 import { databaseConnection } from './database/index.js';
 import { globalErrorHandling } from './common/index.js';
 import appControllers from './app.controller.js';
+import { config } from './configuration/main/configuration.js';
 
 const app = express();
 
