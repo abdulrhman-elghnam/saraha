@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
-      required: true,
+      // required: true,
       trim: true,
       minlength: 2,
       maxlength: 30,
@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema(
 
     lastName: {
       type: String,
-      required: true,
+      // required: true,
       trim: true,
       minlength: 2,
       maxlength: 30,
@@ -67,8 +67,15 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-userSchema.virtual('fullName').get(function () {
+const virtual = userSchema.virtual('fullName');
+
+virtual.get(function () {
   return `${this.firstName} ${this.lastName}`;
 });
 
+virtual.set(function (value) {
+  const [firstName, ...lastName] = value.trim().split(/\s+/);
+  this.firstName = firstName;
+  this.lastName = lastName.join(' ');
+});
 export const UserModel = mongoose.models.User || mongoose.model('User', userSchema);

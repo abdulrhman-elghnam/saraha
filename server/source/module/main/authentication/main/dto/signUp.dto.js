@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
 export const signUpSchema = Joi.object({
-  fullname: Joi.string()
+  fullName: Joi.string()
     .min(3)
     .max(30)
     .trim()

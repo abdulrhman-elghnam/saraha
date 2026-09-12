@@ -2,10 +2,10 @@ POST http://127.0.0.1:8080/authentication/signup
 Content-Type: application/json
 
 {
-  "fullname": "Abdulrhman Mohamed",
-  "username": "abdulrhman",
-  "email": "test@gmail.com",
-  "password": "Abdul@123",
-  "confirmPassword": "Abdul@123",
-  "DOB": "2000-01-01"
+    "fullName": "Abdulrhman Mohamed",
+    "username": "abdulrhman2f42",
+    "email": "test1tgffrfrbvgfrb@gmail.com",
+    "password": "Abdul@123",
+    "confirmPassword": "Abdul@123",
+    "DOB": "2000-01-01"
 }

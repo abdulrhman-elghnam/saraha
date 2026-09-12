@@ -2,7 +2,6 @@ import { BadRequestException } from '../../../../exception/index.js';
 
 export const validation = (schema) => {
   return (request, response, next) => {
-    console.log('BODY:', request.body);
 
     const { error, value } = schema.validate(request.body, {
       abortEarly: false,
@@ -15,6 +14,8 @@ export const validation = (schema) => {
     }
 
     request.body = value;
+    console.log({data : value});
+    
     next();
   };
 };

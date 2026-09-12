@@ -98,8 +98,8 @@ export const paginate = async ({
   };
 };
 
-export const create = async ({ data, options = {}, model } = {}) =>
-  await model.create(data, options);
+export const create = async ({ data = {}, options = {}, model } = {}) =>
+  await model.create([data], options);
 
 export const insertMany = async ({ data, options = {}, model } = {}) =>
   await model.insertMany(data, options);
@@ -181,22 +181,22 @@ export const findOneAndUpdate = async ({ filter = {}, update, options = {}, mode
 export const findByIdAndUpdate = async ({ id, update, options = {}, model } = {}) => {
   const finalUpdate = Array.isArray(update)
     ? [
-        ...update,
-        {
-          $set: {
-            __v: {
-              $add: ['$__v', 1],
-            },
+      ...update,
+      {
+        $set: {
+          __v: {
+            $add: ['$__v', 1],
           },
         },
-      ]
+      },
+    ]
     : {
-        ...update,
-        $inc: {
-          ...(update.$inc || {}),
-          __v: 1,
-        },
-      };
+      ...update,
+      $inc: {
+        ...(update.$inc || {}),
+        __v: 1,
+      },
+    };
 
   return await model.findByIdAndUpdate(id, finalUpdate, {
     new: true,
