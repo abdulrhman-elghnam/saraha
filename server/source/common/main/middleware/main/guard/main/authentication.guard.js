@@ -10,7 +10,7 @@ export const authenticationGuard = async (request, response, next) => {
     });
   }
   const user = await decodeToken({ authorization: authHeader });
-  
+
   request.user = user;
   next();
 };

@@ -69,7 +69,7 @@ export const signUpSchema = Joi.object({
       'string.pattern.base': 'Please provide a valid Egyptian phone number',
       'any.required': 'Phone number is required',
     }),
-    
+
   DOB: Joi.date()
     .min(new Date(new Date().setFullYear(new Date().getFullYear() - 100)))
     .max(new Date(new Date().setFullYear(new Date().getFullYear() - 18)))

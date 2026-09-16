@@ -1,5 +1,5 @@
 import { config } from '#/configuration/index.js';
-import { hash, compare, NotFoundException } from '#/common/index.js';
+import { hash, compare, NotFoundException, encrypt } from '#/common/index.js';
 import { generateAccessToken, generateRefreshToken, verifyToken } from '#/common/main/jwt/index.js';
 import { create, findById, findOne, UserModel } from '#/database/index.js';
 import { ConflictException } from '../../../../common/index.js';
@@ -14,7 +14,14 @@ export const signUp = async ({ fullName, username, email, phoneNumber, password,
     const hashedPassword = await hash(password);
     if (isFind) ConflictException({ message: 'username or email is exist' });
     await create({
-      data: { fullName, username, email, phoneNumber, password: hashedPassword, DOB: new Date(DOB) },
+      data: {
+        fullName,
+        username,
+        email,
+        phoneNumber: encrypt(phoneNumber),
+        password: hashedPassword,
+        DOB: new Date(DOB),
+      },
       model: UserModel,
       options: {
         lean: true,
@@ -49,7 +56,7 @@ export const logIn = async ({ email, password }) => {
     payload: {
       sub: user.id,
     },
-    expiresIn: config.JWT_EXP,
+    expiresIn: config.ACCESS_TOKEN_EXPIRY,
   });
 
   return {
@@ -59,12 +66,11 @@ export const logIn = async ({ email, password }) => {
   };
 };
 
-
 export const profile = async (user) => {
-  const { firstName, lastName, username, DOB, phoneNumber, profileImage, coverImage } = user
-   return {
+  const { firstName, lastName, username, DOB, phoneNumber, profileImage, coverImage } = user;
+  return {
     message: 'ok',
     statusCode: 200,
-    data : { firstName, lastName, username, DOB, phoneNumber, profileImage, coverImage },
+    data: { firstName, lastName, username, DOB, phoneNumber, profileImage, coverImage },
   };
 };
