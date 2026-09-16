@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { mainController, notFoundController } from './app.service.js';
-import { authenticationController } from './module/index.js';
+import { authenticationController } from './module/_index.js';
 const router = Router();
 
 router.use('/authentication', authenticationController);

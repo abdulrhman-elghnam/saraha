@@ -1,1 +1,0 @@
-export * from './main/error.exception.js';

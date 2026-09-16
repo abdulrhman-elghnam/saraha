@@ -1,0 +1,23 @@
+import { Router } from 'express';
+import { logIn, profile, signUp } from './authentication.service.js';
+import { signUpSchema } from './dto/signUp.dto.js';
+import { loginSchema } from './dto/login.dto.js';
+import { authenticationGuard, validation } from '#/common/_index.js';
+import { sendSuccess } from '#/common/structure/_index.js';
+
+export const authenticationController = Router();
+
+authenticationController.post('/signup', validation(signUpSchema), async (request, response) => {
+  const serviceFeedback = await signUp(request.body, request.user);
+  return sendSuccess({ response, ...serviceFeedback });
+});
+
+authenticationController.post('/login', validation(loginSchema), async (request, response) => {
+  const serviceFeedback = await logIn(request.body);
+  return sendSuccess({ response, ...serviceFeedback });
+});
+
+authenticationController.get('/profile', authenticationGuard, async (request, response) => {
+  const serviceFeedback = await profile(request.user);
+  return sendSuccess({ response, ...serviceFeedback });
+});
