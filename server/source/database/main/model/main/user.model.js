@@ -1,10 +1,10 @@
+import { Gender } from '#/common/main/enum/main/gender.enum.js';
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
-      // required: true,
       trim: true,
       minlength: 2,
       maxlength: 30,
@@ -12,7 +12,6 @@ const userSchema = new mongoose.Schema(
 
     lastName: {
       type: String,
-      // required: true,
       trim: true,
       minlength: 2,
       maxlength: 30,
@@ -48,6 +47,12 @@ const userSchema = new mongoose.Schema(
     phoneNumber: {
       type: String,
       required: true,
+    },
+
+    gender: {
+      type: Number,
+      enum: Object.values(Gender),
+      required: true
     },
 
     profileImage: {
