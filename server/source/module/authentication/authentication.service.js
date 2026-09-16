@@ -1,7 +1,7 @@
 import { config } from '#/configuration/_index.js';
 import { hash, compare, NotFoundException, encrypt } from '#/common/_index.js';
-import { generateAccessToken, generateRefreshToken, verifyToken } from '#/common/jwt/_index.js';
-import { create, findById, findOne, UserModel } from '#/database/_index.js';
+import { generateToken } from '#/common/jwt/_index.js';
+import { create, findOne, UserModel } from '#/database/_index.js';
 import { ConflictException } from '#/common/_index.js';
 
 export const signUp = async ({ fullName, username, email, phoneNumber, password, DOB }) => {
@@ -52,10 +52,11 @@ export const logIn = async ({ email, password }) => {
   }
 
   console.log(user);
-  const token = generateAccessToken({
+  const token = generateToken({
     payload: {
       sub: user.id,
     },
+    secret : config.ACCESS_TOKEN_SECRET,
     expiresIn: config.ACCESS_TOKEN_EXPIRY,
   });
 

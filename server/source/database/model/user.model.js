@@ -51,7 +51,7 @@ const userSchema = new mongoose.Schema(
 
     gender: {
       type: Number,
-      enum: Object.values(Gender),
+      enum: Object.keys(Gender),
       required: true
     },
 
