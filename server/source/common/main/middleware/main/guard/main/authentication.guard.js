@@ -1,10 +1,7 @@
+import { UnauthorizedException } from '#/common/index.js';
+import { decodeToken } from '#/common/main/jwt/main/decode.token.js';
 
-import { ForbiddenException, UnauthorizedException } from '#/common/index.js';
-import { config } from '#/configuration/index.js';
-
-import jwt from 'jsonwebtoken';
-
-export const authenticationGuard = (request, response, next) => {
+export const authenticationGuard = async (request, response, next) => {
   const authHeader = request.headers.authorization;
 
   if (!authHeader) {
@@ -12,23 +9,9 @@ export const authenticationGuard = (request, response, next) => {
       message: 'No token provided',
     });
   }
+  const user = await decodeToken({ authorization: authHeader });
+  console.log(user);
 
-  const [scheme, token] = authHeader.split(' ');
-
-  if (scheme !== 'Bearer' || !token) {
-    return UnauthorizedException({
-      message: 'Invalid authorization format',
-    });
-  }
-
-  jwt.verify(token, config.JWT_SECRET_KEY, (err, decoded) => {
-    if (err) {
-      return ForbiddenException({
-        message: 'Invalid or expired token',
-      });
-    }
-
-    request.user = decoded;
-    next();
-  });
+  request.user = user;
+  next();
 };

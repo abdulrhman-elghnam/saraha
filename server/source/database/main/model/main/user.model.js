@@ -64,11 +64,16 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-    lean: true,
+    lean: false,
   }
 );
 
 const virtual = userSchema.virtual('fullName');
+const id = userSchema.virtual('id');
+
+id.get(function () {
+  return this._id.toString();
+});
 
 virtual.get(function () {
   return `${this.firstName} ${this.lastName}`;

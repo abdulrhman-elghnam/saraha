@@ -6,17 +6,20 @@ dotenv.config({
 });
 
 export const config = {
-  ENV: process.env.NODE_ENV,
-  PORT: process.env.PORT,
+  ENV: process.env.NODE_ENV || 'development',
+  PORT: parseInt(process.env.PORT) || 3000,
 
   DATABASE_URI: process.env.DATABASE_URI,
 
   FRONTEND_URL: process.env.FRONTEND_URL,
 
   ENCRYPTION_SECRET_KEY: process.env.ENCRYPTION_SECRET_KEY,
-  IV_LENGTH: parseInt(process.env.IV_LENGTH),
-  HASH_SALT: parseInt(process.env.HASH_SALT),
+  IV_LENGTH: parseInt(process.env.IV_LENGTH) || 16,
+  HASH_SALT: parseInt(process.env.HASH_SALT) || 10,
 
-  JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
-  JWT_EXP : process.env.JWT_EXP
+  ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,
+  ACCESS_TOKEN_EXPIRY: process.env.ACCESS_TOKEN_EXPIRY || '15m',
+
+  REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
+  REFRESH_TOKEN_EXPIRY: process.env.REFRESH_TOKEN_EXPIRY || '7d',
 };

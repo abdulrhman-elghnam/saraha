@@ -1,4 +1,4 @@
-import { config } from "#/configuration/main/configuration.js";
+import { config } from '#/configuration/main/configuration.js';
 
 export const globalErrorHandling = (error, request, response, next) => {
   const status = error.cause?.status ?? 500;
