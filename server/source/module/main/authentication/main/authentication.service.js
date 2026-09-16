@@ -1,10 +1,10 @@
 import { config } from '#/configuration/index.js';
 import { hash, compare, NotFoundException } from '#/common/index.js';
 import { generateAccessToken, generateRefreshToken, verifyToken } from '#/common/main/jwt/index.js';
-import { create, findOne, UserModel } from '#/database/index.js';
+import { create, findById, findOne, UserModel } from '#/database/index.js';
 import { ConflictException } from '../../../../common/index.js';
 
-export const signUp = async ({ fullName, username, email, phone, password, DOB }) => {
+export const signUp = async ({ fullName, username, email, phoneNumber, password, DOB }) => {
   try {
     const isFind = await findOne({
       filter: { $or: [{ email }, { username }] },
@@ -14,7 +14,7 @@ export const signUp = async ({ fullName, username, email, phone, password, DOB }
     const hashedPassword = await hash(password);
     if (isFind) ConflictException({ message: 'username or email is exist' });
     await create({
-      data: { fullName, username, email, phone, password: hashedPassword, DOB: new Date(DOB) },
+      data: { fullName, username, email, phoneNumber, password: hashedPassword, DOB: new Date(DOB) },
       model: UserModel,
       options: {
         lean: true,
@@ -59,7 +59,12 @@ export const logIn = async ({ email, password }) => {
   };
 };
 
-export const test = async (data, user) => {
-  console.log({ data, user });
-  // do any operation that depend on user
+
+export const profile = async (user) => {
+  const { firstName, lastName, username, DOB, phoneNumber, profileImage, coverImage } = user
+   return {
+    message: 'ok',
+    statusCode: 200,
+    data : { firstName, lastName, username, DOB, phoneNumber, profileImage, coverImage },
+  };
 };

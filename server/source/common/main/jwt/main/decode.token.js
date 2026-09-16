@@ -1,9 +1,9 @@
+import { findById, UserModel } from '#/database/index.js';
 import { BadRequestException, NotFoundException } from './../../exception/index.js';
 import { verifyToken } from './verify.token.js';
 
 export const decodeToken = async ({ authorization = '' } = {}) => {
   const payload = verifyToken({ token: authorization });
-  console.log(payload);
 
   if (!payload?.sub) {
     throw BadRequestException({ message: 'missing token payload' });

@@ -60,6 +60,16 @@ export const signUpSchema = Joi.object({
     'any.required': 'Confirm password is required',
   }),
 
+  phoneNumber: Joi.string()
+    .pattern(/^(\+201|01)[0-2,5]{1}[0-9]{8}$/)
+    .required()
+    .messages({
+      'string.base': 'Phone number must be a string',
+      'string.empty': 'Phone number is required',
+      'string.pattern.base': 'Please provide a valid Egyptian phone number',
+      'any.required': 'Phone number is required',
+    }),
+    
   DOB: Joi.date()
     .min(new Date(new Date().setFullYear(new Date().getFullYear() - 100)))
     .max(new Date(new Date().setFullYear(new Date().getFullYear() - 18)))
