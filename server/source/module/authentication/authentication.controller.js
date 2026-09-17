@@ -17,7 +17,12 @@ authenticationController.post('/login', validation(loginSchema), async (request,
   return sendSuccess({ response, ...serviceFeedback });
 });
 
-authenticationController.get('/profile', authenticationGuard, async (request, response) => {
+authenticationController.get('/profile', authenticationGuard(), async (request, response) => {
   const serviceFeedback = await profile(request.user);
   return sendSuccess({ response, ...serviceFeedback });
 });
+authenticationController.post('/rotate-token', authenticationGuard(), async (request, response) => {
+  const serviceFeedback = await profile(request.user);
+  return sendSuccess({ response, ...serviceFeedback });
+});
+

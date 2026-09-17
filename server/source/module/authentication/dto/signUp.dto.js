@@ -59,7 +59,13 @@ export const signUpSchema = Joi.object({
     'any.only': 'Confirm password must match password',
     'any.required': 'Confirm password is required',
   }),
-
+  gender: Joi.string()
+    .valid(0, 1)
+    .required()
+    .messages({
+      'any.only': 'Gender must be one of 0 male or 1 female ',
+      'any.required': 'Gender is required',
+    }),
   phoneNumber: Joi.string()
     .pattern(/^(\+201|01)[0-2,5]{1}[0-9]{8}$/)
     .required()

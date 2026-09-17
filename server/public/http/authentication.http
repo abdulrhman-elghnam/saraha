@@ -4,9 +4,10 @@ Content-Type: application/json
 
 {
     "fullName": "Abdulrhman Mohamed",
-    "username": "bgbttgvbht",
-    "email": "test1frbvgvfrbvr@gmail.com",
+    "username": "ahmed",
+    "email": "ahmed@gmail.com",
     "password": "Abdul@123",
+    "gender":0,
     "phoneNumber":"01008261140",
     "confirmPassword": "Abdul@123",
     "DOB": "2000-01-01"
@@ -16,7 +17,7 @@ POST http://127.0.0.1:9090/authentication/login
 Content-Type:  application/json
 
 {
-    "email": "test1frbvgvfrbvr@gmail.com",
+    "email": "ahmed@gmail.com",
     "password": "Abdul@123"
 }
 

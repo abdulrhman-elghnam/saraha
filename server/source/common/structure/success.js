@@ -3,12 +3,12 @@ export const sendSuccess = ({
   message = 'Success',
   data = undefined,
   statusCode = 200,
-  token = undefined,
+  ...extra 
 } = {}) => {
   return response.status(statusCode).json({
     success: true,
     message,
     data,
-    token,
+    ...extra,
   });
 };
