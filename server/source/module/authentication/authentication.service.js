@@ -4,7 +4,7 @@ import { generateToken } from '#/common/security/jwt/_index.js';
 import { create, findOne, UserModel } from '#/database/_index.js';
 import { ConflictException } from '#/common/_index.js';
 
-export const signUp = async ({ fullName,gender, username, email, phoneNumber, password, DOB }) => {
+export const signUp = async ({ fullName, gender, username, email, phoneNumber, password, DOB }) => {
   try {
     const isFind = await findOne({
       filter: { $or: [{ email }, { username }] },
@@ -56,15 +56,15 @@ export const logIn = async ({ email, password }) => {
     payload: {
       sub: user.id,
     },
-    secret : config.ACCESS_USER_TOKEN_SECRET,
+    secret: config.ACCESS_USER_TOKEN_SECRET,
     expiresIn: config.ACCESS_USER_TOKEN_EXPIRY,
   });
 
-    const refreshToken = generateToken({
+  const refreshToken = generateToken({
     payload: {
       sub: user.id,
     },
-    secret : config.REFRESH_TOKEN_SECRET,
+    secret: config.REFRESH_TOKEN_SECRET,
     expiresIn: config.REFRESH_TOKEN_EXPIRY,
   });
 
@@ -72,7 +72,7 @@ export const logIn = async ({ email, password }) => {
     message: 'login successfully',
     statusCode: 200,
     accessToken,
-    refreshToken
+    refreshToken,
   };
 };
 

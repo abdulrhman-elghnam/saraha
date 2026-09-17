@@ -25,4 +25,3 @@ authenticationController.post('/rotate-token', authenticationGuard(), async (req
   const serviceFeedback = await profile(request.user);
   return sendSuccess({ response, ...serviceFeedback });
 });
-

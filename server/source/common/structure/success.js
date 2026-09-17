@@ -3,7 +3,7 @@ export const sendSuccess = ({
   message = 'Success',
   data = undefined,
   statusCode = 200,
-  ...extra 
+  ...extra
 } = {}) => {
   return response.status(statusCode).json({
     success: true,

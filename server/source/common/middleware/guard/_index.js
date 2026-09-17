@@ -1,1 +1,1 @@
-export * from './authentication.guard.js';
+export * from './authentication.js';

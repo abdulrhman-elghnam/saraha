@@ -1,1 +1,1 @@
-export * from './error.global.js';
+export * from './global.js';

@@ -52,7 +52,7 @@ const userSchema = new mongoose.Schema(
     gender: {
       type: Number,
       enum: Object.values(Gender),
-      required: true
+      required: true,
     },
 
     profileImage: {

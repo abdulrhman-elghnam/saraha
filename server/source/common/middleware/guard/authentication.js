@@ -1,8 +1,7 @@
 import { UnauthorizedException } from '#/common/_index.js';
-import { decodeToken } from '#/common/security/jwt/decode.js';
+import { decodeToken } from '#/common/security/jwt/token.js';
 
 export const authenticationGuard = () => {
-  
   return async (request, response, next) => {
     const authorization = request.headers.authorization;
 
@@ -14,5 +13,5 @@ export const authenticationGuard = () => {
     const user = await decodeToken({ authorization });
     request.user = user;
     next();
-  }
-}
+  };
+};
