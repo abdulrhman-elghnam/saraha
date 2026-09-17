@@ -3,7 +3,7 @@ import { TokenType } from '../enum/enum.js';
 import { BadRequestException, NotFoundException } from '../exception/_index.js';
 import { verifyToken } from './verify.js';
 
-export const decodeToken = async ({ authorization = '' , tokenType = TokenType.ACCESS_TOKEN } = {}) => {
+export const decodeToken = async ({ authorization , tokenType = TokenType.ACCESS } = {}) => {
   const payload = verifyToken({ token: authorization , tokenType  });
   
   if (!payload?.sub) {

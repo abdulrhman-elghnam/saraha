@@ -9,6 +9,6 @@ export const Authorization = {
 };
 
 export const TokenType = {
-  ACCESS_TOKEN : 0 ,
-  REFRESH_TOKEN : 1
+  ACCESS : 0 ,
+  REFRESH : 1
 }
