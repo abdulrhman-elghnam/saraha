@@ -1,6 +1,6 @@
 import { config } from '#/configuration/_index.js';
 import { hash, compare, NotFoundException, encrypt } from '#/common/_index.js';
-import { generateToken } from '#/common/jwt/_index.js';
+import { generateToken } from '#/common/security/jwt/_index.js';
 import { create, findOne, UserModel } from '#/database/_index.js';
 import { ConflictException } from '#/common/_index.js';
 

@@ -1,6 +1,5 @@
 export * from './enum/_index.js';
 export * from './exception/_index.js';
-export * from './jwt/_index.js';
 export * from './log/_index.js';
 export * from './mail/_index.js';
 export * from './middleware/global/_index.js';

@@ -1,5 +1,5 @@
 import { UnauthorizedException } from '#/common/_index.js';
-import { decodeToken } from '#/common/jwt/decode.js';
+import { decodeToken } from '#/common/security/jwt/decode.js';
 
 export const authenticationGuard = () => {
   

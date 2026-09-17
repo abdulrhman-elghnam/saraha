@@ -1,6 +1,6 @@
 import { findById, UserModel } from '#/database/_index.js';
-import { TokenType } from '../enum/enum.js';
-import { BadRequestException, NotFoundException } from '../exception/_index.js';
+import { TokenType } from '#/common/enum/enum.js';
+import { BadRequestException, NotFoundException } from '#/common/exception/_index.js';
 import { verifyToken } from './verify.js';
 
 export const decodeToken = async ({ authorization , tokenType = TokenType.ACCESS } = {}) => {
