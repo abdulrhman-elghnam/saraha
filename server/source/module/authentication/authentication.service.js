@@ -2,11 +2,13 @@ import {
   hash,
   compare,
   NotFoundException,
+  BadRequestException,
+  ConflictException,
   encrypt,
   createLoginCredential,
+  getTokenExpiration,
 } from '#/common/_index.js';
 import { create, findOne, UserModel } from '#/database/_index.js';
-import { ConflictException } from '#/common/_index.js';
 
 export const signUp = async ({ fullName, gender, username, email, phoneNumber, password, DOB }) => {
   try {
@@ -71,4 +73,26 @@ export const profile = async (user) => {
     statusCode: 200,
     data: { firstName, lastName, username, DOB, phoneNumber, profileImage, coverImage },
   };
+};
+
+
+export const rotateToken = async ({ accessToken } = {}, user) => {
+  if (!accessToken) {
+    throw BadRequestException({
+      message: 'access token is required',
+    });
+  }
+
+  const expiresAt = getTokenExpiration({ token: accessToken });
+
+  if (expiresAt > Date.now()) {
+    throw ConflictException({
+      message: 'access token has not expired yet',
+    });
+  }
+
+  return createLoginCredential({
+    id: user.id,
+    role: user.role,
+  });
 };
