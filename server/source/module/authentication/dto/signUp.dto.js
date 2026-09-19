@@ -1,101 +1,91 @@
-import Joi from 'joi';
+import { z } from 'zod';
 
-export const signUpSchema = Joi.object({
-  fullName: Joi.string()
-    .min(3)
-    .max(30)
-    .trim()
-    .pattern(/^[a-zA-Z]+(?: [a-zA-Z]+)*$/)
-    .required()
-    .messages({
-      'string.base': 'Fullname must be a string',
-      'string.empty': 'Fullname is required',
-      'string.min': 'Fullname must be at least 3 characters',
-      'string.max': 'Fullname must not exceed 30 characters',
-      'string.pattern.base': 'Fullname can only contain English letters and spaces',
-      'any.required': 'Fullname is required',
-    }),
+export const signUpSchema = z
+  .object({
+    fullName: z
+      .string()
+      .min(3, 'Fullname must be at least 3 characters')
+      .max(30, 'Fullname must not exceed 30 characters')
+      .trim()
+      .regex(
+        /^[a-zA-Z]+(?: [a-zA-Z]+)*$/,
+        'Fullname can only contain English letters and spaces',
+      ),
 
-  username: Joi.string()
-    .min(3)
-    .max(30)
-    .trim()
-    .pattern(/^[a-zA-Z0-9_]+$/)
-    .required()
-    .messages({
-      'string.base': 'Username must be a string',
-      'string.empty': 'Username is required',
-      'string.min': 'Username must be at least 3 characters',
-      'string.max': 'Username must not exceed 30 characters',
-      'string.pattern.base': 'Username can only contain letters, numbers, and underscores',
-      'any.required': 'Username is required',
-    }),
+    username: z
+      .string()
+      .min(3, 'Username must be at least 3 characters')
+      .max(30, 'Username must not exceed 30 characters')
+      .trim()
+      .regex(
+        /^[a-zA-Z0-9_]+$/,
+        'Username can only contain letters, numbers, and underscores',
+      ),
 
-  email: Joi.string().email().lowercase().trim().required().messages({
-    'string.base': 'Email must be a string',
-    'string.empty': 'Email is required',
-    'string.email': 'Please provide a valid email address',
-    'any.required': 'Email is required',
-  }),
+    email: z
+      .string()
+      .email('Please provide a valid email address')
+      .trim()
+      .toLowerCase(),
 
-  password: Joi.string()
-    .min(8)
-    .max(30)
-    .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$/)
-    .required()
-    .messages({
-      'string.base': 'Password must be a string',
-      'string.empty': 'Password is required',
-      'string.min': 'Password must be at least 8 characters',
-      'string.max': 'Password must not exceed 30 characters',
-      'string.pattern.base':
+    password: z
+      .string()
+      .min(8, 'Password must be at least 8 characters')
+      .max(30, 'Password must not exceed 30 characters')
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$/,
         'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
-      'any.required': 'Password is required',
+      ),
+
+    confirmPassword: z.string(),
+
+    gender: z.union([z.literal(0), z.literal(1)], {
+      message: 'Gender must be 0 or 1',
     }),
 
-  confirmPassword: Joi.string().valid(Joi.ref('password')).required().messages({
-    'string.base': 'Confirm password must be a string',
-    'string.empty': 'Confirm password is required',
-    'any.only': 'Confirm password must match password',
-    'any.required': 'Confirm password is required',
-  }),
-  gender: Joi.string().valid(0, 1).required().messages({
-    'any.only': 'Gender must be one of 0 male or 1 female ',
-    'any.required': 'Gender is required',
-  }),
-  phoneNumber: Joi.string()
-    .pattern(/^(\+201|01)[0-2,5]{1}[0-9]{8}$/)
-    .required()
-    .messages({
-      'string.base': 'Phone number must be a string',
-      'string.empty': 'Phone number is required',
-      'string.pattern.base': 'Please provide a valid Egyptian phone number',
-      'any.required': 'Phone number is required',
-    }),
+    phoneNumber: z
+      .string()
+      .regex(
+        /^(\+201|01)[0-2,5]{1}[0-9]{8}$/,
+        'Please provide a valid Egyptian phone number',
+      ),
 
-  DOB: Joi.date()
-    .min(new Date(new Date().setFullYear(new Date().getFullYear() - 100)))
-    .max(new Date(new Date().setFullYear(new Date().getFullYear() - 18)))
-    .required()
-    .messages({
-      'date.base': 'DOB must be a valid date',
-      'date.min': 'You must not be older than 100 years',
-      'date.max': 'You must be at least 18 years old',
-      'any.required': 'Date of birth is required',
-    }),
+    DOB: z.coerce
+      .date()
+      .refine(
+        (date) => {
+          const today = new Date();
+          const minDate = new Date();
+          minDate.setFullYear(today.getFullYear() - 100);
 
-  profileImage: Joi.string().uri().optional().allow(null).messages({
-    'string.base': 'Profile image must be a string',
-    'string.uri': 'Profile image must be a valid URL',
-  }).optional,
+          return date >= minDate;
+        },
+        'You must not be older than 100 years',
+      )
+      .refine(
+        (date) => {
+          const today = new Date();
+          const maxDate = new Date();
+          maxDate.setFullYear(today.getFullYear() - 18);
 
-  coverImage: Joi.string()
-    .uri()
-    .optional()
-    .allow(null)
-    .messages({
-      'string.base': 'Cover image must be a string',
-      'string.uri': 'Cover image must be a valid URL',
-    })
-    .optional(),
-});
+          return date <= maxDate;
+        },
+        'You must be at least 18 years old',
+      ),
+
+    profileImage: z
+      .string()
+      .url('Profile image must be a valid URL')
+      .nullable()
+      .optional(),
+
+    coverImage: z
+      .string()
+      .url('Cover image must be a valid URL')
+      .nullable()
+      .optional(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Confirm password must match password',
+    path: ['confirmPassword'],
+  });

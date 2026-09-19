@@ -1,18 +1,17 @@
-import { BadRequestException } from '../../exception/_index.js';
 
-export const validation = (schema) => {
+export const validationPipe = (schema) => {
   return (request, response, next) => {
-    const { error, value } = schema.validate(request.body, {
-      abortEarly: false,
-    });
+    const result = schema.safeParse(request.body);
 
-    if (error) {
-      return BadRequestException({
-        message: error.details.map((detail) => detail.message).join(','),
+    if (!result.success) {
+      return response.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errors: result.error.issues,
       });
     }
 
-    request.body = value;
+    request.body = result.data;
 
     next();
   };

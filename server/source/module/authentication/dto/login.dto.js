@@ -1,16 +1,14 @@
-import Joi from 'joi';
+import { z } from 'zod';
 
-export const loginSchema = Joi.object({
-  email: Joi.string().email().lowercase().trim().required().messages({
-    'string.base': 'Email must be a string',
-    'string.empty': 'Email is required',
-    'string.email': 'Please provide a valid email address',
-    'any.required': 'Email is required',
-  }),
+export const loginSchema = z.object({
+  email: z
+    .string()
+    .min(1, 'Email is required')
+    .email('Please provide a valid email address')
+    .trim()
+    .toLowerCase(),
 
-  password: Joi.string().required().messages({
-    'string.base': 'Password must be a string',
-    'string.empty': 'Password is required',
-    'any.required': 'Password is required',
-  }),
+  password: z
+    .string()
+    .min(1, 'Password is required'),
 });

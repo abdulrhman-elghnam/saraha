@@ -7,18 +7,18 @@ import {
   authorizationGuard,
   SystemRole,
   TokenType,
-  validation,
+  validationPipe,
 } from '#/common/_index.js';
 import { sendSuccess } from '#/common/structure/_index.js';
 
 export const authenticationController = Router();
 
-authenticationController.post('/signup', validation(signUpSchema), async (request, response) => {
+authenticationController.post('/signup', validationPipe(signUpSchema), async (request, response) => {
   const serviceFeedback = await signUp(request.body, request.user);
   return sendSuccess({ response, ...serviceFeedback });
 });
 
-authenticationController.post('/login', validation(loginSchema), async (request, response) => {
+authenticationController.post('/login', validationPipe(loginSchema), async (request, response) => {
   const serviceFeedback = await logIn(request.body);
   return sendSuccess({ response, ...serviceFeedback });
 });
