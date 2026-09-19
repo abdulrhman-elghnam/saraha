@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { logIn, profile, signUp } from './authentication.service.js';
+import { logIn, profile, signUp, rotateToken } from './authentication.service.js';
 import { signUpSchema } from './dto/signUp.dto.js';
 import { loginSchema } from './dto/login.dto.js';
-import { authenticationGuard, validation } from '#/common/_index.js';
+import { authenticationGuard, TokenType, validation } from '#/common/_index.js';
 import { sendSuccess } from '#/common/structure/_index.js';
 
 export const authenticationController = Router();
@@ -21,7 +21,11 @@ authenticationController.get('/profile', authenticationGuard(), async (request, 
   const serviceFeedback = await profile(request.user);
   return sendSuccess({ response, ...serviceFeedback });
 });
-authenticationController.post('/rotate-token', authenticationGuard(), async (request, response) => {
-  const serviceFeedback = await profile(request.user);
-  return sendSuccess({ response, ...serviceFeedback });
-});
+authenticationController.post(
+  '/rotate-token',
+  authenticationGuard({ tokenType: TokenType.REFRESH }),
+  async (request, response) => {
+    const serviceFeedback = await rotateToken(request.payload, request.user);
+    return sendSuccess({ response, ...serviceFeedback });
+  }
+);

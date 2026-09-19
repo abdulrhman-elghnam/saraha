@@ -1,6 +1,11 @@
 import { config } from '#/configuration/_index.js';
-import { hash, compare, NotFoundException, encrypt } from '#/common/_index.js';
-import { generateToken } from '#/common/security/jwt/_index.js';
+import {
+  hash,
+  compare,
+  NotFoundException,
+  encrypt,
+  createLoginCredential,
+} from '#/common/_index.js';
 import { create, findOne, UserModel } from '#/database/_index.js';
 import { ConflictException } from '#/common/_index.js';
 
@@ -51,23 +56,7 @@ export const logIn = async ({ email, password }) => {
       message: 'password is incorrect',
     });
   }
-
-  const accessToken = generateToken({
-    payload: {
-      sub: user.id,
-    },
-    secret: config.ACCESS_USER_TOKEN_SECRET,
-    expiresIn: config.ACCESS_USER_TOKEN_EXPIRY,
-  });
-
-  const refreshToken = generateToken({
-    payload: {
-      sub: user.id,
-    },
-    secret: config.REFRESH_TOKEN_SECRET,
-    expiresIn: config.REFRESH_TOKEN_EXPIRY,
-  });
-
+  const { accessToken, refreshToken } = createLoginCredential({ id: user.id });
   return {
     message: 'login successfully',
     statusCode: 200,
@@ -83,4 +72,23 @@ export const profile = async (user) => {
     statusCode: 200,
     data: { firstName, lastName, username, DOB, phoneNumber, profileImage, coverImage },
   };
+};
+
+export const rotateToken = async (payload, user) => {
+  const accessExpiresAt = (payload.iat + config.ACCESS_USER_TOKEN_EXPIRY) * 1000;
+  const currentTime = Date.now();
+  const rotationWindow = 5 * 60 * 1000;
+
+  if (accessExpiresAt - currentTime > rotationWindow) {
+    throw ConflictException({
+      message:
+        'Sorry, you cannot create a new login until the access token reaches the rotation window',
+    });
+  }
+  console.log({
+    payload,
+    user,
+    accessExpiresAt,
+    currentTime,
+  });
 };

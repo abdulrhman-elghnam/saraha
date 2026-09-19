@@ -4,8 +4,8 @@ Content-Type: application/json
 
 {
     "fullName": "Abdulrhman Mohamed",
-    "username": "ahmed",
-    "email": "ahmed@gmail.com",
+    "username": "ahmed1",
+    "email": "ahmed1@gmail.com",
     "password": "Abdul@123",
     "gender":0,
     "phoneNumber":"01008261140",
@@ -17,11 +17,15 @@ POST http://127.0.0.1:9090/authentication/login
 Content-Type:  application/json
 
 {
-    "email": "ahmed@gmail.com",
+    "email": "ahmed1@gmail.com",
     "password": "Abdul@123"
 }
 
-### test
+### profile
 GET  http://127.0.0.1:9090/authentication/profile
 content-Type:  application/json
-authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWFhZjIwZDdlZTU1ZGZhZmEzNWI5MmYiLCJpYXQiOjE3ODk1ODgwMTksImV4cCI6MTc4OTU4ODkxOX0.2EYofkGYV0jMU62TJTX_0K6NNRhHBoRdgL-QJYTelDY
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWFlOTQyNTc4MWNkMzU4MTVkZTkyYmUiLCJpYXQiOjE3ODk4Mjc1NzksImV4cCI6MTgyMTM4NTE3OX0.RimOuG0qv-i8Qnl34p2DHCO4eIcKI6xFXYZB3_Ne24k
+
+### rotate
+POST   http://127.0.0.1:9090/authentication/rotate-token
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWFlOTQyNTc4MWNkMzU4MTVkZTkyYmUiLCJpYXQiOjE3ODk4MjgxMDQsImV4cCI6MTgyMTM4NTcwNH0.5-ySGCo8LInEVuADn9SKIOrZ57fP5Jw2DqlsJ9J1K48

@@ -19,23 +19,44 @@ export const verifyToken = ({ token = '', secret = config.ACCESS_USER_TOKEN_SECR
   return jwt.verify(token, secret);
 };
 
+// layer that ignore refresh token
 export const getSignature = ({ tokenType = TokenType.ACCESS }) =>
   tokenType == TokenType.ACCESS ? config.ACCESS_USER_TOKEN_SECRET : config.REFRESH_TOKEN_SECRET;
 
 export const getTokenSignature = () => {};
 
 export const decodeToken = async ({ authorization, tokenType = TokenType.ACCESS } = {}) => {
-  const payload = verifyToken({ token: authorization, tokenType });
+  const payload = verifyToken({ token: authorization, secret: getSignature({ tokenType }) });
 
   if (!payload?.sub) {
     throw BadRequestException({ message: 'missing token payload' });
   }
-  const account = await findById({
+  const user = await findById({
     model: UserModel,
     id: payload.sub,
   });
-  if (!account) {
-    throw NotFoundException({ message: 'invalid account' });
+  if (!user) {
+    throw NotFoundException({ message: 'invalid user' });
   }
-  return account;
+  return { user, payload };
+};
+
+export const createLoginCredential = ({ id }) => {
+  const accessToken = generateToken({
+    payload: {
+      sub: id,
+    },
+    secret: config.ACCESS_USER_TOKEN_SECRET,
+    expiresIn: config.ACCESS_USER_TOKEN_EXPIRY,
+  });
+
+  const refreshToken = generateToken({
+    payload: {
+      sub: id,
+    },
+    secret: config.REFRESH_TOKEN_SECRET,
+    expiresIn: config.REFRESH_TOKEN_EXPIRY,
+  });
+
+  return { accessToken, refreshToken };
 };

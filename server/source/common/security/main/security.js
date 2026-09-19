@@ -1,4 +1,5 @@
 import { config } from '#/configuration/configuration.js';
+import crypto from 'node:crypto';
 import bcrypt from 'bcrypt';
 
 export const hash = async (plainText) => {
