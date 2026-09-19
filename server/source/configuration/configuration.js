@@ -25,4 +25,5 @@ export const config = {
 
   REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
   REFRESH_TOKEN_EXPIRY: parseInt(process.env.REFRESH_TOKEN_EXPIRY || '31536000'),
+  ROTATION_WINDOW : parseInt(process.env.ROTATION_WINDOW || '300'),
 };

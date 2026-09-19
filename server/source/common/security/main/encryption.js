@@ -1,16 +1,5 @@
 import { config } from '#/configuration/configuration.js';
 import crypto from 'node:crypto';
-import bcrypt from 'bcrypt';
-
-export const hash = async (plainText) => {
-  const salt = bcrypt.genSaltSync(config.HASH_SALT);
-  const hash = bcrypt.hashSync(plainText, salt);
-  return hash;
-};
-
-export const compare = async (plainText, hashedText) => {
-  return await bcrypt.compare(plainText, hashedText);
-};
 
 export const encrypt = (text) => {
   const key = Buffer.from(config.ENCRYPTION_SECRET_KEY, 'hex');

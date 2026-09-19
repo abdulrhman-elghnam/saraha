@@ -1,4 +1,3 @@
-import { config } from '#/configuration/_index.js';
 import {
   hash,
   compare,
@@ -74,21 +73,3 @@ export const profile = async (user) => {
   };
 };
 
-export const rotateToken = async (payload, user) => {
-  const accessExpiresAt = (payload.iat + config.ACCESS_USER_TOKEN_EXPIRY) * 1000;
-  const currentTime = Date.now();
-  const rotationWindow = 5 * 60 * 1000;
-
-  if (accessExpiresAt - currentTime > rotationWindow) {
-    throw ConflictException({
-      message:
-        'Sorry, you cannot create a new login until the access token reaches the rotation window',
-    });
-  }
-  console.log({
-    payload,
-    user,
-    accessExpiresAt,
-    currentTime,
-  });
-};
