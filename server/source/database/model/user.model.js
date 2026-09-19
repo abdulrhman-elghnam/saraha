@@ -1,4 +1,4 @@
-import { AuthorizationRole, Gender } from '#/common/enum/enum.js';
+import { SystemRole, Gender } from '#/common/enum/enum.js';
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema(
@@ -67,8 +67,8 @@ const userSchema = new mongoose.Schema(
 
     role: {
       type: Number,
-      enum: Object.values(AuthorizationRole),
-      default : 0 ,
+      enum: Object.values(SystemRole),
+      default: 0,
     },
     deletedAt: {
       type: Date,

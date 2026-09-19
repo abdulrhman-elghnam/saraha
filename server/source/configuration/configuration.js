@@ -5,25 +5,31 @@ dotenv.config({
   path: path.resolve(process.cwd(), `.env.${process.env.NODE_ENV || 'development'}`),
 });
 
-export const config = {
-  ENV: process.env.NODE_ENV || 'development',
-  PORT: parseInt(process.env.PORT) || 3000,
+export const ENV = process.env.NODE_ENV || 'development';
+export const PORT = parseInt(process.env.PORT || '3000', 10);
+export const DATABASE_URI = process.env.DATABASE_URI;
+export const FRONTEND_URL = process.env.FRONTEND_URL;
+export const ENCRYPTION_SECRET_KEY = process.env.ENCRYPTION_SECRET_KEY;
+export const IV_LENGTH = parseInt(process.env.IV_LENGTH || '16', 10);
+export const HASH_SALT = parseInt(process.env.HASH_SALT || '10', 10);
+export const ACCESS_USER_TOKEN_SECRET = process.env.ACCESS_USER_TOKEN_SECRET;
+export const ACCESS_USER_TOKEN_EXPIRY = parseInt(process.env.ACCESS_USER_TOKEN_EXPIRY || '900', 10);
+export const REFRESH_USER_TOKEN_SECRET = process.env.REFRESH_USER_TOKEN_SECRET;
+export const REFRESH_USER_TOKEN_EXPIRY = parseInt(
+  process.env.REFRESH_USER_TOKEN_EXPIRY || '31536000',
+  10
+);
+export const ACCESS_ADMIN_TOKEN_SECRET = process.env.ACCESS_ADMIN_TOKEN_SECRET;
+export const ACCESS_ADMIN_TOKEN_EXPIRY = parseInt(
+  process.env.ACCESS_ADMIN_TOKEN_EXPIRY || '900',
+  10
+);
+export const REFRESH_ADMIN_TOKEN_SECRET = process.env.REFRESH_ADMIN_TOKEN_SECRET;
+export const REFRESH_ADMIN_TOKEN_EXPIRY = parseInt(
+  process.env.REFRESH_ADMIN_TOKEN_EXPIRY || '31536000',
+  10
+);
+export const ROTATION_WINDOW = parseInt(process.env.ROTATION_WINDOW || '300', 10);
 
-  DATABASE_URI: process.env.DATABASE_URI,
-
-  FRONTEND_URL: process.env.FRONTEND_URL,
-
-  ENCRYPTION_SECRET_KEY: process.env.ENCRYPTION_SECRET_KEY,
-  IV_LENGTH: parseInt(process.env.IV_LENGTH) || 16,
-  HASH_SALT: parseInt(process.env.HASH_SALT) || 10,
-
-  ACCESS_USER_TOKEN_SECRET: process.env.ACCESS_USER_TOKEN_SECRET,
-  ACCESS_USER_TOKEN_EXPIRY: parseInt(process.env.ACCESS_USER_TOKEN_EXPIRY || '900'),
-
-  ACCESS_ADMIN_TOKEN_SECRET: process.env.ACCESS_ADMIN_TOKEN_SECRET,
-  ACCESS_ADMIN_TOKEN_EXPIRY: parseInt(process.env.ACCESS_ADMIN_TOKEN_EXPIRY || '900'),
-
-  REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
-  REFRESH_TOKEN_EXPIRY: parseInt(process.env.REFRESH_TOKEN_EXPIRY || '31536000'),
-  ROTATION_WINDOW : parseInt(process.env.ROTATION_WINDOW || '300'),
-};
+export const REFRESH_TOKEN_SECRET = REFRESH_USER_TOKEN_SECRET;
+export const REFRESH_TOKEN_EXPIRY = REFRESH_USER_TOKEN_EXPIRY;

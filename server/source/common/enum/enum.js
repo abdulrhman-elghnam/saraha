@@ -3,7 +3,7 @@ export const Gender = {
   FEMALE: 1,
 };
 
-export const AuthorizationRole = {
+export const SystemRole = {
   USER: 0,
   ADMIN: 1,
 };

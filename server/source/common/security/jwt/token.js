@@ -1,30 +1,37 @@
 import {
   BadRequestException,
   NotFoundException,
+  UnauthorizedException,
   TokenType,
+  SystemRole,
 } from '#/common/_index.js';
 
-import { config } from '#/configuration/_index.js';
+import {
+  ACCESS_ADMIN_TOKEN_SECRET,
+  ACCESS_USER_TOKEN_EXPIRY,
+  ACCESS_USER_TOKEN_SECRET,
+  REFRESH_ADMIN_TOKEN_SECRET,
+  REFRESH_TOKEN_EXPIRY,
+  REFRESH_USER_TOKEN_SECRET,
+} from '#/configuration/_index.js';
 
 import { findById, UserModel } from '#/database/_index.js';
 
 import jwt from 'jsonwebtoken';
 
-export const generateToken = ({
+export const createToken = ({
   payload = {},
   options = {},
-  secret = config.ACCESS_USER_TOKEN_SECRET,
-  expiresIn = config.ACCESS_USER_TOKEN_EXPIRY,
+  secret = ACCESS_USER_TOKEN_SECRET,
 } = {}) => {
   return jwt.sign(payload, secret, {
     ...options,
-    expiresIn,
   });
 };
 
 export const verifyToken = ({
-  token = '',
-  secret = config.ACCESS_USER_TOKEN_SECRET,
+  token,
+  secret = ACCESS_USER_TOKEN_SECRET,
 } = {}) => {
   return jwt.verify(token, secret);
 };
@@ -59,12 +66,38 @@ export const getTokenExpiration = ({ token }) => {
   return decodedPayload.exp * 1000;
 };
 
+export const getTokenSignature = ({
+  role = SystemRole.USER,
+} = {}) => {
+  switch (role) {
+    case SystemRole.ADMIN:
+      return {
+        accessToken: ACCESS_ADMIN_TOKEN_SECRET,
+        refreshToken: REFRESH_ADMIN_TOKEN_SECRET,
+      };
+
+    case SystemRole.USER:
+      return {
+        accessToken: ACCESS_USER_TOKEN_SECRET,
+        refreshToken: REFRESH_USER_TOKEN_SECRET,
+      };
+
+    default:
+      throw BadRequestException({
+        message: 'invalid system role',
+      });
+  }
+};
+
 export const getSignature = ({
+  role = SystemRole.USER,
   tokenType = TokenType.ACCESS,
 } = {}) => {
+  const signature = getTokenSignature({ role });
+
   return tokenType === TokenType.ACCESS
-    ? config.ACCESS_USER_TOKEN_SECRET
-    : config.REFRESH_TOKEN_SECRET;
+    ? signature.accessToken
+    : signature.refreshToken;
 };
 
 export const getToken = (authorization) => {
@@ -85,21 +118,40 @@ export const getToken = (authorization) => {
   return token;
 };
 
-export const createLoginCredential = ({ id }) => {
-  const accessToken = generateToken({
+export const createLoginCredential = ({
+  id,
+  role = SystemRole.USER,
+}) => {
+  const accessToken = createToken({
     payload: {
       sub: id,
+      aud: role,
     },
-    secret: config.ACCESS_USER_TOKEN_SECRET,
-    expiresIn: config.ACCESS_USER_TOKEN_EXPIRY,
+
+    secret: getSignature({
+      role,
+      tokenType: TokenType.ACCESS,
+    }),
+
+    options: {
+      expiresIn: ACCESS_USER_TOKEN_EXPIRY,
+    },
   });
 
-  const refreshToken = generateToken({
+  const refreshToken = createToken({
     payload: {
       sub: id,
+      aud: role,
     },
-    secret: config.REFRESH_TOKEN_SECRET,
-    expiresIn: config.REFRESH_TOKEN_EXPIRY,
+
+    secret: getSignature({
+      role,
+      tokenType: TokenType.REFRESH,
+    }),
+
+    options: {
+      expiresIn: REFRESH_TOKEN_EXPIRY,
+    },
   });
 
   return {
@@ -111,6 +163,7 @@ export const createLoginCredential = ({ id }) => {
 export const rotateToken = async (user) => {
   return createLoginCredential({
     id: user.id,
+    role: user.role,
   });
 };
 
@@ -120,16 +173,67 @@ export const decodeToken = async ({
 } = {}) => {
   const token = getToken(authorization);
 
-  const payload = verifyToken({
-    token,
-    secret: getSignature({
-      tokenType,
-    }),
-  });
+  const decoded = jwt.decode(token);
+
+  if (!decoded) {
+    throw BadRequestException({
+      message: 'invalid token',
+    });
+  }
+
+  const role = decoded.aud;
+
+  if (!role) {
+    throw BadRequestException({
+      message: 'missing token role',
+    });
+  }
+
+  if (
+    role !== SystemRole.USER &&
+    role !== SystemRole.ADMIN
+  ) {
+    throw BadRequestException({
+      message: 'invalid token role',
+    });
+  }
+
+  let payload;
+
+  try {
+    payload = verifyToken({
+      token,
+
+      secret: getSignature({
+        role,
+        tokenType,
+      }),
+    });
+  } catch (error) {
+    if (
+      error.name === 'TokenExpiredError' ||
+      error.name === 'JsonWebTokenError'
+    ) {
+      throw UnauthorizedException({
+        message:
+          error.name === 'TokenExpiredError'
+            ? 'token expired'
+            : 'invalid token',
+      });
+    }
+
+    throw error;
+  }
 
   if (!payload?.sub) {
     throw BadRequestException({
       message: 'missing token payload',
+    });
+  }
+
+  if (payload.aud !== role) {
+    throw UnauthorizedException({
+      message: 'invalid token role',
     });
   }
 
@@ -141,6 +245,12 @@ export const decodeToken = async ({
   if (!user) {
     throw NotFoundException({
       message: 'invalid user',
+    });
+  }
+
+  if (user.role !== payload.aud) {
+    throw UnauthorizedException({
+      message: 'token role does not match user role',
     });
   }
 

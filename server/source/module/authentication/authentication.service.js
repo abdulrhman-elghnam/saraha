@@ -72,4 +72,3 @@ export const profile = async (user) => {
     data: { firstName, lastName, username, DOB, phoneNumber, profileImage, coverImage },
   };
 };
-

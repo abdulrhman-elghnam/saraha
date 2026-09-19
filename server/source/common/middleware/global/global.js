@@ -1,4 +1,4 @@
-import { config } from '#/configuration/configuration.js';
+import { ENV } from '#/configuration/configuration.js';
 
 export const asyncHandler = (fn) => {
   return (req, res, next) => {
@@ -8,7 +8,7 @@ export const asyncHandler = (fn) => {
 
 export const globalErrorHandling = (error, request, response, next) => {
   const status = error.cause?.status ?? 500;
-  const isProduction = config.ENV === 'production';
+  const isProduction = ENV === 'production';
   const defaultErrorMessage = 'Something went wrong';
 
   const displayErrorMessage = error.message || defaultErrorMessage;

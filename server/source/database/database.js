@@ -1,4 +1,4 @@
-import { config } from '#/configuration/configuration.js';
+import { DATABASE_URI } from '#/configuration/configuration.js';
 import mongoose from 'mongoose';
 
-export const databaseConnection = mongoose.connect(config.DATABASE_URI);
+export const databaseConnection = mongoose.connect(DATABASE_URI);

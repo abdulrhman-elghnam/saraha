@@ -6,7 +6,7 @@ import rateLimit from 'express-rate-limit';
 import { databaseConnection } from './database/_index.js';
 import { globalErrorHandling } from './common/_index.js';
 import appControllers from './app.controller.js';
-import { config } from './configuration/_index.js';
+import { PORT } from './configuration/_index.js';
 
 const app = express();
 
@@ -36,8 +36,8 @@ const main = async () => {
   try {
     await databaseConnection;
     console.log({ database: 'connected successfully' });
-    app.listen(config.PORT, () => {
-      console.log({ server: `url http://127.0.0.1:${config.PORT}` });
+    app.listen(PORT, () => {
+      console.log({ server: `url http://127.0.0.1:${PORT}` });
     });
   } catch (error) {
     console.error(error);
