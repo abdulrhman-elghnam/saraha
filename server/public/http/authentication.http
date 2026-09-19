@@ -32,5 +32,5 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWFlYzBiN
 Content-Type: application/json
 
 {
-    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWFlYzBiNzM5OGFmZjg2MWM2ZWQ1ZDciLCJhdWQiOjAsImlhdCI6MTc4OTgzOTA3NSwiZXhwIjoxNzg5ODM5OTc1fQ.hAH0vdvbF9KCaLo6pwGlNHjaT672Vqn2kbo4yuEy3gA"
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWFlYzBiNzM5OGFmZjg2MWM2ZWQ1ZDciLCJhdWQiOjAsImlhdCI6MTc4OTgzOTI1MywiZXhwIjoxNzg5ODQwMTUzfQ.ixS7GYJc34Xx5zrWGtv4tZ8i2tRB2q3tzkNjs4N3PTg"
 }
