@@ -29,10 +29,7 @@ export const createToken = ({
   });
 };
 
-export const verifyToken = ({
-  token,
-  secret = ACCESS_USER_TOKEN_SECRET,
-} = {}) => {
+export const verifyToken = ({ token, secret = ACCESS_USER_TOKEN_SECRET } = {}) => {
   return jwt.verify(token, secret);
 };
 
@@ -48,9 +45,7 @@ export const getTokenExpiration = ({ token }) => {
   let decodedPayload;
 
   try {
-    decodedPayload = JSON.parse(
-      Buffer.from(payload, 'base64url').toString(),
-    );
+    decodedPayload = JSON.parse(Buffer.from(payload, 'base64url').toString());
   } catch {
     throw BadRequestException({
       message: 'invalid token payload',
@@ -66,9 +61,7 @@ export const getTokenExpiration = ({ token }) => {
   return decodedPayload.exp * 1000;
 };
 
-export const getTokenSignature = ({
-  role = SystemRole.USER,
-} = {}) => {
+export const getTokenSignature = ({ role = SystemRole.USER } = {}) => {
   switch (role) {
     case SystemRole.ADMIN:
       return {
@@ -95,9 +88,7 @@ export const getSignatureAccessAndRefresh = ({
 } = {}) => {
   const signature = getTokenSignature({ role });
 
-  return tokenType === TokenType.ACCESS
-    ? signature.accessToken
-    : signature.refreshToken;
+  return tokenType === TokenType.ACCESS ? signature.accessToken : signature.refreshToken;
 };
 
 export const getToken = (authorization) => {
@@ -118,10 +109,7 @@ export const getToken = (authorization) => {
   return token;
 };
 
-export const createLoginCredential = ({
-  id,
-  role = SystemRole.USER,
-}) => {
+export const createLoginCredential = ({ id, role = SystemRole.USER }) => {
   const accessToken = createToken({
     payload: {
       sub: id,
@@ -160,20 +148,13 @@ export const createLoginCredential = ({
   };
 };
 
-export const decodeToken = async ({
-  authorization,
-  tokenType = TokenType.ACCESS,
-} = {}) => {
-
-  const token = getToken(authorization);  
+export const decodeToken = async ({ authorization, tokenType = TokenType.ACCESS } = {}) => {
+  const token = getToken(authorization);
   const decoded = jwt.decode(token);
 
   const role = decoded.aud;
 
-  if (
-    role !== SystemRole.USER &&
-    role !== SystemRole.ADMIN
-  ) {
+  if (role !== SystemRole.USER && role !== SystemRole.ADMIN) {
     throw BadRequestException({
       message: 'invalid token role',
     });
@@ -221,6 +202,8 @@ export const decodeToken = async ({
       message: 'invalid user',
     });
   }
+  console.log(user);
+  console.log(payload);
 
   if (user.role !== payload.aud) {
     throw UnauthorizedException({

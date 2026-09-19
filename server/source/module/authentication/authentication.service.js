@@ -57,7 +57,7 @@ export const logIn = async ({ email, password }) => {
       message: 'password is incorrect',
     });
   }
-  const { accessToken, refreshToken } = createLoginCredential({ id: user.id });
+  const { accessToken, refreshToken } = createLoginCredential({ id: user.id, role: user.role });
   return {
     message: 'login successfully',
     statusCode: 200,
@@ -74,7 +74,6 @@ export const profile = async (user) => {
     data: { firstName, lastName, username, DOB, phoneNumber, profileImage, coverImage },
   };
 };
-
 
 export const rotateToken = async ({ accessToken } = {}, user) => {
   if (!accessToken) {

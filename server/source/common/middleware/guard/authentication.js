@@ -10,7 +10,7 @@ export const authenticationGuard = ({ tokenType = TokenType.ACCESS } = {}) => {
         message: 'No token provided',
       });
     }
-    const { user, payload} = await decodeToken({ authorization, tokenType });
+    const { user, payload } = await decodeToken({ authorization, tokenType });
 
     request.user = user;
     request.payload = payload;
