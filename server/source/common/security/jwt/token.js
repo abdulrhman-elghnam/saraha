@@ -36,35 +36,35 @@ export const verifyToken = ({
   return jwt.verify(token, secret);
 };
 
-export const getTokenExpiration = ({ token }) => {
-  const [, payload] = token.split('.');
+// export const getTokenExpiration = ({ token }) => {
+//   const [, payload] = token.split('.');
 
-  if (!payload) {
-    throw BadRequestException({
-      message: 'invalid token',
-    });
-  }
+//   if (!payload) {
+//     throw BadRequestException({
+//       message: 'invalid token',
+//     });
+//   }
 
-  let decodedPayload;
+//   let decodedPayload;
 
-  try {
-    decodedPayload = JSON.parse(
-      Buffer.from(payload, 'base64url').toString(),
-    );
-  } catch {
-    throw BadRequestException({
-      message: 'invalid token payload',
-    });
-  }
+//   try {
+//     decodedPayload = JSON.parse(
+//       Buffer.from(payload, 'base64url').toString(),
+//     );
+//   } catch {
+//     throw BadRequestException({
+//       message: 'invalid token payload',
+//     });
+//   }
 
-  if (!decodedPayload?.exp) {
-    throw BadRequestException({
-      message: 'token expiration is missing',
-    });
-  }
+//   if (!decodedPayload?.exp) {
+//     throw BadRequestException({
+//       message: 'token expiration is missing',
+//     });
+//   }
 
-  return decodedPayload.exp * 1000;
-};
+//   return decodedPayload.exp * 1000;
+// };
 
 export const getTokenSignature = ({
   role = SystemRole.USER,
@@ -89,7 +89,7 @@ export const getTokenSignature = ({
   }
 };
 
-export const getSignature = ({
+export const getSignatureAccessAndRefresh = ({
   role = SystemRole.USER,
   tokenType = TokenType.ACCESS,
 } = {}) => {
@@ -128,7 +128,7 @@ export const createLoginCredential = ({
       aud: role,
     },
 
-    secret: getSignature({
+    secret: getSignatureAccessAndRefresh({
       role,
       tokenType: TokenType.ACCESS,
     }),
@@ -171,23 +171,11 @@ export const decodeToken = async ({
   authorization,
   tokenType = TokenType.ACCESS,
 } = {}) => {
-  const token = getToken(authorization);
 
+  const token = getToken(authorization);  
   const decoded = jwt.decode(token);
 
-  if (!decoded) {
-    throw BadRequestException({
-      message: 'invalid token',
-    });
-  }
-
   const role = decoded.aud;
-
-  if (!role) {
-    throw BadRequestException({
-      message: 'missing token role',
-    });
-  }
 
   if (
     role !== SystemRole.USER &&
@@ -203,22 +191,21 @@ export const decodeToken = async ({
   try {
     payload = verifyToken({
       token,
-
-      secret: getSignature({
+      secret: getSignatureAccessAndRefresh({
         role,
         tokenType,
       }),
     });
   } catch (error) {
-    if (
-      error.name === 'TokenExpiredError' ||
-      error.name === 'JsonWebTokenError'
-    ) {
+    if (error.name === 'TokenExpiredError') {
       throw UnauthorizedException({
-        message:
-          error.name === 'TokenExpiredError'
-            ? 'token expired'
-            : 'invalid token',
+        message: 'token expired',
+      });
+    }
+
+    if (error.name === 'JsonWebTokenError') {
+      throw UnauthorizedException({
+        message: 'invalid token signature',
       });
     }
 
@@ -228,12 +215,6 @@ export const decodeToken = async ({
   if (!payload?.sub) {
     throw BadRequestException({
       message: 'missing token payload',
-    });
-  }
-
-  if (payload.aud !== role) {
-    throw UnauthorizedException({
-      message: 'invalid token role',
     });
   }
 

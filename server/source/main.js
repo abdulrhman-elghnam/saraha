@@ -40,7 +40,8 @@ const main = async () => {
       console.log({ server: `url http://127.0.0.1:${PORT}` });
     });
   } catch (error) {
-    console.error(error);
+    console.log({error});
+    process.exit(1)
   }
 };
 main();
