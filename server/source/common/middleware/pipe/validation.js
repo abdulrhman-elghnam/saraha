@@ -1,4 +1,3 @@
-
 export const validationPipe = (schema) => {
   return (request, response, next) => {
     const result = schema.safeParse(request.body);

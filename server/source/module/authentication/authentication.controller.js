@@ -13,10 +13,14 @@ import { sendSuccess } from '#/common/structure/_index.js';
 
 export const authenticationController = Router();
 
-authenticationController.post('/signup', validationPipe(signUpSchema), async (request, response) => {
-  const serviceFeedback = await signUp(request.body, request.user);
-  return sendSuccess({ response, ...serviceFeedback });
-});
+authenticationController.post(
+  '/signup',
+  validationPipe(signUpSchema),
+  async (request, response) => {
+    const serviceFeedback = await signUp(request.body, request.user);
+    return sendSuccess({ response, ...serviceFeedback });
+  }
+);
 
 authenticationController.post('/login', validationPipe(loginSchema), async (request, response) => {
   const serviceFeedback = await logIn(request.body);

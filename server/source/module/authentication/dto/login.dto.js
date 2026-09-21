@@ -8,7 +8,5 @@ export const loginSchema = z.object({
     .trim()
     .toLowerCase(),
 
-  password: z
-    .string()
-    .min(1, 'Password is required'),
+  password: z.string().min(1, 'Password is required'),
 });
