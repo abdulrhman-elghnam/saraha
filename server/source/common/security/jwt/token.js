@@ -9,12 +9,10 @@ import {
 import {
   ACCESS_ADMIN_TOKEN_SECRET,
   ACCESS_ADMIN_TOKEN_EXPIRY,
-  ACCESS_USER_TOKEN_EXPIRY,
   ACCESS_USER_TOKEN_SECRET,
-  REFRESH_ADMIN_TOKEN_SECRET,
-  REFRESH_ADMIN_TOKEN_EXPIRY,
-  REFRESH_USER_TOKEN_SECRET,
-  REFRESH_USER_TOKEN_EXPIRY,
+  ACCESS_USER_TOKEN_EXPIRY,
+  REFRESH_SYSTEM_TOKEN_SECRET,
+  REFRESH_SYSTEM_TOKEN_EXPIRY,
 } from '#/configuration/_index.js';
 
 import { findById, UserModel } from '#/database/_index.js';
@@ -31,10 +29,7 @@ export const createToken = ({
   });
 };
 
-export const verifyToken = ({
-  token,
-  secret = ACCESS_USER_TOKEN_SECRET,
-} = {}) => {
+export const verifyToken = ({ token, secret = ACCESS_USER_TOKEN_SECRET } = {}) => {
   return jwt.verify(token, secret);
 };
 
@@ -50,9 +45,7 @@ export const getTokenExpiration = ({ token }) => {
   let decodedPayload;
 
   try {
-    decodedPayload = JSON.parse(
-      Buffer.from(payload, 'base64url').toString(),
-    );
+    decodedPayload = JSON.parse(Buffer.from(payload, 'base64url').toString());
   } catch {
     throw BadRequestException({
       message: 'invalid token payload',
@@ -70,19 +63,18 @@ export const getTokenExpiration = ({ token }) => {
 
 export const getTokenSignature = ({
   role = SystemRole.USER,
+  tokenType = TokenType.ACCESS,
 } = {}) => {
+  if (tokenType === TokenType.REFRESH) {
+    return REFRESH_SYSTEM_TOKEN_SECRET;
+  }
+
   switch (role) {
     case SystemRole.ADMIN:
-      return {
-        accessToken: ACCESS_ADMIN_TOKEN_SECRET,
-        refreshToken: REFRESH_ADMIN_TOKEN_SECRET,
-      };
+      return ACCESS_ADMIN_TOKEN_SECRET;
 
     case SystemRole.USER:
-      return {
-        accessToken: ACCESS_USER_TOKEN_SECRET,
-        refreshToken: REFRESH_USER_TOKEN_SECRET,
-      };
+      return ACCESS_USER_TOKEN_SECRET;
 
     default:
       throw BadRequestException({
@@ -91,36 +83,23 @@ export const getTokenSignature = ({
   }
 };
 
-export const getTokenExpiry = ({
-  role = SystemRole.USER,
-  tokenType = TokenType.ACCESS,
-} = {}) => {
-  if (role === SystemRole.ADMIN) {
-    return tokenType === TokenType.ACCESS
-      ? ACCESS_ADMIN_TOKEN_EXPIRY
-      : REFRESH_ADMIN_TOKEN_EXPIRY;
+export const getTokenExpiry = ({ role = SystemRole.USER, tokenType = TokenType.ACCESS } = {}) => {
+  if (tokenType === TokenType.REFRESH) {
+    return REFRESH_SYSTEM_TOKEN_EXPIRY;
   }
 
-  if (role === SystemRole.USER) {
-    return tokenType === TokenType.ACCESS
-      ? ACCESS_USER_TOKEN_EXPIRY
-      : REFRESH_USER_TOKEN_EXPIRY;
+  switch (role) {
+    case SystemRole.ADMIN:
+      return ACCESS_ADMIN_TOKEN_EXPIRY;
+
+    case SystemRole.USER:
+      return ACCESS_USER_TOKEN_EXPIRY;
+
+    default:
+      throw BadRequestException({
+        message: 'invalid system role',
+      });
   }
-
-  throw BadRequestException({
-    message: 'invalid system role',
-  });
-};
-
-export const getSignatureAccessAndRefresh = ({
-  role = SystemRole.USER,
-  tokenType = TokenType.ACCESS,
-} = {}) => {
-  const signature = getTokenSignature({ role });
-
-  return tokenType === TokenType.ACCESS
-    ? signature.accessToken
-    : signature.refreshToken;
 };
 
 export const getToken = (authorization) => {
@@ -141,17 +120,14 @@ export const getToken = (authorization) => {
   return token;
 };
 
-export const createLoginCredential = ({
-  id,
-  role = SystemRole.USER,
-}) => {
+export const createLoginCredential = ({ id, role = SystemRole.USER }) => {
   const accessToken = createToken({
     payload: {
       sub: id,
       aud: role,
     },
 
-    secret: getSignatureAccessAndRefresh({
+    secret: getTokenSignature({
       role,
       tokenType: TokenType.ACCESS,
     }),
@@ -170,7 +146,7 @@ export const createLoginCredential = ({
       aud: role,
     },
 
-    secret: getSignatureAccessAndRefresh({
+    secret: getTokenSignature({
       role,
       tokenType: TokenType.REFRESH,
     }),
@@ -189,15 +165,12 @@ export const createLoginCredential = ({
   };
 };
 
-export const decodeToken = async ({
-  authorization,
-  tokenType = TokenType.ACCESS,
-} = {}) => {
+export const decodeToken = async ({ authorization, tokenType = TokenType.ACCESS } = {}) => {
   const token = getToken(authorization);
 
   const decoded = jwt.decode(token);
 
-  if (!decoded) {
+  if (!decoded || typeof decoded !== 'object') {
     throw BadRequestException({
       message: 'invalid token',
     });
@@ -205,10 +178,7 @@ export const decodeToken = async ({
 
   const role = decoded.aud;
 
-  if (
-    role !== SystemRole.USER &&
-    role !== SystemRole.ADMIN
-  ) {
+  if (role !== SystemRole.USER && role !== SystemRole.ADMIN) {
     throw BadRequestException({
       message: 'invalid token role',
     });
@@ -219,7 +189,7 @@ export const decodeToken = async ({
   try {
     payload = verifyToken({
       token,
-      secret: getSignatureAccessAndRefresh({
+      secret: getTokenSignature({
         role,
         tokenType,
       }),
