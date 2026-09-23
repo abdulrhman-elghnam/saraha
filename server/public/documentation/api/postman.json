@@ -8,10 +8,14 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://127.0.0.1:3000"
+      "value": "http://127.0.0.1:9090"
     },
     {
       "key": "token",
+      "value": ""
+    },
+    {
+      "key": "googleIdToken",
       "value": ""
     }
   ],
@@ -41,6 +45,44 @@
           }
         },
         {
+          "name": "Sign up with Google",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.accessToken) {",
+                  "    pm.collectionVariables.set('token', response.accessToken);",
+                  "}",
+                  "if (response.refreshToken) {",
+                  "    pm.collectionVariables.set('refreshToken', response.refreshToken);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idToken\": \"{{googleIdToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/authentication/google-signUp",
+              "host": ["{{baseUrl}}"],
+              "path": ["authentication", "google-signUp"]
+            }
+          }
+        },
+        {
           "name": "Log in",
           "event": [
             {
@@ -49,8 +91,8 @@
                 "type": "text/javascript",
                 "exec": [
                   "const response = pm.response.json();",
-                  "if (response.token) {",
-                  "    pm.collectionVariables.set('token', response.token);",
+                  "if (response.accessToken) {",
+                  "    pm.collectionVariables.set('token', response.accessToken);",
                   "}"
                 ]
               }

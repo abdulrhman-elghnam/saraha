@@ -21,8 +21,7 @@ async function verifyGoogleAccount(idToken) {
     audience: OAUTH_GOOGLE_CLIENT_ID,
   });
   const payload = ticket.getPayload();
-  console.log(payload);
-  
+
   if (!payload?.email_verified || !payload.email || !payload.sub) {
     throw BadRequestException({ message: 'valid verified google account is required' });
   }
@@ -92,12 +91,14 @@ export const signupWithGmail = async ({ idToken } = {}) => {
   }
 
   const nameParts = (payload.name || payload.email.split('@')[0]).trim().split(/\s+/);
+  const usernameBase = payload.email.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '').slice(0, 20) || 'user';
+  const username = `${usernameBase}_${payload.googleId.slice(-8)}`.slice(0, 30);
   const [user] = await create({
     model: UserModel,
     data: {
       firstName: nameParts[0] || 'Google',
       lastName: nameParts.slice(1).join(' ') || 'User',
-
+      username,
       email: payload.email,
       provider: Provider.GOOGLE,
       profileImage: payload.picture || null,

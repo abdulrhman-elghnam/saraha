@@ -21,6 +21,14 @@ Content-Type:  application/json
     "password": "Abdul@123"
 }
 
+### signup with Google
+POST http://127.0.0.1:9090/authentication/google-signUp
+Content-Type: application/json
+
+{
+    "idToken": "paste-a-google-id-token-here"
+}
+
 ### profile
 GET  http://127.0.0.1:9090/authentication/profile
 content-Type:  application/json
