@@ -24,7 +24,7 @@ async function verifyGoogleAccount({ idToken }) {
   if (!payload.email_verified) {
     throw BadRequestException({ message: 'google id token is required' });
   }
-  return payload;
+  return { name: payload.name, email: payload.email, picture: payload.picture };
 }
 
 export const signUp = async ({ fullName, gender, username, email, phoneNumber, password, DOB }) => {
