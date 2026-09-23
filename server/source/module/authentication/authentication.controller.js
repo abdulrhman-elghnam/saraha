@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { logIn, profile, signUp, rotateToken } from './authentication.service.js';
+import { logIn, profile, signUp, rotateToken, signUpWithGoogle } from './authentication.service.js';
 import { signUpSchema } from './dto/signUp.dto.js';
 import { loginSchema } from './dto/login.dto.js';
 import {
@@ -27,6 +27,11 @@ authenticationController.post('/login', validationPipe(loginSchema), async (requ
   return sendSuccess({ response, ...serviceFeedback });
 });
 
+authenticationController.post('/google-signUp', async (request, response) => {
+  const serviceFeedback = await signUpWithGoogle(request.body, request.user);
+  return sendSuccess({ response, ...serviceFeedback });
+});
+
 authenticationController.get(
   '/profile',
   authenticationGuard(),
@@ -36,6 +41,7 @@ authenticationController.get(
     return sendSuccess({ response, ...serviceFeedback });
   }
 );
+
 authenticationController.post(
   '/rotate-token',
   authenticationGuard({ tokenType: TokenType.REFRESH }),

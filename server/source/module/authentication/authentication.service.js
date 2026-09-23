@@ -8,7 +8,20 @@ import {
   createLoginCredential,
   getTokenExpiration,
 } from '#/common/_index.js';
+import { OAUTH_GOOGLE_CLIENT_ID } from '#/configuration/_index.js';
 import { create, findOne, UserModel } from '#/database/_index.js';
+import { OAuth2Client } from 'google-auth-library';
+
+const client = new OAuth2Client();
+
+async function verifyGoogleAccount({ idToken }) {
+  const ticket = await client.verifyIdToken({
+    idToken,
+    audience: OAUTH_GOOGLE_CLIENT_ID,
+  });
+  const payload = ticket.getPayload();
+  return payload;
+}
 
 export const signUp = async ({ fullName, gender, username, email, phoneNumber, password, DOB }) => {
   try {
@@ -40,6 +53,18 @@ export const signUp = async ({ fullName, gender, username, email, phoneNumber, p
   }
 };
 
+
+export const signUpWithGoogle = async ({ idToken } = {}) => {
+  if (!idToken) {
+    throw BadRequestException({ message: 'google id token is required' });
+  }
+
+  const payload = await verifyGoogleAccount({ idToken });
+  
+  console.log(payload);
+  
+
+};
 export const logIn = async ({ email, password }) => {
   const user = await findOne({
     filter: { email },
