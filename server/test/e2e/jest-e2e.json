@@ -1,9 +1,0 @@
-{
-  "rootDir": "..",
-  "testEnvironment": "node",
-  "testRegex": ".*\\.e2e-spec\\.js$",
-  "transform": {},
-  "moduleNameMapper": {
-    "^(\\.{1,2}/.*)\\.js$": "$1"
-  }
-}
