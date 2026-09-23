@@ -20,6 +20,10 @@ async function verifyGoogleAccount({ idToken }) {
     audience: OAUTH_GOOGLE_CLIENT_ID,
   });
   const payload = ticket.getPayload();
+
+  if (!payload.email_verified) {
+    throw BadRequestException({ message: 'google id token is required' });
+  }
   return payload;
 }
 
@@ -53,18 +57,16 @@ export const signUp = async ({ fullName, gender, username, email, phoneNumber, p
   }
 };
 
-
 export const signUpWithGoogle = async ({ idToken } = {}) => {
-  if (!idToken) {
-    throw BadRequestException({ message: 'google id token is required' });
-  }
+
 
   const payload = await verifyGoogleAccount({ idToken });
-  
+
   console.log(payload);
-  
+
 
 };
+
 export const logIn = async ({ email, password }) => {
   const user = await findOne({
     filter: { email },
@@ -90,6 +92,8 @@ export const logIn = async ({ email, password }) => {
     refreshToken,
   };
 };
+
+export const loginWithGoogle = async () => { }
 
 export const profile = async (user) => {
   const { firstName, lastName, username, DOB, phoneNumber, profileImage, coverImage } = user;
