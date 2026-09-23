@@ -7,6 +7,7 @@ import {
   encrypt,
   createLoginCredential,
   getTokenExpiration,
+  Provider,
 } from '#/common/_index.js';
 import { OAUTH_GOOGLE_CLIENT_ID } from '#/configuration/_index.js';
 import { create, findOne, UserModel } from '#/database/_index.js';
@@ -14,17 +15,23 @@ import { OAuth2Client } from 'google-auth-library';
 
 const client = new OAuth2Client();
 
-async function verifyGoogleAccount({ idToken }) {
+async function verifyGoogleAccount(idToken) {
   const ticket = await client.verifyIdToken({
     idToken,
     audience: OAUTH_GOOGLE_CLIENT_ID,
   });
   const payload = ticket.getPayload();
-
-  if (!payload.email_verified) {
-    throw BadRequestException({ message: 'google id token is required' });
+  console.log(payload);
+  
+  if (!payload?.email_verified || !payload.email || !payload.sub) {
+    throw BadRequestException({ message: 'valid verified google account is required' });
   }
-  return { name: payload.name, email: payload.email, picture: payload.picture };
+  return {
+    googleId: payload.sub,
+    name: payload.name,
+    email: payload.email.toLowerCase(),
+    picture: payload.picture,
+  };
 }
 
 export const signUp = async ({ fullName, gender, username, email, phoneNumber, password, DOB }) => {
@@ -57,15 +64,64 @@ export const signUp = async ({ fullName, gender, username, email, phoneNumber, p
   }
 };
 
-export const signUpWithGoogle = async ({ idToken } = {}) => {
+export const signupWithGmail = async ({ idToken } = {}) => {
+  const payload = await verifyGoogleAccount(idToken);
+  const isExist = await findOne({
+    model: UserModel,
+    filter: { email: payload.email },
+  });
 
+  if (isExist) {
+    if (isExist.provider !== Provider.GOOGLE) {
+      throw ConflictException({
+        message: 'an account with this email already uses password login',
+      });
+    }
 
-  const payload = await verifyGoogleAccount({ idToken });
+    const { accessToken, refreshToken } = createLoginCredential({
+      id: isExist.id,
+      role: isExist.role,
+    });
 
-  console.log(payload);
+    return {
+      message: 'google login successfully',
+      statusCode: 200,
+      accessToken,
+      refreshToken,
+    };
+  }
 
+  const nameParts = (payload.name || payload.email.split('@')[0]).trim().split(/\s+/);
+  const [user] = await create({
+    model: UserModel,
+    data: {
+      firstName: nameParts[0] || 'Google',
+      lastName: nameParts.slice(1).join(' ') || 'User',
 
+      email: payload.email,
+      provider: Provider.GOOGLE,
+      profileImage: payload.picture || null,
+      DOB: new Date('1970-01-01'),
+      phoneNumber: encrypt(`google:${payload.googleId}`),
+      gender: 0,
+    },
+    options: { lean: true },
+  });
+
+  const { accessToken, refreshToken } = createLoginCredential({
+    id: user.id || user._id.toString(),
+    role: user.role,
+  });
+
+  return {
+    message: 'google signup successfully',
+    statusCode: 201,
+    accessToken,
+    refreshToken,
+  };
 };
+
+export const signUpWithGoogle = signupWithGmail;
 
 export const logIn = async ({ email, password }) => {
   const user = await findOne({

@@ -12,3 +12,8 @@ export const TokenType = {
   ACCESS: 0,
   REFRESH: 1,
 };
+
+export const Provider = {
+  SYSTEM: 0,
+  GOOGLE: 1,
+};
