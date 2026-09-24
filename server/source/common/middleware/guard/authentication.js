@@ -1,7 +1,7 @@
-import { TokenType, UnauthorizedException } from '#/common/_index.js';
+import { TokenTypeEnum, UnauthorizedException } from '#/common/_index.js';
 import { decodeToken } from '#/common/security/jwt/token.js';
 
-export const authenticationGuard = ({ tokenType = TokenType.ACCESS } = {}) => {
+export const authenticationGuard = ({ tokenType = TokenTypeEnum.ACCESS } = {}) => {
   return async (request, response, next) => {
     const authorization = request.headers.authorization;
 

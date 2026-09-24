@@ -2,8 +2,8 @@ import {
   BadRequestException,
   NotFoundException,
   UnauthorizedException,
-  TokenType,
-  SystemRole,
+  TokenTypeEnum,
+  SystemRoleEnum,
 } from '#/common/_index.js';
 
 import {
@@ -62,18 +62,18 @@ export const getTokenExpiration = ({ token }) => {
 };
 
 export const getTokenSignature = ({
-  role = SystemRole.USER,
-  tokenType = TokenType.ACCESS,
+  role = SystemRoleEnum.USER,
+  tokenType = TokenTypeEnum.ACCESS,
 } = {}) => {
-  if (tokenType === TokenType.REFRESH) {
+  if (tokenType === TokenTypeEnum.REFRESH) {
     return REFRESH_SYSTEM_TOKEN_SECRET;
   }
 
   switch (role) {
-    case SystemRole.ADMIN:
+    case SystemRoleEnum.ADMIN:
       return ACCESS_ADMIN_TOKEN_SECRET;
 
-    case SystemRole.USER:
+    case SystemRoleEnum.USER:
       return ACCESS_USER_TOKEN_SECRET;
 
     default:
@@ -83,16 +83,16 @@ export const getTokenSignature = ({
   }
 };
 
-export const getTokenExpiry = ({ role = SystemRole.USER, tokenType = TokenType.ACCESS } = {}) => {
-  if (tokenType === TokenType.REFRESH) {
+export const getTokenExpiry = ({ role = SystemRoleEnum.USER, tokenType = TokenTypeEnum.ACCESS } = {}) => {
+  if (tokenType === TokenTypeEnum.REFRESH) {
     return REFRESH_SYSTEM_TOKEN_EXPIRY;
   }
 
   switch (role) {
-    case SystemRole.ADMIN:
+    case SystemRoleEnum.ADMIN:
       return ACCESS_ADMIN_TOKEN_EXPIRY;
 
-    case SystemRole.USER:
+    case SystemRoleEnum.USER:
       return ACCESS_USER_TOKEN_EXPIRY;
 
     default:
@@ -120,7 +120,7 @@ export const getToken = (authorization) => {
   return token;
 };
 
-export const createLoginCredential = ({ id, role = SystemRole.USER }) => {
+export const createLoginCredential = ({ id, role = SystemRoleEnum.USER }) => {
   const accessToken = createToken({
     payload: {
       sub: id,
@@ -129,13 +129,13 @@ export const createLoginCredential = ({ id, role = SystemRole.USER }) => {
 
     secret: getTokenSignature({
       role,
-      tokenType: TokenType.ACCESS,
+      tokenType: TokenTypeEnum.ACCESS,
     }),
 
     options: {
       expiresIn: getTokenExpiry({
         role,
-        tokenType: TokenType.ACCESS,
+        tokenType: TokenTypeEnum.ACCESS,
       }),
     },
   });
@@ -148,13 +148,13 @@ export const createLoginCredential = ({ id, role = SystemRole.USER }) => {
 
     secret: getTokenSignature({
       role,
-      tokenType: TokenType.REFRESH,
+      tokenType: TokenTypeEnum.REFRESH,
     }),
 
     options: {
       expiresIn: getTokenExpiry({
         role,
-        tokenType: TokenType.REFRESH,
+        tokenType: TokenTypeEnum.REFRESH,
       }),
     },
   });
@@ -165,7 +165,7 @@ export const createLoginCredential = ({ id, role = SystemRole.USER }) => {
   };
 };
 
-export const decodeToken = async ({ authorization, tokenType = TokenType.ACCESS } = {}) => {
+export const decodeToken = async ({ authorization, tokenType = TokenTypeEnum.ACCESS } = {}) => {
   const token = getToken(authorization);
 
   const decoded = jwt.decode(token);
@@ -178,7 +178,7 @@ export const decodeToken = async ({ authorization, tokenType = TokenType.ACCESS 
 
   const role = decoded.aud;
 
-  if (role !== SystemRole.USER && role !== SystemRole.ADMIN) {
+  if (role !== SystemRoleEnum.USER && role !== SystemRoleEnum.ADMIN) {
     throw BadRequestException({
       message: 'invalid token role',
     });

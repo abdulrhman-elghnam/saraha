@@ -7,8 +7,8 @@ import {
   encrypt,
   createLoginCredential,
   getTokenExpiration,
-  Provider,
 } from '#/common/_index.js';
+import { ProviderEnum } from '#/common/value/_index.js';
 import { OAUTH_GOOGLE_CLIENT_ID } from '#/configuration/_index.js';
 import { create, findOne, UserModel } from '#/database/_index.js';
 import { OAuth2Client } from 'google-auth-library';
@@ -63,7 +63,7 @@ export const signUp = async ({ fullName, gender, username, email, phoneNumber, p
   }
 };
 
-export const signupWithGmail = async ({ idToken } = {}) => {
+export const signUpWithGoogle = async ({ idToken } = {}) => {
   const payload = await verifyGoogleAccount(idToken);
   const isExist = await findOne({
     model: UserModel,
@@ -71,7 +71,7 @@ export const signupWithGmail = async ({ idToken } = {}) => {
   });
 
   if (isExist) {
-    if (isExist.provider !== Provider.GOOGLE) {
+    if (isExist.provider !== ProviderEnum.GOOGLE) {
       throw ConflictException({
         message: 'an account with this email already uses password login',
       });
@@ -104,7 +104,7 @@ export const signupWithGmail = async ({ idToken } = {}) => {
       lastName: nameParts.slice(1).join(' ') || 'User',
       username,
       email: payload.email,
-      provider: Provider.GOOGLE,
+      provider: ProviderEnum.GOOGLE,
       profileImage: payload.picture || null,
       DOB: new Date('1970-01-01'),
       phoneNumber: encrypt(`google:${payload.googleId}`),
@@ -126,19 +126,20 @@ export const signupWithGmail = async ({ idToken } = {}) => {
   };
 };
 
-export const signUpWithGoogle = signupWithGmail;
-
 export const logIn = async ({ email, password }) => {
   const user = await findOne({
     filter: { email },
     model: UserModel,
   });
+  console.log(user);
 
   if (!user) {
     throw NotFoundException({
       message: 'user not found',
     });
   }
+
+  if (user.provider === ProviderEnum.GOOGLE)  throw ConflictException({message : "access with google credential"})
 
   if (!(await compare(password, user.password))) {
     throw ConflictException({
@@ -153,8 +154,6 @@ export const logIn = async ({ email, password }) => {
     refreshToken,
   };
 };
-
-export const loginWithGoogle = async () => {};
 
 export const profile = async (user) => {
   const { firstName, lastName, username, DOB, phoneNumber, profileImage, coverImage } = user;

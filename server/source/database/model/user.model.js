@@ -1,6 +1,5 @@
-import { SystemRole, Gender, Provider } from '#/common/enum/enum.js';
+import { SystemRoleEnum, GenderEnum, ProviderEnum } from "#/common/value/_index.js"
 import mongoose from 'mongoose';
-import { number } from 'zod';
 
 const userSchema = new mongoose.Schema(
   {
@@ -38,7 +37,7 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: function () {
-        return this.provider == Provider.SYSTEM;
+        return this.provider == ProviderEnum.SYSTEM;
       },
     },
 
@@ -54,7 +53,7 @@ const userSchema = new mongoose.Schema(
 
     gender: {
       type: Number,
-      enum: Object.values(Gender),
+      enum: Object.values(GenderEnum),
       required: true,
     },
 
@@ -69,13 +68,13 @@ const userSchema = new mongoose.Schema(
     },
 
     provider: {
-      type: number,
-      enum: Object.values(Provider),
-      default: Provider.SYSTEM,
+      type: Number,
+      enum: Object.values(ProviderEnum),
+      default: ProviderEnum.SYSTEM,
     },
     role: {
       type: Number,
-      enum: Object.values(SystemRole),
+      enum: Object.values(SystemRoleEnum),
       default: 0,
     },
     deletedAt: {

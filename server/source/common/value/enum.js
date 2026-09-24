@@ -1,24 +1,24 @@
-export const Gender = {
+const Gender = {
   MALE: 0,
   FEMALE: 1,
 };
 
-export const SystemRole = {
+const SystemRole = {
   USER: 0,
   ADMIN: 1,
 };
 
-export const TokenType = {
+const TokenType = {
   ACCESS: 0,
   REFRESH: 1,
 };
 
-export const Provider = {
+const Provider = {
   SYSTEM: 0,
   GOOGLE: 1,
 };
 
-export const ApiLanguage = {
+const ApiLanguage = {
   ENGLISH: 0,
   ARABIC: 1,
 };

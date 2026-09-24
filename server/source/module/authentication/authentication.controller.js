@@ -5,8 +5,8 @@ import { loginSchema } from './dto/login.dto.js';
 import {
   authenticationGuard,
   authorizationGuard,
-  SystemRole,
-  TokenType,
+  SystemRoleEnum,
+  TokenTypeEnum,
   validationPipe,
 } from '#/common/_index.js';
 import { sendSuccess } from '#/common/structure/_index.js';
@@ -32,21 +32,21 @@ authenticationController.post('/google-signUp', async (request, response) => {
   return sendSuccess({ response, ...serviceFeedback });
 });
 
-authenticationController.get(
-  '/profile',
-  authenticationGuard(),
-  authorizationGuard({ role: [SystemRole.USER] }),
+authenticationController.post(
+  '/rotate-token',
+  authenticationGuard({ tokenType: TokenTypeEnum.REFRESH }),
   async (request, response) => {
-    const serviceFeedback = await profile(request.user);
+    const serviceFeedback = await rotateToken(request.body, request.user);
     return sendSuccess({ response, ...serviceFeedback });
   }
 );
 
-authenticationController.post(
-  '/rotate-token',
-  authenticationGuard({ tokenType: TokenType.REFRESH }),
+authenticationController.get(
+  '/profile',
+  authenticationGuard(),
+  authorizationGuard({ role: [SystemRoleEnum.USER] }),
   async (request, response) => {
-    const serviceFeedback = await rotateToken(request.body, request.user);
+    const serviceFeedback = await profile(request.user);
     return sendSuccess({ response, ...serviceFeedback });
   }
 );
