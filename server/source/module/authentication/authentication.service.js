@@ -91,7 +91,11 @@ export const signupWithGmail = async ({ idToken } = {}) => {
   }
 
   const nameParts = (payload.name || payload.email.split('@')[0]).trim().split(/\s+/);
-  const usernameBase = payload.email.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '').slice(0, 20) || 'user';
+  const usernameBase =
+    payload.email
+      .split('@')[0]
+      .replace(/[^a-zA-Z0-9_]/g, '')
+      .slice(0, 20) || 'user';
   const username = `${usernameBase}_${payload.googleId.slice(-8)}`.slice(0, 30);
   const [user] = await create({
     model: UserModel,
@@ -150,7 +154,7 @@ export const logIn = async ({ email, password }) => {
   };
 };
 
-export const loginWithGoogle = async () => { }
+export const loginWithGoogle = async () => {};
 
 export const profile = async (user) => {
   const { firstName, lastName, username, DOB, phoneNumber, profileImage, coverImage } = user;

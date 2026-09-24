@@ -2,12 +2,10 @@ import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
-
 import { databaseConnection } from './database/_index.js';
 import { globalErrorHandling } from './common/_index.js';
 import appControllers from './app.controller.js';
 import { PORT } from './configuration/_index.js';
-
 const app = express();
 
 const limiter = rateLimit({
