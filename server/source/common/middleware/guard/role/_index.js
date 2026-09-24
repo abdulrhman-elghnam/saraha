@@ -1,1 +1,1 @@
-export * from './authorization.js';
+export * from './role.js';

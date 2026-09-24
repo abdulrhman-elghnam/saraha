@@ -15,3 +15,7 @@ export const validationPipe = (schema) => {
     next();
   };
 };
+
+export const globalValidationField = () => {
+  
+}
