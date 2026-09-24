@@ -1,6 +1,7 @@
 ### signup
 POST http://127.0.0.1:9090/authentication/signup
 Content-Type: application/json
+Accept-Language: 0
 
 {
     "fullName": "Abdulrhman Mohamed",

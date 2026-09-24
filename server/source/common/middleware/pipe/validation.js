@@ -11,11 +11,10 @@ export const validationPipe = (schema) => {
     }
 
     request.body = result.data;
-
     next();
   };
 };
 
 export const globalValidationField = () => {
-  
+
 }
