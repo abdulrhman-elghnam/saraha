@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
-export const signUpSchema  =  z
+export const signUpSchema = () => {
+  return z
     .object({
       fullName: z
         .string()
@@ -62,3 +63,5 @@ export const signUpSchema  =  z
       message: 'Confirm password must match password',
       path: ['confirmPassword'],
     });
+
+}

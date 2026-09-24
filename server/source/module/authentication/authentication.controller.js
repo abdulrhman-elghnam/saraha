@@ -15,7 +15,7 @@ export const authenticationController = Router();
 
 authenticationController.post(
   '/signup',
-  validationPipe(signUpSchema),
+  validationPipe(signUpSchema()),
   async (request, response) => {
     const serviceFeedback = await signUp(request.body, request.user);
     return sendSuccess({ response, ...serviceFeedback });

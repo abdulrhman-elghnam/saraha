@@ -7,13 +7,11 @@ export const authorizationGuard = ({ role = [] } = {}) => {
         message: 'unauthorized',
       });
     }
-
     if (role.length && !role.includes(request.user.role)) {
       throw UnauthorizedException({
         message: 'unauthorized',
       });
     }
-
     next();
   };
 };
