@@ -2,8 +2,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { ApiLanguageEnum } from '../_index.js';
 
-const fileArPath = path.resolve('source', 'common', 'i18n', 'ar.json');
-const fileEnPath = path.resolve('source', 'common', 'i18n', 'en.json');
+const fileArPath = path.resolve('source', 'common', 'i18n', 'arabic.json');
+const fileEnPath = path.resolve('source', 'common', 'i18n', 'english.json');
 
 export const chooseLanguage =  ({ Language = 0, code } = {}) => {
     let message;
