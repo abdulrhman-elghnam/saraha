@@ -15,6 +15,6 @@ export const validationPipe = (schema) => {
   };
 };
 
-export const globalValidationField = () => {
+export const generalValidationFields = () => {
 
 }

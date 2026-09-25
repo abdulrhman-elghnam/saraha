@@ -31,7 +31,7 @@ export const ForbiddenException = ({ message = 'Forbidden', extra = undefined } 
   });
 };
 
-export const NotFoundException = ({ message = 'Resource not found', extra = undefined } = {}) => {
+export const   NotFoundException = ({ message = 'Resource not found', extra = undefined } = {}) => {
   return ErrorResponse({
     message,
     status: 404,

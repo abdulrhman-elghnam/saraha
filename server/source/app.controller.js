@@ -7,7 +7,7 @@ router.use('/authentication', authenticationController);
 router.use('/user', userController);
 router.use('/message', messageController);
 router.use('/notification', notificationController);
-router.get('/', (request, response) => mainController(response));
-router.all('/{*splash}', () => notFoundController());
+router.get('/', (request, response) => mainController(request.headers["accept-language"], response));
+router.all('/{*splash}', (request) => notFoundController(request.headers["accept-language"]));
 
 export default router;
