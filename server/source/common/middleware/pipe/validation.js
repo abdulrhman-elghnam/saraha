@@ -10,7 +10,14 @@ export const validationPipe = ({ schema }) => {
           Language: request.headers['accept-language'] ?? ApiLanguageEnum.ENGLISH,
           code: 117,
         }),
-        errors: result.error.issues,
+        errors: result.error.issues.map(({ path, code }) => ({
+          path,
+          code,
+          message: chooseLanguage({
+            Language: request.headers['accept-language'] ?? ApiLanguageEnum.ENGLISH,
+            code: 123,
+          }),
+        })),
       });
     }
 

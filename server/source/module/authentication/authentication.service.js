@@ -131,7 +131,6 @@ export const logIn = async ({ email, password }) => {
     filter: { email },
     model: UserModel,
   });
-  console.log(user);
 
   if (!user) {
     throw NotFoundException({
@@ -161,7 +160,7 @@ export const profile = async (user) => {
   return {
     message: 'ok',
     statusCode: 200,
-    data: { firstName, lastName, username, DOB, phoneNumber, profileImage, coverImage },
+    data: { firstName, lastName, username, DOB, profileImage, coverImage },
   };
 };
 

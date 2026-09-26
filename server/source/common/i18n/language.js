@@ -6,19 +6,25 @@ const fileArPath = path.resolve('source', 'common', 'i18n', 'arabic.json');
 const fileEnPath = path.resolve('source', 'common', 'i18n', 'english.json');
 
 export const chooseLanguage = ({ Language = ApiLanguageEnum.ENGLISH, code } = {}) => {
-  let message;
-  console.log(code);
-  switch (parseInt(Language)) {
-    case ApiLanguageEnum.ENGLISH:
-      message = EnglishLanguage[`${code}`];
+  const normalizedLanguage = String(Language)
+    .toLowerCase()
+    .split(',')[0]
+    .split('-')[0]
+    .trim();
+  let messages;
+
+  switch (normalizedLanguage) {
+    case String(ApiLanguageEnum.ARABIC):
+    case 'ar':
+      messages = ArabicLanguage;
       break;
-    case ApiLanguageEnum.ARABIC:
-      message = ArabicLanguage[`${code}`];
-      break;
+    case String(ApiLanguageEnum.ENGLISH):
+    case 'en':
     default:
+      messages = EnglishLanguage;
       break;
   }
-  return message;
+  return messages[`${code}`] ?? EnglishLanguage[`${code}`];
 };
 
 export const ArabicLanguage = JSON.parse(await fs.readFile(fileArPath, 'utf-8'));

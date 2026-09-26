@@ -31,3 +31,13 @@ GET  {{Host}}/authentication/profile HTTP/1.1
 Content-Type: application/json
 Accept-Language: 1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWI4NTRmMzU0NjJmODE4ZjQ2YTQwMjUiLCJhdWQiOjAsImlhdCI6MTc5MDQ2NTM0MiwiZXhwIjoxNzkwNDY2MjQyfQ.fObsaQWkdeuGcLr4jXAVsWRg0WGCuDIEe-nVZeavWYI
+
+###
+GET  {{Host}}/authentication/profile HTTP/1.1
+Content-Type: application/json
+Accept-Language: 1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWI4NTRmMzU0NjJmODE4ZjQ2YTQwMjUiLCJhdWQiOjAsImlhdCI6MTc5MDQ2NjMyMCwiZXhwIjoxNzkwNDY3MjIwfQ.7fUdx2-sia9GpPfdD0e0yX2Vnai6ktRaFfKZr1MpZVI
+
+{
+
+}

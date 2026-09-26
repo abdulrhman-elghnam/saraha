@@ -11,7 +11,7 @@ export const authenticationGuard = ({ tokenType = TokenTypeEnum.ACCESS } = {}) =
     const authorization = request.headers.authorization;
     if (!authorization) {
       return UnauthorizedException({
-        message: chooseLanguage({ Language: lang ?? ApiLanguageEnum.ENGLISH, code: 129 }),
+        messageCode: 129,
       });
     }
     const { user, payload } = await decodeToken({ authorization, tokenType });

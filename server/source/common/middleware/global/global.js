@@ -1,4 +1,5 @@
 import { ENV } from '#/configuration/configuration.js';
+import { ApiLanguageEnum, chooseLanguage } from '../../_index.js';
 
 export const asyncHandler = (fn) => {
   return (req, res, next) => {
@@ -8,15 +9,27 @@ export const asyncHandler = (fn) => {
 
 export const globalErrorHandling = (error, request, response, next) => {
   const status = error.cause?.status ?? 500;
+  const statusMessageCodes = {
+    400: 108,
+    401: 109,
+    403: 110,
+    404: 111,
+    409: 112,
+    422: 113,
+    429: 114,
+    500: 115,
+    503: 116,
+  };
+  const message = chooseLanguage({
+    Language: request.headers['accept-language'] ?? ApiLanguageEnum.ENGLISH,
+    code: error.cause?.messageCode ?? statusMessageCodes[status] ?? 103,
+  });
   const isProduction = ENV === 'production';
-  const defaultErrorMessage = 'Something went wrong';
-
-  const displayErrorMessage = error.message || defaultErrorMessage;
 
   return response.status(status).json({
     success: false,
     status,
-    message: isProduction && status === 500 ? 'Internal Server Error' : displayErrorMessage,
+    message,
     ...(isProduction ? {} : { stack: error.stack, cause: error.cause, extra: error.extra }),
   });
 };
