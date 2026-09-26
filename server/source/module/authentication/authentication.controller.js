@@ -9,7 +9,7 @@ import {
   TokenTypeEnum,
   validationPipe,
 } from '#/common/_index.js';
-import { sendSuccess } from '#/common/structure/_index.js';
+import { sendSuccess } from '../../common/handler/_index.js';
 
 export const authenticationController = Router();
 

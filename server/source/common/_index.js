@@ -7,5 +7,5 @@ export * from './middleware/global/_index.js';
 export * from './middleware/guard/_index.js';
 export * from './middleware/pipe/_index.js';
 export * from './security/_index.js';
-export * from './structure/_index.js';
+export * from './handler/_index.js';
 export * from './utilities/_index.js';
