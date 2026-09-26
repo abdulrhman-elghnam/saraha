@@ -8,7 +8,7 @@ import {
   createLoginCredential,
   getTokenExpiration,
 } from '#/common/_index.js';
-import { ProviderEnum } from '#/common/value/_index.js';
+import { ProviderEnum } from '../../common/enum/_index.js';
 import { OAUTH_GOOGLE_CLIENT_ID } from '#/configuration/_index.js';
 import { create, findOne, UserModel } from '#/database/_index.js';
 import { OAuth2Client } from 'google-auth-library';

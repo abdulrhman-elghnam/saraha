@@ -16,5 +16,5 @@ export const validationPipe = (schema) => {
 };
 
 export const generalValidationFields = () => {
-
+  
 }

@@ -1,4 +1,4 @@
-import { SystemRoleEnum, GenderEnum, ProviderEnum } from "#/common/value/_index.js"
+import { SystemRoleEnum, GenderEnum, ProviderEnum } from "../../common/enum/_index.js"
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema(
