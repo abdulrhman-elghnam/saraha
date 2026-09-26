@@ -1,11 +1,15 @@
-export const validationPipe = (schema) => {
+import { ApiLanguageEnum, chooseLanguage } from '../../_index.js';
+
+export const validationPipe = ({ schema }) => {
   return (request, response, next) => {
     const result = schema.safeParse(request.body);
-
     if (!result.success) {
       return response.status(400).json({
         success: false,
-        message: 'Validation failed',
+        message: chooseLanguage({
+          Language: request.headers['accept-language'] ?? ApiLanguageEnum.ENGLISH,
+          code: 117,
+        }),
         errors: result.error.issues,
       });
     }
@@ -15,6 +19,4 @@ export const validationPipe = (schema) => {
   };
 };
 
-export const generalValidationFields = () => {
-  
-}
+export const generalValidationFields = () => {};

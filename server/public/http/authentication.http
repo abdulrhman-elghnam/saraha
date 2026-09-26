@@ -1,45 +1,33 @@
-### signup
-POST http://127.0.0.1:9090/authentication/signup
+@Host = http://127.0.0.1:9090
+POST {{Host}}/authentication/signup HTTP/1.1
 Content-Type: application/json
 Accept-Language: 0
 
 {
-    "fullName": "Abdulrhman Mohamed",
-    "username": "admin",
-    "email": "admin@gmail.com",
-    "password": "Abdul@123",
+    "fullName": "ahmed mohamed",
+    "username":"ahmed123",
+    "email":"ahmed123@gmail.com",
+    "password":"@Aa334455",
+    "confirmPassword":"@Aa334455",
     "gender":0,
     "phoneNumber":"01008261140",
-    "confirmPassword": "Abdul@123",
-    "DOB": "2000-01-01"
+    "DOB" : "2000-9-9"
 }
-### login
-POST http://127.0.0.1:9090/authentication/login
-Content-Type:  application/json
+###
 
-{
-    "email": "admin@gmail.com",
-    "password": "Abdul@123"
-}
-
-### signup with Google
-POST http://127.0.0.1:9090/authentication/google-signUp
+POST {{Host}}/authentication/login HTTP/1.1
 Content-Type: application/json
+Accept-Language: 0
 
 {
-    "idToken": "paste-a-google-id-token-here"
+    "email":"ahmed123@gmail.com",
+    "password":"@Aa334455"
 }
 
-### profile
-GET  http://127.0.0.1:9090/authentication/profile
-content-Type:  application/json
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWFlY2VjMWM5ZGVjYTQzNzZlNmNiMWMiLCJhdWQiOjEsImlhdCI6MTc4OTg0MTQwNSwiZXhwIjoxNzg5ODQyMzA1fQ.nVV6GMNtPpZ_mzNZCKUxTY4aIu7kuvIhZtwW5-bPgTI
 
 ###
-POST   http://127.0.0.1:9090/authentication/rotate-token
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWFlYzBiNzM5OGFmZjg2MWM2ZWQ1ZDciLCJhdWQiOjAsImlhdCI6MTc4OTgzNzg5NSwiZXhwIjoxODIxMzczODk1fQ.SUQh33nXwVh922YfRPBUugfx7fR8Vc4nU_LX2AmZrnM
-Content-Type: application/json
 
-{
-    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWFlYzBiNzM5OGFmZjg2MWM2ZWQ1ZDciLCJhdWQiOjAsImlhdCI6MTc4OTgzOTI1MywiZXhwIjoxNzg5ODQwMTUzfQ.ixS7GYJc34Xx5zrWGtv4tZ8i2tRB2q3tzkNjs4N3PTg"
-}
+GET  {{Host}}/authentication/profile HTTP/1.1
+Content-Type: application/json
+Accept-Language: 1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWI4NTRmMzU0NjJmODE4ZjQ2YTQwMjUiLCJhdWQiOjAsImlhdCI6MTc5MDQ2NTM0MiwiZXhwIjoxNzkwNDY2MjQyfQ.fObsaQWkdeuGcLr4jXAVsWRg0WGCuDIEe-nVZeavWYI

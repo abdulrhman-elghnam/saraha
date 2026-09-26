@@ -15,17 +15,21 @@ export const authenticationController = Router();
 
 authenticationController.post(
   '/signup',
-  validationPipe(signUpSchema()),
+  validationPipe({ schema: signUpSchema() }),
   async (request, response) => {
     const serviceFeedback = await signUp(request.body, request.user);
     return sendSuccess({ response, ...serviceFeedback });
   }
 );
 
-authenticationController.post('/login', validationPipe(loginSchema), async (request, response) => {
-  const serviceFeedback = await logIn(request.body);
-  return sendSuccess({ response, ...serviceFeedback });
-});
+authenticationController.post(
+  '/login',
+  validationPipe({ schema: loginSchema() }),
+  async (request, response) => {
+    const serviceFeedback = await logIn(request.body);
+    return sendSuccess({ response, ...serviceFeedback });
+  }
+);
 
 authenticationController.post('/google-signUp', async (request, response) => {
   const serviceFeedback = await signUpWithGoogle(request.body, request.user);

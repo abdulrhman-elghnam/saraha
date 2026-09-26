@@ -8,7 +8,10 @@ export const signUpSchema = () => {
         .min(3, 'Fullname must be at least 3 characters')
         .max(30, 'Fullname must not exceed 30 characters')
         .trim()
-        .regex(/^[a-zA-Z]+(?: [a-zA-Z]+)*$/, 'Fullname can only contain English letters and spaces'),
+        .regex(
+          /^[a-zA-Z]+(?: [a-zA-Z]+)*$/,
+          'Fullname can only contain English letters and spaces'
+        ),
 
       username: z
         .string()
@@ -63,5 +66,4 @@ export const signUpSchema = () => {
       message: 'Confirm password must match password',
       path: ['confirmPassword'],
     });
-
-}
+};

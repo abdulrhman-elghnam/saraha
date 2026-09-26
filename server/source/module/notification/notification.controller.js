@@ -1,2 +1,2 @@
 import { Router } from 'express';
-export const notificationController = Router()
+export const notificationController = Router();

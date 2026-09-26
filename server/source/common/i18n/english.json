@@ -1,4 +1,122 @@
 {
-    "101": "hello from backend server 🫡",
-    "102" : "route is not exist 👀"
+  "101": "hello from backend server",
+  "102": "route does not exist",
+  "103": "an error occurred",
+
+  "104": "resource created successfully",
+  "105": "resource updated successfully",
+  "106": "resource deleted successfully",
+  "107": "operation completed successfully",
+
+  "108": "bad request",
+  "109": "unauthorized",
+  "110": "forbidden",
+  "111": "resource not found",
+  "112": "conflict",
+  "113": "unprocessable entity",
+  "114": "too many requests",
+  "115": "internal server error",
+  "116": "service unavailable",
+
+  "117": "validation failed",
+  "118": "invalid input",
+  "119": "invalid request body",
+  "120": "invalid query parameters",
+  "121": "invalid path parameters",
+  "122": "missing required field",
+  "123": "invalid field value",
+
+  "124": "invalid credentials",
+  "125": "invalid token",
+  "126": "token expired",
+  "127": "access token expired",
+  "128": "refresh token expired",
+  "129": "token is required",
+  "130": "invalid authorization header",
+  "131": "invalid authorization format",
+
+  "132": "user not found",
+  "133": "user already exists",
+  "134": "user is already deleted",
+  "135": "user is not active",
+  "136": "user account is blocked",
+  "137": "user account is not verified",
+
+  "138": "email is required",
+  "139": "invalid email",
+  "140": "email already exists",
+  "141": "email is not verified",
+
+  "142": "username is required",
+  "143": "invalid username",
+  "144": "username already exists",
+
+  "145": "password is required",
+  "146": "invalid password",
+  "147": "password does not match",
+  "148": "current password is incorrect",
+  "149": "new password must be different from the current password",
+
+  "150": "first name is required",
+  "151": "invalid first name",
+  "152": "last name is required",
+  "153": "invalid last name",
+  "154": "full name is required",
+  "155": "invalid full name",
+
+  "156": "date of birth is required",
+  "157": "invalid date of birth",
+  "158": "age is not valid",
+
+  "159": "resource already exists",
+  "160": "duplicate resource",
+  "161": "resource cannot be created",
+  "162": "resource cannot be updated",
+  "163": "resource cannot be deleted",
+
+  "164": "database error",
+  "165": "database connection failed",
+  "166": "database query failed",
+  "167": "failed to create resource",
+  "168": "failed to update resource",
+  "169": "failed to delete resource",
+
+  "170": "file not found",
+  "171": "file upload failed",
+  "172": "file type is not supported",
+  "173": "file size is too large",
+  "174": "failed to delete file",
+
+  "175": "invalid verification code",
+  "176": "verification code expired",
+  "177": "verification code is required",
+  "178": "verification code sent successfully",
+  "179": "email verified successfully",
+
+  "180": "password reset request sent successfully",
+  "181": "password reset token is invalid",
+  "182": "password reset token expired",
+  "183": "password reset successfully",
+
+  "184": "login successful",
+  "185": "logout successful",
+  "186": "account created successfully",
+
+  "187": "request completed successfully",
+  "188": "no data found",
+  "189": "operation failed",
+
+  "190": "access denied",
+  "191": "insufficient permissions",
+  "192": "admin access required",
+
+  "193": "endpoint is not available",
+  "194": "method not allowed",
+  "195": "request timeout",
+
+  "196": "external service error",
+  "197": "external service unavailable",
+  "198": "failed to communicate with external service",
+
+  "199": "internal server error"
 }

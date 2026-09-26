@@ -83,7 +83,10 @@ export const getTokenSignature = ({
   }
 };
 
-export const getTokenExpiry = ({ role = SystemRoleEnum.USER, tokenType = TokenTypeEnum.ACCESS } = {}) => {
+export const getTokenExpiry = ({
+  role = SystemRoleEnum.USER,
+  tokenType = TokenTypeEnum.ACCESS,
+} = {}) => {
   if (tokenType === TokenTypeEnum.REFRESH) {
     return REFRESH_SYSTEM_TOKEN_EXPIRY;
   }

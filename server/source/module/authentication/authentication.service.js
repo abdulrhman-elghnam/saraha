@@ -139,7 +139,8 @@ export const logIn = async ({ email, password }) => {
     });
   }
 
-  if (user.provider === ProviderEnum.GOOGLE)  throw ConflictException({message : "access with google credential"})
+  if (user.provider === ProviderEnum.GOOGLE)
+    throw ConflictException({ message: 'access with google credential' });
 
   if (!(await compare(password, user.password))) {
     throw ConflictException({
