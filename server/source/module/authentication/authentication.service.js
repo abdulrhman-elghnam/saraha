@@ -154,6 +154,34 @@ export const logIn = async ({ email, password }) => {
   };
 };
 
+export const logInWithGoogle = async ({ idToken } = {}) => {
+  const payload = await verifyGoogleAccount(idToken);
+  const user = await findOne({
+    filter: { email: payload.email },
+    model: UserModel,
+  });
+  
+  if (!user) {
+    throw NotFoundException({
+      messageCode: 401,
+    });
+  }
+  
+  if (user.provider === ProviderEnum.GOOGLE) throw ConflictException({ messageCode: 301 });
+  
+  if (!(await compare(password, user.password))) {
+    throw ConflictException({
+      messageCode: 301,
+    });
+  }
+  const { accessToken } = createLoginCredential({ id: user.id, role: user.role });
+  return {
+    messageCode: 309,
+    statusCode: 200,
+    accessToken,
+  };
+};
+
 export const profile = async (user) => {
   const { firstName, lastName, username, DOB, phoneNumber, profileImage, coverImage } = user;
   return {

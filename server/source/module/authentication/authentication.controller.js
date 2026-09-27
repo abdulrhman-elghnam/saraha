@@ -49,6 +49,15 @@ authenticationController.post('/google-signUp', async (request, response) => {
   });
 });
 
+authenticationController.post('/google-login', async (request, response) => {
+  const serviceFeedback = await logInWithGoogle(request.body);
+  return sendSuccess({
+    response,
+    language: acceptLanguage({request}),
+    ...serviceFeedback,
+  });
+});
+
 authenticationController.post(
   '/rotate-token',
   authenticationGuard({ tokenType: TokenTypeEnum.REFRESH }),
