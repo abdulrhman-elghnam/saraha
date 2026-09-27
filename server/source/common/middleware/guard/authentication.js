@@ -1,9 +1,4 @@
-import {
-  ApiLanguageEnum,
-  chooseLanguage,
-  TokenTypeEnum,
-  UnauthorizedException,
-} from '#/common/_index.js';
+import { TokenTypeEnum, UnauthorizedException } from '#/common/_index.js';
 import { decodeToken } from '#/common/security/jwt/token.js';
 
 export const authenticationGuard = ({ tokenType = TokenTypeEnum.ACCESS } = {}) => {

@@ -38,7 +38,7 @@ export const getTokenExpiration = ({ token }) => {
 
   if (!payload) {
     throw BadRequestException({
-      message: 'invalid token',
+      messageCode: 125,
     });
   }
 
@@ -48,13 +48,13 @@ export const getTokenExpiration = ({ token }) => {
     decodedPayload = JSON.parse(Buffer.from(payload, 'base64url').toString());
   } catch {
     throw BadRequestException({
-      message: 'invalid token payload',
+      messageCode: 108,
     });
   }
 
   if (!decodedPayload?.exp) {
     throw BadRequestException({
-      message: 'token expiration is missing',
+      messageCode: 108,
     });
   }
 
@@ -78,7 +78,7 @@ export const getTokenSignature = ({
 
     default:
       throw BadRequestException({
-        message: 'invalid system role',
+        messageCode: 108,
       });
   }
 };
@@ -100,7 +100,7 @@ export const getTokenExpiry = ({
 
     default:
       throw BadRequestException({
-        message: 'invalid system role',
+        messageCode: 108,
       });
   }
 };
@@ -108,7 +108,7 @@ export const getTokenExpiry = ({
 export const getToken = (authorization) => {
   if (!authorization) {
     throw BadRequestException({
-      message: 'missing authorization token',
+      messageCode: 129,
     });
   }
 
@@ -116,7 +116,7 @@ export const getToken = (authorization) => {
 
   if (type !== 'Bearer' || !token) {
     throw BadRequestException({
-      message: 'invalid authorization format',
+      messageCode: 131,
     });
   }
 
@@ -175,7 +175,7 @@ export const decodeToken = async ({ authorization, tokenType = TokenTypeEnum.ACC
 
   if (!decoded || typeof decoded !== 'object') {
     throw BadRequestException({
-      message: 'invalid token',
+      messageCode: 125,
     });
   }
 
@@ -183,7 +183,7 @@ export const decodeToken = async ({ authorization, tokenType = TokenTypeEnum.ACC
 
   if (role !== SystemRoleEnum.USER && role !== SystemRoleEnum.ADMIN) {
     throw BadRequestException({
-      message: 'invalid token role',
+      messageCode: 125,
     });
   }
 
@@ -200,13 +200,13 @@ export const decodeToken = async ({ authorization, tokenType = TokenTypeEnum.ACC
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
       throw UnauthorizedException({
-        message: 'token expired',
+        messageCode: 126,
       });
     }
 
     if (error.name === 'JsonWebTokenError') {
       throw UnauthorizedException({
-        message: 'invalid token signature',
+        messageCode: 125,
       });
     }
 
@@ -215,7 +215,7 @@ export const decodeToken = async ({ authorization, tokenType = TokenTypeEnum.ACC
 
   if (!payload?.sub) {
     throw BadRequestException({
-      message: 'missing token payload',
+      messageCode: 108,
     });
   }
 
@@ -226,13 +226,13 @@ export const decodeToken = async ({ authorization, tokenType = TokenTypeEnum.ACC
 
   if (!user) {
     throw NotFoundException({
-      message: 'invalid user',
+      messageCode: 132,
     });
   }
 
   if (user.role !== payload.aud) {
     throw UnauthorizedException({
-      message: 'token role does not match user role',
+      messageCode: 110,
     });
   }
 

@@ -6,13 +6,21 @@ import { databaseConnection } from './database/_index.js';
 import { globalErrorHandling } from './common/_index.js';
 import appControllers from './app.controller.js';
 import { PORT } from './configuration/_index.js';
+import { ApiLanguageEnum, chooseLanguage } from './common/_index.js';
 const app = express();
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 100,
-  message: {
-    message: 'Too many requests, please try again later',
+  handler: (request, response) => {
+    response.status(429).json({
+      success: false,
+      status: 429,
+      message: chooseLanguage({
+        Language: request.headers['accept-language'] ?? ApiLanguageEnum.ENGLISH,
+        code: 114,
+      }),
+    });
   },
 });
 
@@ -23,11 +31,10 @@ app.use(
     origin: true,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept-Language'],
   }),
   morgan('dev')
 );
-
 app.use(appControllers);
 app.use(globalErrorHandling);
 const main = async () => {
@@ -38,7 +45,7 @@ const main = async () => {
       console.log({ server: `url http://127.0.0.1:${PORT}` });
     });
   } catch (error) {
-    console.log({ error });
+        allowedHeaders: ['Content-Type', 'Authorization', 'Accept-Language'],
     process.exit(1);
   }
 };

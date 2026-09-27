@@ -23,7 +23,7 @@ async function verifyGoogleAccount(idToken) {
   const payload = ticket.getPayload();
 
   if (!payload?.email_verified || !payload.email || !payload.sub) {
-    throw BadRequestException({ message: 'valid verified google account is required' });
+    throw BadRequestException({ messageCode: 108 });
   }
   return {
     googleId: payload.sub,
@@ -41,7 +41,7 @@ export const signUp = async ({ fullName, gender, username, email, phoneNumber, p
       model: UserModel,
     });
     const hashedPassword = await hash(password);
-    if (isFind) ConflictException({ message: 'username or email is exist' });
+    if (isFind) ConflictException({ messageCode: 133 });
     await create({
       data: {
         fullName,
@@ -57,9 +57,10 @@ export const signUp = async ({ fullName, gender, username, email, phoneNumber, p
         lean: true,
       },
     });
-    return { message: 'created', statusCode: 201 };
+    return { messageCode: 186, statusCode: 201 };
   } catch (error) {
-    ConflictException({ message: `${error}` });
+    if (error.cause?.messageCode) throw error;
+    ConflictException({ messageCode: 112 });
   }
 };
 
@@ -73,7 +74,7 @@ export const signUpWithGoogle = async ({ idToken } = {}) => {
   if (isExist) {
     if (isExist.provider !== ProviderEnum.GOOGLE) {
       throw ConflictException({
-        message: 'an account with this email already uses password login',
+        messageCode: 112,
       });
     }
 
@@ -83,7 +84,7 @@ export const signUpWithGoogle = async ({ idToken } = {}) => {
     });
 
     return {
-      message: 'google login successfully',
+      messageCode: 184,
       statusCode: 200,
       accessToken,
       refreshToken,
@@ -119,7 +120,7 @@ export const signUpWithGoogle = async ({ idToken } = {}) => {
   });
 
   return {
-    message: 'google signup successfully',
+    messageCode: 186,
     statusCode: 201,
     accessToken,
     refreshToken,
@@ -134,21 +135,21 @@ export const logIn = async ({ email, password }) => {
 
   if (!user) {
     throw NotFoundException({
-      message: 'user not found',
+      messageCode: 132,
     });
   }
 
   if (user.provider === ProviderEnum.GOOGLE)
-    throw ConflictException({ message: 'access with google credential' });
+    throw ConflictException({ messageCode: 124 });
 
   if (!(await compare(password, user.password))) {
     throw ConflictException({
-      message: 'password is incorrect',
+      messageCode: 124,
     });
   }
   const { accessToken, refreshToken } = createLoginCredential({ id: user.id, role: user.role });
   return {
-    message: 'login successfully',
+    messageCode: 184,
     statusCode: 200,
     accessToken,
     refreshToken,
@@ -158,7 +159,7 @@ export const logIn = async ({ email, password }) => {
 export const profile = async (user) => {
   const { firstName, lastName, username, DOB, phoneNumber, profileImage, coverImage } = user;
   return {
-    message: 'ok',
+    messageCode: 187,
     statusCode: 200,
     data: { firstName, lastName, username, DOB, profileImage, coverImage },
   };
@@ -167,7 +168,7 @@ export const profile = async (user) => {
 export const rotateToken = async ({ accessToken } = {}, user) => {
   if (!accessToken) {
     throw BadRequestException({
-      message: 'access token is required',
+      messageCode: 129,
     });
   }
 
@@ -175,12 +176,12 @@ export const rotateToken = async ({ accessToken } = {}, user) => {
 
   if (expiresAt > Date.now()) {
     throw ConflictException({
-      message: 'access token has not expired yet',
+      messageCode: 112,
     });
   }
 
-  return createLoginCredential({
-    id: user.id,
-    role: user.role,
-  });
+  return {
+    ...createLoginCredential({ id: user.id, role: user.role }),
+    messageCode: 107,
+  };
 };

@@ -6,8 +6,9 @@ export const mainController = (Language, response) => {
   sendSuccess({
     response,
     statusCode: 200,
-    message: chooseLanguage({ Language: parseInt(Language), code: '101' }),
+    message: chooseLanguage({ Language, code: '101' }),
   });
 };
-export const notFoundController = (Language) =>
-  NotFoundException({ message: chooseLanguage({ Language: parseInt(Language), code: '102' }) });
+
+export const notFoundController = () =>
+  NotFoundException({ messageCode: 102 });
