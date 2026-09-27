@@ -146,12 +146,11 @@ export const logIn = async ({ email, password }) => {
       messageCode: 301,
     });
   }
-  const { accessToken, refreshToken } = createLoginCredential({ id: user.id, role: user.role });
+  const { accessToken } = createLoginCredential({ id: user.id, role: user.role });
   return {
     messageCode: 309,
     statusCode: 200,
     accessToken,
-    refreshToken,
   };
 };
 

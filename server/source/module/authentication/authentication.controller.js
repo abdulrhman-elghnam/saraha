@@ -3,6 +3,7 @@ import { logIn, profile, signUp, rotateToken, signUpWithGoogle } from './authent
 import { signUpSchema } from './dto/signUp.dto.js';
 import { loginSchema } from './dto/login.dto.js';
 import {
+  acceptLanguage,
   authenticationGuard,
   authorizationGuard,
   SystemRoleEnum,
@@ -20,7 +21,7 @@ authenticationController.post(
     const serviceFeedback = await signUp(request.body, request.user);
     return sendSuccess({
       response,
-      language: request.headers['accept-language'],
+      language: acceptLanguage({request}),
       ...serviceFeedback,
     });
   }
@@ -33,7 +34,7 @@ authenticationController.post(
     const serviceFeedback = await logIn(request.body);
     return sendSuccess({
       response,
-      language: request.headers['accept-language'],
+      language: acceptLanguage({request}),
       ...serviceFeedback,
     });
   }
@@ -43,7 +44,7 @@ authenticationController.post('/google-signUp', async (request, response) => {
   const serviceFeedback = await signUpWithGoogle(request.body, request.user);
   return sendSuccess({
     response,
-    language: request.headers['accept-language'],
+    language: acceptLanguage({request}),
     ...serviceFeedback,
   });
 });
@@ -55,7 +56,7 @@ authenticationController.post(
     const serviceFeedback = await rotateToken(request.body, request.user);
     return sendSuccess({
       response,
-      language: request.headers['accept-language'],
+      language: acceptLanguage({request}),
       ...serviceFeedback,
     });
   }
