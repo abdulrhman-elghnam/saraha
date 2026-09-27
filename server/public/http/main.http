@@ -4,4 +4,4 @@ GET {{Host}} HTTP/1.1
 Accept-Language: 1
 ###
 GET {{Host}}/any HTTP/1.1
-Accept-Language: 1
+Accept-Language: 0

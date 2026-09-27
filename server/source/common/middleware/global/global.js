@@ -1,4 +1,5 @@
 import { ENV } from '#/configuration/configuration.js';
+import { acceptLanguage } from '../../_index.js';
 import { ApiLanguageEnum } from '../../enum/_index.js';
 import { chooseLanguage } from '../../i18n/_index.js';
 
@@ -22,7 +23,7 @@ export const globalErrorHandling = (error, request, response, next) => {
     503: 116,
   };
   const message = chooseLanguage({
-    Language: request.headers['accept-language'] ?? ApiLanguageEnum.ENGLISH,
+    Language: acceptLanguage({request}),
     code: error.cause?.messageCode ?? statusMessageCodes[status] ?? 103,
   });
   const isProduction = ENV === 'production';
