@@ -167,13 +167,8 @@ export const logInWithGoogle = async ({ idToken } = {}) => {
     });
   }
   
-  if (user.provider === ProviderEnum.GOOGLE) throw ConflictException({ messageCode: 301 });
-  
-  if (!(await compare(password, user.password))) {
-    throw ConflictException({
-      messageCode: 301,
-    });
-  }
+  if (user.provider === ProviderEnum.SYSTEM) throw ConflictException({ messageCode: 301 });
+
   const { accessToken } = createLoginCredential({ id: user.id, role: user.role });
   return {
     messageCode: 309,

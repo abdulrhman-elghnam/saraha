@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { logIn, profile, signUp, rotateToken, signUpWithGoogle } from './authentication.service.js';
+import { logIn, profile, signUp, rotateToken, signUpWithGoogle, logInWithGoogle } from './authentication.service.js';
 import { signUpSchema } from './dto/signUp.dto.js';
 import { loginSchema } from './dto/login.dto.js';
 import {
