@@ -15,25 +15,37 @@ export const authenticationController = Router();
 
 authenticationController.post(
   '/signup',
-  validationPipe({ schema: signUpSchema() }),
+  validationPipe({ schema: signUpSchema }),
   async (request, response) => {
     const serviceFeedback = await signUp(request.body, request.user);
-    return sendSuccess({ response, language: request.headers['accept-language'], ...serviceFeedback });
+    return sendSuccess({
+      response,
+      language: request.headers['accept-language'],
+      ...serviceFeedback,
+    });
   }
 );
 
 authenticationController.post(
   '/login',
-  validationPipe({ schema: loginSchema() }),
+  validationPipe({ schema: loginSchema }),
   async (request, response) => {
     const serviceFeedback = await logIn(request.body);
-    return sendSuccess({ response, language: request.headers['accept-language'], ...serviceFeedback });
+    return sendSuccess({
+      response,
+      language: request.headers['accept-language'],
+      ...serviceFeedback,
+    });
   }
 );
 
 authenticationController.post('/google-signUp', async (request, response) => {
   const serviceFeedback = await signUpWithGoogle(request.body, request.user);
-  return sendSuccess({ response, language: request.headers['accept-language'], ...serviceFeedback });
+  return sendSuccess({
+    response,
+    language: request.headers['accept-language'],
+    ...serviceFeedback,
+  });
 });
 
 authenticationController.post(
@@ -41,7 +53,11 @@ authenticationController.post(
   authenticationGuard({ tokenType: TokenTypeEnum.REFRESH }),
   async (request, response) => {
     const serviceFeedback = await rotateToken(request.body, request.user);
-    return sendSuccess({ response, language: request.headers['accept-language'], ...serviceFeedback });
+    return sendSuccess({
+      response,
+      language: request.headers['accept-language'],
+      ...serviceFeedback,
+    });
   }
 );
 
@@ -51,6 +67,10 @@ authenticationController.get(
   authorizationGuard({ role: [SystemRoleEnum.USER] }),
   async (request, response) => {
     const serviceFeedback = await profile(request.user);
-    return sendSuccess({ response, language: request.headers['accept-language'], ...serviceFeedback });
+    return sendSuccess({
+      response,
+      language: request.headers['accept-language'],
+      ...serviceFeedback,
+    });
   }
 );

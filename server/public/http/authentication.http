@@ -1,7 +1,7 @@
 @Host = http://127.0.0.1:9090
 POST {{Host}}/authentication/signup HTTP/1.1
 Content-Type: application/json
-Accept-Language: 0
+Accept-Language: 1
 
 {
     "fullName": "ahmed mohamed",

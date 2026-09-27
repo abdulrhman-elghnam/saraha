@@ -3,10 +3,9 @@ import morgan from 'morgan';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import { databaseConnection } from './database/_index.js';
-import { acceptLanguage, globalErrorHandling } from './common/_index.js';
+import { acceptLanguage, chooseLanguage, globalErrorHandling } from './common/_index.js';
 import appControllers from './app.controller.js';
 import { PORT } from './configuration/_index.js';
-import { ApiLanguageEnum, chooseLanguage } from './common/_index.js';
 const app = express();
 
 const limiter = rateLimit({
@@ -17,7 +16,7 @@ const limiter = rateLimit({
       success: false,
       status: 429,
       message: chooseLanguage({
-        Language: acceptLanguage({request}),
+        Language: acceptLanguage({ request }),
         code: 114,
       }),
     });
@@ -45,7 +44,7 @@ const main = async () => {
       console.log({ server: `url http://127.0.0.1:${PORT}` });
     });
   } catch (error) {
-        allowedHeaders: ['Content-Type', 'Authorization', 'Accept-Language'],
+    console.log({ error });
     process.exit(1);
   }
 };

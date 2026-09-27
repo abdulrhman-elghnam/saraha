@@ -13,7 +13,11 @@ export const ErrorResponse = ({
   });
 };
 
-export const BadRequestException = ({ message = 'Bad request', messageCode, extra = undefined } = {}) => {
+export const BadRequestException = ({
+  message = 'Bad request',
+  messageCode,
+  extra = undefined,
+} = {}) => {
   return ErrorResponse({
     message,
     messageCode,
@@ -22,7 +26,11 @@ export const BadRequestException = ({ message = 'Bad request', messageCode, extr
   });
 };
 
-export const UnauthorizedException = ({ message = 'Unauthorized', messageCode, extra = undefined } = {}) => {
+export const UnauthorizedException = ({
+  message = 'Unauthorized',
+  messageCode,
+  extra = undefined,
+} = {}) => {
   return ErrorResponse({
     message,
     messageCode,
@@ -31,7 +39,11 @@ export const UnauthorizedException = ({ message = 'Unauthorized', messageCode, e
   });
 };
 
-export const ForbiddenException = ({ message = 'Forbidden', messageCode, extra = undefined } = {}) => {
+export const ForbiddenException = ({
+  message = 'Forbidden',
+  messageCode,
+  extra = undefined,
+} = {}) => {
   return ErrorResponse({
     message,
     messageCode,
@@ -40,7 +52,11 @@ export const ForbiddenException = ({ message = 'Forbidden', messageCode, extra =
   });
 };
 
-export const NotFoundException = ({ message = 'Resource not found', messageCode, extra = undefined } = {}) => {
+export const NotFoundException = ({
+  message = 'Resource not found',
+  messageCode,
+  extra = undefined,
+} = {}) => {
   return ErrorResponse({
     message,
     messageCode,
@@ -49,7 +65,11 @@ export const NotFoundException = ({ message = 'Resource not found', messageCode,
   });
 };
 
-export const ConflictException = ({ message = 'Conflict', messageCode, extra = undefined } = {}) => {
+export const ConflictException = ({
+  message = 'Conflict',
+  messageCode,
+  extra = undefined,
+} = {}) => {
   return ErrorResponse({
     message,
     messageCode,

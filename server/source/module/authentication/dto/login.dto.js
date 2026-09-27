@@ -1,14 +1,9 @@
 import { z } from 'zod';
+import { generalValidationFields } from '../../../common/_index.js';
 
-export const loginSchema = () => {
+export const loginSchema = (lang) => {
   return z.object({
-    email: z
-      .string()
-      .min(1, 'Email is required')
-      .email('Please provide a valid email address')
-      .trim()
-      .toLowerCase(),
-
-    password: z.string().min(1, 'Password is required'),
+    email: generalValidationFields.email(lang),
+    password: generalValidationFields.password(lang),
   });
 };

@@ -10,5 +10,4 @@ export const mainController = (Language, response) => {
   });
 };
 
-export const notFoundController = () =>
-  NotFoundException({ messageCode: 102 });
+export const notFoundController = () => NotFoundException({ messageCode: 102 });

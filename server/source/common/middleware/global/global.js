@@ -23,7 +23,7 @@ export const globalErrorHandling = (error, request, response, next) => {
     503: 116,
   };
   const message = chooseLanguage({
-    Language: acceptLanguage({request}),
+    Language: acceptLanguage({ request }),
     code: error.cause?.messageCode ?? statusMessageCodes[status] ?? 103,
   });
   const isProduction = ENV === 'production';

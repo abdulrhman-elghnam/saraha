@@ -38,7 +38,7 @@ export const getTokenExpiration = ({ token }) => {
 
   if (!payload) {
     throw BadRequestException({
-      messageCode: 125,
+      messageCode: 302,
     });
   }
 
@@ -48,13 +48,13 @@ export const getTokenExpiration = ({ token }) => {
     decodedPayload = JSON.parse(Buffer.from(payload, 'base64url').toString());
   } catch {
     throw BadRequestException({
-      messageCode: 108,
+      messageCode: 302,
     });
   }
 
   if (!decodedPayload?.exp) {
     throw BadRequestException({
-      messageCode: 108,
+      messageCode: 302,
     });
   }
 
@@ -78,7 +78,7 @@ export const getTokenSignature = ({
 
     default:
       throw BadRequestException({
-        messageCode: 108,
+        messageCode: 317,
       });
   }
 };
@@ -100,7 +100,7 @@ export const getTokenExpiry = ({
 
     default:
       throw BadRequestException({
-        messageCode: 108,
+        messageCode: 317,
       });
   }
 };
@@ -108,7 +108,7 @@ export const getTokenExpiry = ({
 export const getToken = (authorization) => {
   if (!authorization) {
     throw BadRequestException({
-      messageCode: 129,
+      messageCode: 306,
     });
   }
 
@@ -116,7 +116,7 @@ export const getToken = (authorization) => {
 
   if (type !== 'Bearer' || !token) {
     throw BadRequestException({
-      messageCode: 131,
+      messageCode: 308,
     });
   }
 
@@ -175,7 +175,7 @@ export const decodeToken = async ({ authorization, tokenType = TokenTypeEnum.ACC
 
   if (!decoded || typeof decoded !== 'object') {
     throw BadRequestException({
-      messageCode: 125,
+      messageCode: 302,
     });
   }
 
@@ -183,7 +183,7 @@ export const decodeToken = async ({ authorization, tokenType = TokenTypeEnum.ACC
 
   if (role !== SystemRoleEnum.USER && role !== SystemRoleEnum.ADMIN) {
     throw BadRequestException({
-      messageCode: 125,
+      messageCode: 317,
     });
   }
 
@@ -200,13 +200,13 @@ export const decodeToken = async ({ authorization, tokenType = TokenTypeEnum.ACC
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
       throw UnauthorizedException({
-        messageCode: 126,
+        messageCode: 303,
       });
     }
 
     if (error.name === 'JsonWebTokenError') {
       throw UnauthorizedException({
-        messageCode: 125,
+        messageCode: 302,
       });
     }
 
@@ -215,7 +215,7 @@ export const decodeToken = async ({ authorization, tokenType = TokenTypeEnum.ACC
 
   if (!payload?.sub) {
     throw BadRequestException({
-      messageCode: 108,
+      messageCode: 302,
     });
   }
 
@@ -226,13 +226,13 @@ export const decodeToken = async ({ authorization, tokenType = TokenTypeEnum.ACC
 
   if (!user) {
     throw NotFoundException({
-      messageCode: 132,
+      messageCode: 401,
     });
   }
 
   if (user.role !== payload.aud) {
     throw UnauthorizedException({
-      messageCode: 110,
+      messageCode: 317,
     });
   }
 

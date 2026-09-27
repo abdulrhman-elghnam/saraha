@@ -6,7 +6,7 @@ export const authenticationGuard = ({ tokenType = TokenTypeEnum.ACCESS } = {}) =
     const authorization = request.headers.authorization;
     if (!authorization) {
       return UnauthorizedException({
-        messageCode: 129,
+        messageCode: 306,
       });
     }
     const { user, payload } = await decodeToken({ authorization, tokenType });

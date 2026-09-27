@@ -23,7 +23,7 @@ async function verifyGoogleAccount(idToken) {
   const payload = ticket.getPayload();
 
   if (!payload?.email_verified || !payload.email || !payload.sub) {
-    throw BadRequestException({ messageCode: 108 });
+    throw BadRequestException({ messageCode: 301 });
   }
   return {
     googleId: payload.sub,
@@ -41,7 +41,7 @@ export const signUp = async ({ fullName, gender, username, email, phoneNumber, p
       model: UserModel,
     });
     const hashedPassword = await hash(password);
-    if (isFind) ConflictException({ messageCode: 133 });
+    if (isFind) ConflictException({ messageCode: 402 });
     await create({
       data: {
         fullName,
@@ -57,7 +57,7 @@ export const signUp = async ({ fullName, gender, username, email, phoneNumber, p
         lean: true,
       },
     });
-    return { messageCode: 186, statusCode: 201 };
+    return { messageCode: 104, statusCode: 201 };
   } catch (error) {
     if (error.cause?.messageCode) throw error;
     ConflictException({ messageCode: 112 });
@@ -74,7 +74,7 @@ export const signUpWithGoogle = async ({ idToken } = {}) => {
   if (isExist) {
     if (isExist.provider !== ProviderEnum.GOOGLE) {
       throw ConflictException({
-        messageCode: 112,
+        messageCode: 301,
       });
     }
 
@@ -84,7 +84,7 @@ export const signUpWithGoogle = async ({ idToken } = {}) => {
     });
 
     return {
-      messageCode: 184,
+      messageCode: 309,
       statusCode: 200,
       accessToken,
       refreshToken,
@@ -120,7 +120,7 @@ export const signUpWithGoogle = async ({ idToken } = {}) => {
   });
 
   return {
-    messageCode: 186,
+    messageCode: 104,
     statusCode: 201,
     accessToken,
     refreshToken,
@@ -135,21 +135,20 @@ export const logIn = async ({ email, password }) => {
 
   if (!user) {
     throw NotFoundException({
-      messageCode: 132,
+      messageCode: 401,
     });
   }
 
-  if (user.provider === ProviderEnum.GOOGLE)
-    throw ConflictException({ messageCode: 124 });
+  if (user.provider === ProviderEnum.GOOGLE) throw ConflictException({ messageCode: 301 });
 
   if (!(await compare(password, user.password))) {
     throw ConflictException({
-      messageCode: 124,
+      messageCode: 301,
     });
   }
   const { accessToken, refreshToken } = createLoginCredential({ id: user.id, role: user.role });
   return {
-    messageCode: 184,
+    messageCode: 309,
     statusCode: 200,
     accessToken,
     refreshToken,
@@ -159,7 +158,7 @@ export const logIn = async ({ email, password }) => {
 export const profile = async (user) => {
   const { firstName, lastName, username, DOB, phoneNumber, profileImage, coverImage } = user;
   return {
-    messageCode: 187,
+    messageCode: 127,
     statusCode: 200,
     data: { firstName, lastName, username, DOB, profileImage, coverImage },
   };
@@ -168,7 +167,7 @@ export const profile = async (user) => {
 export const rotateToken = async ({ accessToken } = {}, user) => {
   if (!accessToken) {
     throw BadRequestException({
-      messageCode: 129,
+      messageCode: 311,
     });
   }
 

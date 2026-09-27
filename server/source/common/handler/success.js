@@ -11,7 +11,10 @@ export const sendSuccess = ({
 } = {}) => {
   return response.status(statusCode).json({
     success: true,
-    message: messageCode === undefined ? message : chooseLanguage({ Language: language, code: messageCode }),
+    message:
+      messageCode === undefined
+        ? message
+        : chooseLanguage({ Language: language, code: messageCode }),
     data,
     ...extra,
   });
