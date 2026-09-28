@@ -98,11 +98,13 @@ export const paginate = async ({
   };
 };
 
-export const create = async ({ data = {}, options = {}, model } = {}) =>
-  await model.create([data], options);
+export const create = async ({ data = {}, options = {}, model } = {}) =>{
+  return await model.create([data], options);
+}
 
-export const insertMany = async ({ data, options = {}, model } = {}) =>
+export const insertMany = async ({ data, options = {}, model } = {}) =>{
   await model.insertMany(data, options);
+}
 
 export const updateOne = async ({ filter = {}, update, options = {}, model } = {}) => {
   if (Array.isArray(update)) {
@@ -217,3 +219,6 @@ export const deleteMany = async ({ filter = {}, model } = {}) => {
 export const findOneAndDelete = async ({ filter = {}, options = {}, model } = {}) => {
   return await model.findOneAndDelete(filter, options);
 };
+
+//=======================================================
+//=======================================================
