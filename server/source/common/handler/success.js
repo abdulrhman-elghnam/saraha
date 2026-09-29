@@ -1,4 +1,4 @@
-import { chooseLanguage } from '../i18n/_index.js';
+import { chooseLanguage } from '../language/_index.js';
 
 export const sendSuccess = ({
   response,

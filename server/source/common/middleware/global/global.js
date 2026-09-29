@@ -1,7 +1,7 @@
 import { ENV } from '#/configuration/configuration.js';
 import { acceptLanguage } from '../../_index.js';
 import { ApiLanguageEnum } from '../../enum/_index.js';
-import { chooseLanguage } from '../../i18n/_index.js';
+import { chooseLanguage } from '../../language/_index.js';
 
 export const asyncHandler = (fn) => {
   return (req, res, next) => {
