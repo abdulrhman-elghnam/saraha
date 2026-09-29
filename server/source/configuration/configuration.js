@@ -8,6 +8,7 @@ dotenv.config({
 export const ENV = process.env.NODE_ENV || 'development';
 export const PORT = parseInt(process.env.PORT || '3000', 10);
 export const DATABASE_URI = process.env.DATABASE_URI;
+export const REDIS_URI = process.env.REDIS_URI;
 
 export const FRONTEND_URL = process.env.FRONTEND_URL;
 

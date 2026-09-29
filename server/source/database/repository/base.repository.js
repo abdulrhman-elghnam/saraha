@@ -1,3 +1,5 @@
+import { client } from "../../database/cache/redis.js";
+
 export const findById = async ({ id, options = {}, select, model } = {}) => {
   let query = model.findById(id).select(select || '');
 
@@ -221,4 +223,21 @@ export const findOneAndDelete = async ({ filter = {}, options = {}, model } = {}
 };
 
 //=======================================================
+//=======================cache===========================
 //=======================================================
+export const setCache = async ({ key, value, options = {} }) => {
+  return await client.set(key, JSON.stringify(value), options);
+};
+
+export const getCache = async ({ key }) => {
+  const value = await client.get(key);
+  return value ? JSON.parse(value) : null;
+};
+
+export const deleteCache = async ({ key }) => {
+  return await client.del(key);
+};
+
+export const cashExists = async ({ key }) => {
+  return await client.exists(key) > 0;
+};

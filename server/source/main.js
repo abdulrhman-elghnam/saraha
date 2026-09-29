@@ -6,6 +6,7 @@ import { databaseConnection } from './database/_index.js';
 import { acceptLanguage, chooseLanguage, globalErrorHandling } from './common/_index.js';
 import appControllers from './app.controller.js';
 import { PORT } from './configuration/_index.js';
+import { client } from './database/cache/redis.js';
 const app = express();
 
 const limiter = rateLimit({
@@ -38,7 +39,8 @@ app.use(appControllers);
 app.use(globalErrorHandling);
 const main = async () => {
   try {
-    await databaseConnection;
+    await Promise.all([databaseConnection, client.connect()]);
+    console.log({ redis: 'connected successfully' });
     console.log({ database: 'connected successfully' });
     app.listen(PORT, () => {
       console.log({ server: `url http://127.0.0.1:${PORT}` });
