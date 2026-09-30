@@ -1,18 +1,34 @@
-import { GoogleAuthForm } from "@/components/google-auth-form"
+"use client";
+
+import axios from "axios";
 
 export default function Page() {
+  async function handleSubmit(
+    e: React.FormEvent<HTMLFormElement>
+  ) {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+
+    const response = await axios.post(
+      "http://localhost:9090/user/uploadImage",
+      formData
+    );
+
+    console.log(response.data);
+  }
+
   return (
-    <main className="auth-shell">
-      <div className="auth-visual" aria-hidden="true">
-        <div className="visual-copy">
-          <span className="visual-mark">s</span>
-          <p>Messages without the performance.</p>
-          <span className="visual-line" />
-          <small>your words, in your own time</small>
-        </div>
-        <div className="visual-stamp">EST. 2026</div>
-      </div>
-      <GoogleAuthForm />
-    </main>
-  )
+    <form onSubmit={handleSubmit}>
+      <input
+        type="file"
+        name="file"
+        accept="image/*"
+      />
+
+      <button type="submit">
+        Upload
+      </button>
+    </form>
+  );
 }

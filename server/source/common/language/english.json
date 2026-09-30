@@ -106,6 +106,7 @@
   "603": "file type is not supported",
   "604": "file size is too large",
   "605": "failed to delete file",
+  "607": "file upload successfully",
 
   "701": "invalid verification code",
   "702": "verification code expired",

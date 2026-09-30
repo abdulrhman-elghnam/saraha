@@ -1,4 +1,4 @@
-import { client } from "../../database/cache/redis.js";
+import { client } from '../../database/cache/redis.js';
 
 export const findById = async ({ id, options = {}, select, model } = {}) => {
   let query = model.findById(id).select(select || '');
@@ -100,13 +100,13 @@ export const paginate = async ({
   };
 };
 
-export const create = async ({ data = {}, options = {}, model } = {}) =>{
+export const create = async ({ data = {}, options = {}, model } = {}) => {
   return await model.create([data], options);
-}
+};
 
-export const insertMany = async ({ data, options = {}, model } = {}) =>{
+export const insertMany = async ({ data, options = {}, model } = {}) => {
   await model.insertMany(data, options);
-}
+};
 
 export const updateOne = async ({ filter = {}, update, options = {}, model } = {}) => {
   if (Array.isArray(update)) {
@@ -239,5 +239,5 @@ export const deleteCache = async ({ key }) => {
 };
 
 export const cashExists = async ({ key }) => {
-  return await client.exists(key) > 0;
+  return (await client.exists(key)) > 0;
 };

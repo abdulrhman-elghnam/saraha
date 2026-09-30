@@ -2,8 +2,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { ApiLanguageEnum } from '../_index.js';
 
-const fileArPath = path.resolve('source', 'common', 'i18n', 'arabic.json');
-const fileEnPath = path.resolve('source', 'common', 'i18n', 'english.json');
+const fileArPath = path.resolve('source', 'common', 'language', 'arabic.json');
+const fileEnPath = path.resolve('source', 'common', 'language', 'english.json');
 
 export const chooseLanguage = ({ Language = ApiLanguageEnum.ENGLISH, code } = {}) => {
   const normalizedLanguage = String(Language).toLowerCase().split(',')[0].split('-')[0].trim();

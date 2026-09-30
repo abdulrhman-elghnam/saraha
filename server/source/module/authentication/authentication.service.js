@@ -160,13 +160,13 @@ export const logInWithGoogle = async ({ idToken } = {}) => {
     filter: { email: payload.email },
     model: UserModel,
   });
-  
+
   if (!user) {
     throw NotFoundException({
       messageCode: 401,
     });
   }
-  
+
   if (user.provider === ProviderEnum.SYSTEM) throw ConflictException({ messageCode: 301 });
 
   const { accessToken } = createLoginCredential({ id: user.id, role: user.role });

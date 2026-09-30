@@ -1,6 +1,6 @@
-import { createClient } from "redis"
-import { REDIS_URI } from "../../configuration/configuration.js";
+import { createClient } from 'redis';
+import { REDIS_URI } from '../../configuration/configuration.js';
 
 export const client = createClient({
-  url: REDIS_URI
+  url: REDIS_URI,
 });
