@@ -86,7 +86,7 @@ authenticationController.get(
   }
 );
 
-authenticationController.post('/logout-one', authenticationGuard(), async (request, response) => {
+authenticationController.post('/logout', authenticationGuard(), async (request, response) => {
   await logOut(request.payload);
   return sendSuccess({
     response,

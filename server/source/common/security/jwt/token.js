@@ -15,7 +15,7 @@ import {
   REFRESH_SYSTEM_TOKEN_EXPIRY,
 } from '#/configuration/_index.js';
 
-import { findById, setCache, UserModel } from '#/database/_index.js';
+import { findById, getCache, setCache, UserModel } from '#/database/_index.js';
 import { randomUUID } from 'node:crypto';
 import jwt from 'jsonwebtoken';
 
@@ -126,11 +126,16 @@ export const getToken = (authorization) => {
 };
 
 export const createLoginCredential = ({ id, role = SystemRoleEnum.USER, iss }) => {
+  const sessionId = randomUUID();
+  const sessionExp = Math.floor(Date.now() / 1000) + REFRESH_SYSTEM_TOKEN_EXPIRY;
+
   const accessToken = createToken({
     payload: {
       sub: id,
       aud: role,
       issuer: iss,
+      sid: sessionId,
+      sessionExp,
     },
 
     secret: getTokenSignature({
@@ -150,6 +155,8 @@ export const createLoginCredential = ({ id, role = SystemRoleEnum.USER, iss }) =
     payload: {
       sub: id,
       aud: role,
+      sid: sessionId,
+      sessionExp,
     },
 
     secret: getTokenSignature({
@@ -171,13 +178,21 @@ export const createLoginCredential = ({ id, role = SystemRoleEnum.USER, iss }) =
   };
 };
 
-export const revokeToken = async ({payload}) => {
+const getRevokedTokenKey = ({ sub, jti, sid }) =>
+  `USER::${sub}::REVOKE-TOKEN::${sid || jti}`;
 
-  const consumedTime = Date.now() / 1000 - payload.iat;
-  const refreshExpireIn = payload.iat + REFRESH_SYSTEM_TOKEN_EXPIRY;
-  const ttl = Math.ceil(refreshExpireIn - consumedTime);
+export const revokeToken = async ({ payload } = {}) => {
+  if (!payload?.sub || !payload?.jti || !payload?.exp) {
+    throw BadRequestException({
+      messageCode: 302,
+    });
+  }
+
+  const ttl = Math.ceil((payload.sessionExp || payload.exp) - Date.now() / 1000);
+  if (ttl <= 0) return;
+
   await setCache({
-    key: `USER::${payload.sub}::REVOKE-TOKEN::${payload.jti}`,
+    key: getRevokedTokenKey(payload),
     value: payload.jti,
     options: { EX: ttl },
   });
@@ -230,6 +245,12 @@ export const decodeToken = async ({ authorization, tokenType = TokenTypeEnum.ACC
 
   if (!payload?.sub) {
     throw BadRequestException({
+      messageCode: 302,
+    });
+  }
+
+  if (await getCache({ key: getRevokedTokenKey(payload) })) {
+    throw UnauthorizedException({
       messageCode: 302,
     });
   }
