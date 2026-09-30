@@ -7,10 +7,11 @@ import {
   encrypt,
   createLoginCredential,
   getTokenExpiration,
+  revokeToken,
 } from '#/common/_index.js';
 import { ProviderEnum } from '../../common/enum/_index.js';
-import { OAUTH_GOOGLE_CLIENT_ID } from '#/configuration/_index.js';
-import { create, findOne, UserModel } from '#/database/_index.js';
+import { OAUTH_GOOGLE_CLIENT_ID, REFRESH_SYSTEM_TOKEN_EXPIRY } from '#/configuration/_index.js';
+import { create, findOne, setCache, UserModel } from '#/database/_index.js';
 import { OAuth2Client } from 'google-auth-library';
 
 const client = new OAuth2Client();
@@ -64,7 +65,7 @@ export const signUp = async ({ fullName, gender, username, email, phoneNumber, p
   }
 };
 
-export const signUpWithGoogle = async ({ idToken } = {}) => {
+export const signUpWithGoogle = async ({ idToken } = {}, iss) => {
   const payload = await verifyGoogleAccount(idToken);
   const isExist = await findOne({
     model: UserModel,
@@ -81,6 +82,7 @@ export const signUpWithGoogle = async ({ idToken } = {}) => {
     const { accessToken, refreshToken } = createLoginCredential({
       id: isExist.id,
       role: isExist.role,
+      iss,
     });
 
     return {
@@ -127,7 +129,7 @@ export const signUpWithGoogle = async ({ idToken } = {}) => {
   };
 };
 
-export const logIn = async ({ email, password }) => {
+export const logIn = async ({ email, password }, iss) => {
   const user = await findOne({
     filter: { email },
     model: UserModel,
@@ -146,28 +148,6 @@ export const logIn = async ({ email, password }) => {
       messageCode: 301,
     });
   }
-  const { accessToken } = createLoginCredential({ id: user.id, role: user.role });
-  return {
-    messageCode: 309,
-    statusCode: 200,
-    accessToken,
-  };
-};
-
-export const logInWithGoogle = async ({ idToken } = {}) => {
-  const payload = await verifyGoogleAccount(idToken);
-  const user = await findOne({
-    filter: { email: payload.email },
-    model: UserModel,
-  });
-
-  if (!user) {
-    throw NotFoundException({
-      messageCode: 401,
-    });
-  }
-
-  if (user.provider === ProviderEnum.SYSTEM) throw ConflictException({ messageCode: 301 });
 
   const { accessToken } = createLoginCredential({ id: user.id, role: user.role });
   return {
@@ -186,14 +166,16 @@ export const profile = async (user) => {
   };
 };
 
-export const rotateToken = async ({ accessToken } = {}, user) => {
-  if (!accessToken) {
+export const rotateToken = async ({ expireToken } = {}, user, payload, iss) => {
+  console.log(expireToken, user, payload, iss);
+
+  if (!expireToken) {
     throw BadRequestException({
       messageCode: 311,
     });
   }
 
-  const expiresAt = getTokenExpiration({ token: accessToken });
+  const expiresAt = getTokenExpiration({ token: expireToken });
 
   if (expiresAt > Date.now()) {
     throw ConflictException({
@@ -201,8 +183,14 @@ export const rotateToken = async ({ accessToken } = {}, user) => {
     });
   }
 
+  const { accessToken } = createLoginCredential({ id: user.id, role: user.role, iss });
+  await revokeToken({ payload });
   return {
-    ...createLoginCredential({ id: user.id, role: user.role }),
+    accessToken,
     messageCode: 107,
   };
+};
+
+export const logOut = async (payload) => {
+  return await revokeToken({ payload });
 };

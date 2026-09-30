@@ -1,5 +1,6 @@
 "use client";
 
+import { GoogleAuthForm } from "@/components/google-auth-form";
 import axios from "axios";
 
 export default function Page() {
@@ -11,7 +12,7 @@ export default function Page() {
     const formData = new FormData(e.currentTarget);
 
     const response = await axios.post(
-      "http://localhost:9090/user/uploadImage",
+      "http://localhost:9090/user/upload-avatar",
       formData
     );
 
@@ -19,7 +20,8 @@ export default function Page() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+<>
+<form onSubmit={handleSubmit}>
       <input
         type="file"
         name="file"
@@ -30,5 +32,7 @@ export default function Page() {
         Upload
       </button>
     </form>
+    <GoogleAuthForm/>
+</>
   );
 }

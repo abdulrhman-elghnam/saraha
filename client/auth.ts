@@ -14,13 +14,24 @@ export const { handlers, auth } = NextAuth({
         return true
       }
 
-      const response = await fetch(`${process.env.AUTH_API_URL}/authentication/google-signUp`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ idToken: account.id_token }),
-      })
+      try {
+        const response = await fetch(`${process.env.AUTH_API_URL}/authentication/google-signUp`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ idToken: account.id_token }),
+        })
+        const data = await response.json()
+        console.log("Backend response data:", data)
 
-      return response.ok
+        if (!response.ok) {
+          console.error("Backend authentication failed:", data)
+          return false
+        }
+        return true
+      } catch (error) {
+        console.error("Network or server error during backend sign-up:", error)
+        return false 
+      }
     },
   },
 })

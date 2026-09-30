@@ -5,7 +5,7 @@ import {
   signUp,
   rotateToken,
   signUpWithGoogle,
-  logInWithGoogle,
+  logOut,
 } from './authentication.service.js';
 import { signUpSchema } from './dto/signUp.dto.js';
 import { loginSchema } from './dto/login.dto.js';
@@ -13,6 +13,7 @@ import {
   acceptLanguage,
   authenticationGuard,
   authorizationGuard,
+  issuer,
   SystemRoleEnum,
   TokenTypeEnum,
   validationPipe,
@@ -38,7 +39,7 @@ authenticationController.post(
   '/login',
   validationPipe({ schema: loginSchema }),
   async (request, response) => {
-    const serviceFeedback = await logIn(request.body);
+    const serviceFeedback = await logIn(request.body, issuer({ request }));
     return sendSuccess({
       response,
       language: acceptLanguage({ request }),
@@ -48,20 +49,13 @@ authenticationController.post(
 );
 
 authenticationController.post('/google-signUp', async (request, response) => {
-  const serviceFeedback = await signUpWithGoogle(request.body, request.user);
-  return sendSuccess({
-    response,
-    language: acceptLanguage({ request }),
-    ...serviceFeedback,
-  });
-});
+  const serviceFeedback = await signUpWithGoogle(request.body, issuer({ request }));
+  console.log(serviceFeedback);
 
-authenticationController.post('/google-login', async (request, response) => {
-  const serviceFeedback = await logInWithGoogle(request.body);
   return sendSuccess({
     response,
     language: acceptLanguage({ request }),
-    ...serviceFeedback,
+    data: serviceFeedback,
   });
 });
 
@@ -69,7 +63,7 @@ authenticationController.post(
   '/rotate-token',
   authenticationGuard({ tokenType: TokenTypeEnum.REFRESH }),
   async (request, response) => {
-    const serviceFeedback = await rotateToken(request.body, request.user);
+    const serviceFeedback = await rotateToken(request.body, request.user ,request.payload , issuer({request}));
     return sendSuccess({
       response,
       language: acceptLanguage({ request }),
@@ -91,3 +85,13 @@ authenticationController.get(
     });
   }
 );
+
+authenticationController.post('/logout-one', authenticationGuard(), async (request, response) => {
+  await logOut(request.payload);
+  return sendSuccess({
+    response,
+    statusCode:200,
+    messageCode:101,
+    message : "logout successfully"
+  })
+});

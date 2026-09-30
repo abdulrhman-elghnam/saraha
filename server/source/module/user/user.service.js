@@ -1,19 +1,11 @@
-import { cloudinaryUpload } from "../../common/upload/multer.js";
+import { cloudinaryUpload } from '../../common/upload/multer.js';
+import { findById, findByIdAndUpdate } from '../../database/_index.js';
 
-export const uploadAvatar = async (image) =>{
-    try {
-        const result = await cloudinaryUpload(image);
-        console.log('CLOUDINARY:', result);
-        const { url } = result;
-        return sendSuccess({
-          response,
-          data: url,
-          statusCode: 200,
-          messageCode: 607,
-        });
-      } catch (error) {
-        console.error('CLOUDINARY ERROR:', error);
-    
-        next(error);
-      }
-}
+export const uploadAvatar = async (image) => {
+  try {
+    const { url } = await cloudinaryUpload({ file: image, directory: 'avatar' });
+    const updatedUser = await findByIdAndUpdate({});
+  } catch (error) {
+    next(error);
+  }
+};

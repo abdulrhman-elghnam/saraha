@@ -15,8 +15,8 @@ import {
   REFRESH_SYSTEM_TOKEN_EXPIRY,
 } from '#/configuration/_index.js';
 
-import { findById, UserModel } from '#/database/_index.js';
-
+import { findById, setCache, UserModel } from '#/database/_index.js';
+import { randomUUID } from 'node:crypto';
 import jwt from 'jsonwebtoken';
 
 export const createToken = ({
@@ -24,8 +24,10 @@ export const createToken = ({
   options = {},
   secret = ACCESS_USER_TOKEN_SECRET,
 } = {}) => {
+  const jwtid = randomUUID();
   return jwt.sign(payload, secret, {
     ...options,
+    jwtid,
   });
 };
 
@@ -123,11 +125,12 @@ export const getToken = (authorization) => {
   return token;
 };
 
-export const createLoginCredential = ({ id, role = SystemRoleEnum.USER }) => {
+export const createLoginCredential = ({ id, role = SystemRoleEnum.USER, iss }) => {
   const accessToken = createToken({
     payload: {
       sub: id,
       aud: role,
+      issuer: iss,
     },
 
     secret: getTokenSignature({
@@ -166,6 +169,18 @@ export const createLoginCredential = ({ id, role = SystemRoleEnum.USER }) => {
     accessToken,
     refreshToken,
   };
+};
+
+export const revokeToken = async ({payload}) => {
+
+  const consumedTime = Date.now() / 1000 - payload.iat;
+  const refreshExpireIn = payload.iat + REFRESH_SYSTEM_TOKEN_EXPIRY;
+  const ttl = Math.ceil(refreshExpireIn - consumedTime);
+  await setCache({
+    key: `USER::${payload.sub}::REVOKE-TOKEN::${payload.jti}`,
+    value: payload.jti,
+    options: { EX: ttl },
+  });
 };
 
 export const decodeToken = async ({ authorization, tokenType = TokenTypeEnum.ACCESS } = {}) => {
