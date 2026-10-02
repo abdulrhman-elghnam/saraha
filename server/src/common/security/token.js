@@ -20,6 +20,10 @@ import { findById } from '#/core/db/repo/repo.js';
 import { randomUUID } from 'node:crypto';
 import jwt from 'jsonwebtoken';
 
+const getRevokedTokenKey = ({ sub, jti, sid }) => `USER::${sub}::REVOKE-TOKEN::${sid || jti}`;
+
+
+
 export const createToken = ({
   payload = {},
   options = {},
@@ -179,7 +183,7 @@ export const createLoginCredential = ({ id, role = SystemRoleEnum.USER, iss }) =
   };
 };
 
-const getRevokedTokenKey = ({ sub, jti, sid }) => `USER::${sub}::REVOKE-TOKEN::${sid || jti}`;
+
 
 export const revokeToken = async ({ payload } = {}) => {
   if (!payload?.sub || !payload?.jti || !payload?.exp) {

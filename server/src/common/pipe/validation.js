@@ -1,52 +1,75 @@
 import { z } from 'zod';
+
 import { acceptLanguage } from '../util/util.js';
 import { chooseLanguage } from '../lang/lang.js';
+import { ConflictException } from '../exception/error.js';
+
 export const validationPipe = ({ schema }) => {
   return (request, response, next) => {
-    const Language = acceptLanguage({ request });
+    const lang = acceptLanguage({ req });
 
-    const result = schema(Language).safeParse(request.body);
+    const validationSchema = schema(lang);
+
+    const result = z
+      .object({
+        body: validationSchema.body ?? z.object({}),
+        params: validationSchema.params ?? z.object({}),
+        query: validationSchema.query ?? z.object({}),
+      })
+      .safeParse({
+        body: request.body,
+        params: request.params,
+        query: request.query,
+      });
 
     if (!result.success) {
-      return response.status(400).json({
-        success: false,
-
+      return ConflictException({
         message: chooseLanguage({
-          Language,
+          lang,
           code: 201,
         }),
-
-        errors: result.error.issues.map(({ path, code, message }) => ({
-          path,
-          code,
-          message,
-        })),
+        messageCode: 201,
+        extra: result.error.issues.map(
+          ({ path, code, message }) => ({
+            path,
+            code,
+            message,
+          })
+        ),
       });
     }
-    request.body = result.data;
+
+    request.body = result.data.body;
+
+    request.validated = {
+      body: result.data.body,
+      params: result.data.params,
+      query: result.data.query,
+    };
 
     next();
   };
 };
+
 export const generalValidationFields = {
   email: (lang) =>
     z
       .string({
         message: chooseLanguage({
-          Language: lang,
+           lang,
           code: 208,
         }),
       })
       .trim()
       .min(1, {
         message: chooseLanguage({
-          Language: lang,
+           lang,
           code: 208,
         }),
       })
       .email({
         message: chooseLanguage({
-          Language: lang,
+           lang,
           code: 209,
         }),
       })
@@ -56,20 +79,25 @@ export const generalValidationFields = {
     z
       .string({
         message: chooseLanguage({
-          Language: lang,
+           lang,
           code: 212,
         }),
       })
       .min(8, {
         message: chooseLanguage({
-          Language: lang,
+           lang,
           code: 214,
         }),
       })
       .max(30, {
         message: chooseLanguage({
-          Language: lang,
+           lang,
           code: 215,
+        }),
+      }).regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {
+        message: chooseLanguage({
+           lang,
+          code: 213,
         }),
       }),
 
@@ -77,13 +105,13 @@ export const generalValidationFields = {
     z
       .string({
         message: chooseLanguage({
-          Language: lang,
+           lang,
           code: 216,
         }),
       })
       .min(1, {
         message: chooseLanguage({
-          Language: lang,
+           lang,
           code: 216,
         }),
       }),
@@ -92,26 +120,26 @@ export const generalValidationFields = {
     z
       .string({
         message: chooseLanguage({
-          Language: lang,
+           lang,
           code: 210,
         }),
       })
       .trim()
       .min(3, {
         message: chooseLanguage({
-          Language: lang,
+           lang,
           code: 211,
         }),
       })
       .max(30, {
         message: chooseLanguage({
-          Language: lang,
+           lang,
           code: 211,
         }),
       })
       .regex(/^[a-zA-Z0-9_]+$/, {
         message: chooseLanguage({
-          Language: lang,
+           lang,
           code: 211,
         }),
       }),
@@ -120,26 +148,26 @@ export const generalValidationFields = {
     z
       .string({
         message: chooseLanguage({
-          Language: lang,
+           lang,
           code: 222,
         }),
       })
       .trim()
       .min(3, {
         message: chooseLanguage({
-          Language: lang,
+           lang,
           code: 223,
         }),
       })
       .max(30, {
         message: chooseLanguage({
-          Language: lang,
+           lang,
           code: 223,
         }),
       })
       .regex(/^[a-zA-Z]+(?: [a-zA-Z]+)*$/, {
         message: chooseLanguage({
-          Language: lang,
+           lang,
           code: 223,
         }),
       }),
@@ -156,13 +184,13 @@ export const generalValidationFields = {
     z
       .string({
         message: chooseLanguage({
-          Language: lang,
+           lang,
           code: 229,
         }),
       })
       .regex(/^(\+201|01)[0-2,5]{1}[0-9]{8}$/, {
         message: chooseLanguage({
-          Language: lang,
+           lang,
           code: 230,
         }),
       }),
@@ -171,7 +199,7 @@ export const generalValidationFields = {
     z.coerce
       .date({
         message: chooseLanguage({
-          Language: lang,
+           lang,
           code: 225,
         }),
       })
@@ -186,7 +214,7 @@ export const generalValidationFields = {
         },
         {
           message: chooseLanguage({
-            Language: lang,
+             lang,
             code: 227,
           }),
         }
@@ -202,7 +230,7 @@ export const generalValidationFields = {
         },
         {
           message: chooseLanguage({
-            Language: lang,
+             lang,
             code: 226,
           }),
         }
@@ -212,13 +240,13 @@ export const generalValidationFields = {
     z
       .string({
         message: chooseLanguage({
-          Language: lang,
+           lang,
           code: 231,
         }),
       })
       .url({
         message: chooseLanguage({
-          Language: lang,
+           lang,
           code: 231,
         }),
       })
@@ -229,16 +257,31 @@ export const generalValidationFields = {
     z
       .string({
         message: chooseLanguage({
-          Language: lang,
+           lang,
           code: 232,
         }),
       })
       .url({
         message: chooseLanguage({
-          Language: lang,
+           lang,
           code: 232,
         }),
       })
       .nullable()
       .optional(),
-};
+
+  token: (lang) =>
+    z
+      .string({
+        message: chooseLanguage({
+           lang,
+          code: 233,
+        }),
+      })
+      .regex(/^[A-Za-z0-9-_=]+$/, {
+        message: chooseLanguage({
+           lang,
+          code: 233,
+        }),
+      })
+}

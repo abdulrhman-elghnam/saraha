@@ -11,22 +11,13 @@ export const asyncHandler = (fn) => {
 
 export const globalErrorHandling = (error, request, response, next) => {
   const status = error.cause?.status ?? 500;
-  const statusMessageCodes = {
-    400: 108,
-    401: 109,
-    403: 110,
-    404: 111,
-    409: 112,
-    422: 113,
-    429: 114,
-    500: 115,
-    503: 116,
-  };
+
   const message = chooseLanguage({
-    Language: acceptLanguage({ request }),
-    code: error.cause?.messageCode ?? statusMessageCodes[status] ?? 103,
+    Language: acceptLanguage({ req }),
+    code: error.cause?.messageCode ?? 103,
   });
-  const isProduction = ENV === 'production';
+  
+  const isProduction = ENV === 'prod';
 
   return response.status(status).json({
     success: false,

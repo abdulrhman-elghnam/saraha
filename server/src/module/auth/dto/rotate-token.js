@@ -1,10 +1,9 @@
 import { z } from 'zod';
 import { generalValidationFields } from '../../../common/pipe/validation.js';
 
-export const loginSchema = (lang) => ({
+export const rotateTokenSchema = (lang) => ({
   body: z.object({
-    email: generalValidationFields.email(lang),
-    password: generalValidationFields.password(lang),
+    expireToken: generalValidationFields.token(lang),
   }),
   params: z.object({}),
   query: z.object({}),

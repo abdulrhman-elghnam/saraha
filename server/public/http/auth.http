@@ -1,12 +1,12 @@
 @Host = http://127.0.0.1:9090
-POST {{Host}}/authentication/signup HTTP/1.1
+POST {{Host}}/authentication/sign-up HTTP/1.1
 Content-Type: application/json
 Accept-Language: 0
 
 {
     "fullName": "ahmed mohamed",
     "username":"ahmed123",
-    "email":"ahmed123@gmail.com",
+    "email":"ahmed123@mail.com",
     "password":"@Aa334455",
     "confirmPassword":"@Aa334455",
     "gender":0,

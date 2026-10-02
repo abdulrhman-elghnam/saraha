@@ -1,10 +1,11 @@
 import { chooseLanguage } from './common/lang/lang.js';
 import { NotFoundException } from './common/exception/error.js';
-import { sendSuccess } from './common/handler/success.js';
+import { sendSuccess } from './common/util/util.js';
 
-export const mainController = (Language, response) => {
+
+export const mainController = (Language, res) => {
   sendSuccess({
-    response,
+    res,
     statusCode: 200,
     message: chooseLanguage({ Language, code: '101' }),
   });

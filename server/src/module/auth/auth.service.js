@@ -11,6 +11,7 @@ import { OAUTH_GOOGLE_CLIENT_ID } from '#/core/config/config.js';
 import { create, findOne } from '#/core/db/repo/repo.js';
 import { UserModel } from '#/core/db/model/user.model.js';
 import { OAuth2Client } from 'google-auth-library';
+import { asyncHandler } from '#/common/util/util.js';
 
 const client = new OAuth2Client();
 
@@ -32,39 +33,37 @@ async function verifyGoogleAccount(idToken) {
   };
 }
 
-export const signUp = async ({ fullName, gender, username, email, phoneNumber, password, DOB }) => {
-  try {
-    const isFind = await findOne({
-      filter: { $or: [{ email }, { username }] },
-      select: '-_id',
-      model: UserModel,
-    });
-    const hashedPassword = await hash(password);
-    if (isFind) ConflictException({ messageCode: 402 });
-    await create({
-      data: {
-        fullName,
-        username,
-        email,
-        gender,
-        phoneNumber: encrypt(phoneNumber),
-        password: hashedPassword,
-        DOB: new Date(DOB),
-      },
-      model: UserModel,
-      options: {
-        lean: true,
-      },
-    });
-    return { messageCode: 104, statusCode: 201 };
-  } catch (error) {
-    if (error.cause?.messageCode) throw error;
-    ConflictException({ messageCode: 112 });
-  }
-};
+export const signUp = asyncHandler(async ({ fullName, gender, username, email, phoneNumber, password, DOB }) => {
+  const isFind = await findOne({
+    filter: { $or: [{ email }, { username }] },
+    select: '-_id',
+    model: UserModel,
+  });
 
-export const signUpWithGoogle = async ({ idToken } = {}, iss) => {
+  if (isFind) ConflictException({ messageCode: 402 });
+
+  await create({
+    data: {
+      fullName,
+      username,
+      email,
+      gender,
+      phoneNumber: encrypt(phoneNumber),
+      password: await hash(password),
+      DOB: new Date(DOB),
+    },
+    model: UserModel,
+    options: {
+      lean: true,
+    },
+  });
+  return { messageCode: 104, statusCode: 201 };
+})
+
+export const signUpWithGoogle = asyncHandler(async ({ idToken } = {}, iss) => {
+
   const payload = await verifyGoogleAccount(idToken);
+
   const isExist = await findOne({
     model: UserModel,
     filter: { email: payload.email },
@@ -125,9 +124,9 @@ export const signUpWithGoogle = async ({ idToken } = {}, iss) => {
     accessToken,
     refreshToken,
   };
-};
+});
 
-export const logIn = async ({ email, password }, iss) => {
+export const login = asyncHandler(async ({ email, password }, iss) => {
   const user = await findOne({
     filter: { email },
     model: UserModel,
@@ -147,25 +146,24 @@ export const logIn = async ({ email, password }, iss) => {
     });
   }
 
-  const { accessToken, refreshToken } = createLoginCredential({ id: user.id, role: user.role });
+  const { accessToken, refreshToken } = createLoginCredential({ id: user.id, role: user.role, iss });
   return {
     messageCode: 309,
     statusCode: 200,
     accessToken,
     refreshToken,
   };
-};
+});
 
-export const profile = async (user) => {
-  const { firstName, lastName, username, DOB, phoneNumber, profileImage, coverImage } = user;
+export const profile = asyncHandler(async ({ firstName, lastName, username, DOB, phoneNumber, profileImage, coverImage }) => {
   return {
     messageCode: 127,
     statusCode: 200,
     data: { firstName, lastName, username, DOB, profileImage, coverImage },
   };
-};
+});
 
-export const rotateToken = async ({ expireToken } = {}, user, payload, iss) => {
+export const rotateToken = asyncHandler(async ({ expireToken } = {}, user, payload, iss) => {
   console.log(expireToken, user, payload, iss);
 
   if (!expireToken) {
@@ -188,8 +186,8 @@ export const rotateToken = async ({ expireToken } = {}, user, payload, iss) => {
     accessToken,
     messageCode: 107,
   };
-};
+});
 
-export const logOut = async (payload) => {
+export const logout = asyncHandler(async (payload) => {
   return await revokeToken({ payload });
-};
+});

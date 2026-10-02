@@ -1,9 +1,10 @@
 import { z } from 'zod';
+
 import { chooseLanguage } from '../../../common/lang/lang.js';
 import { generalValidationFields } from '../../../common/pipe/validation.js';
 
-export const signUpSchema = (lang) => {
-  return z
+export const signUpSchema = (lang) => ({
+  body: z
     .object({
       fullName: generalValidationFields.fullName(lang),
       username: generalValidationFields.username(lang),
@@ -16,8 +17,18 @@ export const signUpSchema = (lang) => {
       profileImage: generalValidationFields.profileImage(lang),
       coverImage: generalValidationFields.coverImage(lang),
     })
-    .refine((data) => data.password === data.confirmPassword, {
-      message: chooseLanguage({ Language: lang, code: 217 }),
-      path: ['confirmPassword'],
-    });
-};
+    .refine(
+      (data) => data.password === data.confirmPassword,
+      {
+        message: chooseLanguage({
+          lang,
+          code: 217,
+        }),
+        path: ['confirmPassword'],
+      }
+    ),
+
+  params: z.object({}),
+
+  query: z.object({}),
+});

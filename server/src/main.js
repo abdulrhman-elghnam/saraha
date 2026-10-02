@@ -19,7 +19,7 @@ const limiter = rateLimit({
       success: false,
       status: 429,
       message: chooseLanguage({
-        Language: acceptLanguage({ request }),
+        Language: acceptLanguage({ req }),
         code: 114,
       }),
     });

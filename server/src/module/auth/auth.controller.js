@@ -1,98 +1,91 @@
 import { Router } from 'express';
-import {
-  logIn,
-  profile,
-  signUp,
-  rotateToken,
-  signUpWithGoogle,
-  logOut,
-} from './authentication.service.js';
-import { signUpSchema } from './dto/signUp.dto.js';
+import { login, profile, signUp, rotateToken, signUpWithGoogle, logout } from './auth.service.js';
+import { signUpSchema } from './dto/sign-up.dto.js';
 import { loginSchema } from './dto/login.dto.js';
 import { authenticationGuard } from '#/common/guard/authentication.js';
-import { authorizationGuard } from '#/common/role/authorization.js';
-import { acceptLanguage, issuer } from '#/common/util/util.js';
-import { SystemRoleEnum, TokenTypeEnum } from '#/common/value/enum.js';
+import { acceptLanguage, issuer, sendSuccess } from '#/common/util/util.js';
+import { TokenTypeEnum } from '#/common/value/enum.js';
 import { validationPipe } from '#/common/pipe/validation.js';
-import { sendSuccess } from '../../common/handler/success.js';
+import { rotateTokenSchema } from './dto/rotate-token.js';
 
-export const authenticationController = Router();
 
-authenticationController.post(
-  '/signup',
+export const authController = Router();
+
+authController.post(
+  '/sign-up',
   validationPipe({ schema: signUpSchema }),
-  async (request, response) => {
-    const serviceFeedback = await signUp(request.body, request.user);
+  async (req, res) => {
+    const serviceFeedback = await signUp(req.body);
     return sendSuccess({
-      response,
-      language: acceptLanguage({ request }),
+      response: res,
+      language: acceptLanguage({ req }),
       ...serviceFeedback,
     });
   }
 );
 
-authenticationController.post(
+authController.post(
   '/login',
   validationPipe({ schema: loginSchema }),
-  async (request, response) => {
-    const serviceFeedback = await logIn(request.body, issuer({ request }));
+  async (req, res) => {
+    const serviceFeedback = await login(req.body, issuer({ req }));
     return sendSuccess({
-      response,
-      language: acceptLanguage({ request }),
+      res,
+      language: acceptLanguage({ req }),
       ...serviceFeedback,
     });
   }
 );
 
-authenticationController.post('/google-signUp', async (request, response) => {
-  const serviceFeedback = await signUpWithGoogle(request.body, issuer({ request }));
+authController.post('/google-sign-up', async (req, res) => {
+  const serviceFeedback = await signUpWithGoogle(req.body, issuer({ req }));
   console.log(serviceFeedback);
 
   return sendSuccess({
-    response,
-    language: acceptLanguage({ request }),
+    res,
+    language: acceptLanguage({ req }),
     data: serviceFeedback,
   });
 });
 
-authenticationController.post(
+authController.post(
   '/rotate-token',
+  validationPipe({ schema: rotateTokenSchema }),
   authenticationGuard({ tokenType: TokenTypeEnum.REFRESH }),
-  async (request, response) => {
+  async (req, res) => {
     const serviceFeedback = await rotateToken(
-      request.body,
-      request.user,
-      request.payload,
-      issuer({ request })
+      req.body,
+      req.user,
+      req.payload,
+      issuer({ req })
     );
     return sendSuccess({
-      response,
-      language: acceptLanguage({ request }),
+      res,
+      lang: acceptLanguage({ req }),
       ...serviceFeedback,
     });
   }
 );
 
-authenticationController.get(
-  '/profile',
-  authenticationGuard(),
-  authorizationGuard({ role: [SystemRoleEnum.USER] }),
-  async (request, response) => {
-    const serviceFeedback = await profile(request.user);
-    return sendSuccess({
-      response,
-      language: request.headers['accept-language'],
-      ...serviceFeedback,
-    });
-  }
-);
-
-authenticationController.post('/logout', authenticationGuard(), async (request, response) => {
-  await logOut(request.payload);
+authController.post('/logout', authenticationGuard(), async (req, res) => {
+  await logout(req.payload);
   return sendSuccess({
-    response,
+    res,
     statusCode: 200,
     messageCode: 101,
-    message: 'logout successfully',
   });
 });
+
+authController.get(
+  '/profile',
+  authenticationGuard(),
+  // authorizationGuard({ role: [SystemRoleEnum.USER] }),
+  async (req, res) => {
+    const serviceFeedback = await profile(user);
+    return sendSuccess({
+      res,
+      language: acceptLanguage({ req }),
+      ...serviceFeedback,
+    });
+  }
+);
