@@ -5,11 +5,7 @@ import {
 } from '#/common/exception/error.js';
 import { encrypt } from '#/common/security/encryption.js';
 import { hash, compare } from '#/common/security/hash.js';
-import {
-  createLoginCredential,
-  getTokenExpiration,
-  revokeToken,
-} from '#/common/security/token.js';
+import { createLoginCredential, getTokenExpiration, revokeToken } from '#/common/security/token.js';
 import { ProviderEnum } from '../../common/value/enum.js';
 import { OAUTH_GOOGLE_CLIENT_ID } from '#/core/config/config.js';
 import { create, findOne } from '#/core/db/repo/repo.js';
@@ -151,12 +147,12 @@ export const logIn = async ({ email, password }, iss) => {
     });
   }
 
-  const { accessToken , refreshToken } = createLoginCredential({ id: user.id, role: user.role });
+  const { accessToken, refreshToken } = createLoginCredential({ id: user.id, role: user.role });
   return {
     messageCode: 309,
     statusCode: 200,
     accessToken,
-    refreshToken
+    refreshToken,
   };
 };
 

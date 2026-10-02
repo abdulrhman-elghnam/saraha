@@ -1,12 +1,10 @@
 import { Router } from 'express';
 import { mainController, notFoundController } from './app.service.js';
-import {
-  authenticationController,
-} from './module/auth/authentication.controller.js';
+import { authenticationController } from './module/auth/authentication.controller.js';
 import { userController } from './module/user/user.controller.js';
 import { messageController } from './module/msg/message.controller.js';
 import { notificationController } from './module/notif/notification.controller.js';
-import { acceptLanguage } from './common/util/utilities.js';
+import { acceptLanguage } from './common/util/util.js';
 import { ApiLanguageEnum } from './common/value/enum.js';
 const router = Router();
 

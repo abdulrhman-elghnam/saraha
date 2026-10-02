@@ -1,5 +1,5 @@
 import { ENV } from '#/core/config/config.js';
-import { acceptLanguage } from '../util/utilities.js';
+import { acceptLanguage } from '../util/util.js';
 import { ApiLanguageEnum } from '../value/enum.js';
 import { chooseLanguage } from '../lang/lang.js';
 

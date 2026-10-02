@@ -3,10 +3,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '#/common/exception/error.js';
-import {
-  TokenTypeEnum,
-  SystemRoleEnum,
-} from '#/common/value/enum.js';
+import { TokenTypeEnum, SystemRoleEnum } from '#/common/value/enum.js';
 
 import {
   ACCESS_ADMIN_TOKEN_SECRET,
@@ -182,8 +179,7 @@ export const createLoginCredential = ({ id, role = SystemRoleEnum.USER, iss }) =
   };
 };
 
-const getRevokedTokenKey = ({ sub, jti, sid }) =>
-  `USER::${sub}::REVOKE-TOKEN::${sid || jti}`;
+const getRevokedTokenKey = ({ sub, jti, sid }) => `USER::${sub}::REVOKE-TOKEN::${sid || jti}`;
 
 export const revokeToken = async ({ payload } = {}) => {
   if (!payload?.sub || !payload?.jti || !payload?.exp) {

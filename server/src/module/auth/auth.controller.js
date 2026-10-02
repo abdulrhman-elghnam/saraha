@@ -9,11 +9,9 @@ import {
 } from './authentication.service.js';
 import { signUpSchema } from './dto/signUp.dto.js';
 import { loginSchema } from './dto/login.dto.js';
-import {
-  authenticationGuard,
-} from '#/common/guard/authentication.js';
+import { authenticationGuard } from '#/common/guard/authentication.js';
 import { authorizationGuard } from '#/common/role/authorization.js';
-import { acceptLanguage, issuer } from '#/common/util/utilities.js';
+import { acceptLanguage, issuer } from '#/common/util/util.js';
 import { SystemRoleEnum, TokenTypeEnum } from '#/common/value/enum.js';
 import { validationPipe } from '#/common/pipe/validation.js';
 import { sendSuccess } from '../../common/handler/success.js';
@@ -61,7 +59,12 @@ authenticationController.post(
   '/rotate-token',
   authenticationGuard({ tokenType: TokenTypeEnum.REFRESH }),
   async (request, response) => {
-    const serviceFeedback = await rotateToken(request.body, request.user ,request.payload , issuer({request}));
+    const serviceFeedback = await rotateToken(
+      request.body,
+      request.user,
+      request.payload,
+      issuer({ request })
+    );
     return sendSuccess({
       response,
       language: acceptLanguage({ request }),
@@ -88,8 +91,8 @@ authenticationController.post('/logout', authenticationGuard(), async (request, 
   await logOut(request.payload);
   return sendSuccess({
     response,
-    statusCode:200,
-    messageCode:101,
-    message : "logout successfully"
-  })
+    statusCode: 200,
+    messageCode: 101,
+    message: 'logout successfully',
+  });
 });

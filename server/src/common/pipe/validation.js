@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { acceptLanguage } from '../util/utilities.js';
+import { acceptLanguage } from '../util/util.js';
 import { chooseLanguage } from '../lang/lang.js';
 export const validationPipe = ({ schema }) => {
   return (request, response, next) => {

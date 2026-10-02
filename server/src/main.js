@@ -3,7 +3,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import { databaseConnection } from './core/db/db.js';
-import { acceptLanguage } from './common/util/utilities.js';
+import { acceptLanguage } from './common/util/util.js';
 import { chooseLanguage } from './common/lang/lang.js';
 import { globalErrorHandling } from './common/middleware/global.js';
 import appControllers from './app.controller.js';
@@ -42,8 +42,8 @@ app.use(globalErrorHandling);
 const main = async () => {
   try {
     await Promise.all([databaseConnection, client.connect()]);
-    console.log({ redis: 'connected successfully' });
     console.log({ database: 'connected successfully' });
+    console.log({ cache: 'connected successfully' });
     app.listen(PORT, () => {
       console.log({ server: `url http://127.0.0.1:${PORT}` });
     });
