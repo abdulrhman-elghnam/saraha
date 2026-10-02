@@ -5,17 +5,17 @@
   "license": "ISC",
   "author": "abdulrhman",
   "type": "module",
-  "main": "./source/main.js",
+  "main": "./src/main.js",
   "scripts": {
     "gen:key": "openssl rand -hex 32",
-    "start:dev": "cross-env NODE_ENV=development node --watch ./source/main.js --enable-turbo-mode",
-    "start:prod": "cross-env NODE_ENV=production node --watch ./source/main.js --enable-turbo-mode",
+    "start:dev": "cross-env NODE_ENV=development node --watch ./src/main.js",
+    "start:prod": "cross-env NODE_ENV=production node ./src/main.js",
     "test:e2e": "NODE_OPTIONS='--experimental-vm-modules' jest --config ./test/jest-e2e.json --runInBand",
     "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
     "format": "npx prettier . --write"
   },
   "imports": {
-    "#/*": "./source/*"
+    "#/*": "./src/*"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
