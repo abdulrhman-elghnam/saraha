@@ -3,9 +3,9 @@ import morgan from 'morgan';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import { databaseConnection } from './core/db/db.js';
-import { acceptLanguage } from './common/util/util.js';
+import { acceptLanguage, globalErrorHandling } from './common/util/util.js';
 import { chooseLanguage } from './common/lang/lang.js';
-import { globalErrorHandling } from './common/middleware/global.js';
+
 import appControllers from './app.controller.js';
 import { PORT } from './core/config/config.js';
 import { client } from './core/db/cache/cache.js';

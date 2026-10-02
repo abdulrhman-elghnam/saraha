@@ -3,11 +3,11 @@ import { NotFoundException } from './common/exception/error.js';
 import { sendSuccess } from './common/util/util.js';
 
 
-export const mainController = (Language, res) => {
+export const mainController = (lang, res) => {
   sendSuccess({
     res,
     statusCode: 200,
-    message: chooseLanguage({ Language, code: '101' }),
+    message: chooseLanguage({ lang, code: '101' }),
   });
 };
 

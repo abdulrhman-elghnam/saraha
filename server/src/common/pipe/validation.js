@@ -5,7 +5,7 @@ import { chooseLanguage } from '../lang/lang.js';
 import { ConflictException } from '../exception/error.js';
 
 export const validationPipe = ({ schema }) => {
-  return (request, response, next) => {
+  return (req, res, next) => {
     const lang = acceptLanguage({ req });
 
     const validationSchema = schema(lang);
@@ -17,9 +17,9 @@ export const validationPipe = ({ schema }) => {
         query: validationSchema.query ?? z.object({}),
       })
       .safeParse({
-        body: request.body,
-        params: request.params,
-        query: request.query,
+        body: req.body,
+        params: req.params,
+        query: req.query,
       });
 
     if (!result.success) {
@@ -39,9 +39,9 @@ export const validationPipe = ({ schema }) => {
       });
     }
 
-    request.body = result.data.body;
+    req.body = result.data.body;
 
-    request.validated = {
+    req.validated = {
       body: result.data.body,
       params: result.data.params,
       query: result.data.query,
@@ -273,12 +273,6 @@ export const generalValidationFields = {
   token: (lang) =>
     z
       .string({
-        message: chooseLanguage({
-           lang,
-          code: 233,
-        }),
-      })
-      .regex(/^[A-Za-z0-9-_=]+$/, {
         message: chooseLanguage({
            lang,
           code: 233,

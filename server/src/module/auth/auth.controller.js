@@ -3,8 +3,9 @@ import { login, profile, signUp, rotateToken, signUpWithGoogle, logout } from '.
 import { signUpSchema } from './dto/sign-up.dto.js';
 import { loginSchema } from './dto/login.dto.js';
 import { authenticationGuard } from '#/common/guard/authentication.js';
+import { authorizationGuard } from '#/common/role/authorization.js';
 import { acceptLanguage, issuer, sendSuccess } from '#/common/util/util.js';
-import { TokenTypeEnum } from '#/common/value/enum.js';
+import { SystemRoleEnum, TokenTypeEnum } from '#/common/value/enum.js';
 import { validationPipe } from '#/common/pipe/validation.js';
 import { rotateTokenSchema } from './dto/rotate-token.js';
 
@@ -79,9 +80,9 @@ authController.post('/logout', authenticationGuard(), async (req, res) => {
 authController.get(
   '/profile',
   authenticationGuard(),
-  // authorizationGuard({ role: [SystemRoleEnum.USER] }),
+  authorizationGuard({ role: [SystemRoleEnum.USER] }),
   async (req, res) => {
-    const serviceFeedback = await profile(user);
+    const serviceFeedback = await profile(req.user);
     return sendSuccess({
       res,
       language: acceptLanguage({ req }),
