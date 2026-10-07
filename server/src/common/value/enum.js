@@ -23,8 +23,14 @@ const ApiLanguage = {
   ARABIC: 1,
 };
 
+const LogoutType = {
+  SINGLE: 0,
+  ALL: 1,
+};
+
 export const GenderEnum = Gender;
 export const SystemRoleEnum = SystemRole;
 export const TokenTypeEnum = TokenType;
 export const ProviderEnum = Provider;
 export const ApiLanguageEnum = ApiLanguage;
+export const LogoutTypeEnum = LogoutType;

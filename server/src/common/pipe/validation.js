@@ -29,13 +29,11 @@ export const validationPipe = ({ schema }) => {
           code: 201,
         }),
         messageCode: 201,
-        extra: result.error.issues.map(
-          ({ path, code, message }) => ({
-            path,
-            code,
-            message,
-          })
-        ),
+        extra: result.error.issues.map(({ path, code, message }) => ({
+          path,
+          code,
+          message,
+        })),
       });
     }
 
@@ -56,20 +54,20 @@ export const generalValidationFields = {
     z
       .string({
         message: chooseLanguage({
-           lang,
+          lang,
           code: 208,
         }),
       })
       .trim()
       .min(1, {
         message: chooseLanguage({
-           lang,
+          lang,
           code: 208,
         }),
       })
       .email({
         message: chooseLanguage({
-           lang,
+          lang,
           code: 209,
         }),
       })
@@ -79,24 +77,25 @@ export const generalValidationFields = {
     z
       .string({
         message: chooseLanguage({
-           lang,
+          lang,
           code: 212,
         }),
       })
       .min(8, {
         message: chooseLanguage({
-           lang,
+          lang,
           code: 214,
         }),
       })
       .max(30, {
         message: chooseLanguage({
-           lang,
+          lang,
           code: 215,
         }),
-      }).regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {
+      })
+      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {
         message: chooseLanguage({
-           lang,
+          lang,
           code: 213,
         }),
       }),
@@ -105,13 +104,13 @@ export const generalValidationFields = {
     z
       .string({
         message: chooseLanguage({
-           lang,
+          lang,
           code: 216,
         }),
       })
       .min(1, {
         message: chooseLanguage({
-           lang,
+          lang,
           code: 216,
         }),
       }),
@@ -120,26 +119,26 @@ export const generalValidationFields = {
     z
       .string({
         message: chooseLanguage({
-           lang,
+          lang,
           code: 210,
         }),
       })
       .trim()
       .min(3, {
         message: chooseLanguage({
-           lang,
+          lang,
           code: 211,
         }),
       })
       .max(30, {
         message: chooseLanguage({
-           lang,
+          lang,
           code: 211,
         }),
       })
       .regex(/^[a-zA-Z0-9_]+$/, {
         message: chooseLanguage({
-           lang,
+          lang,
           code: 211,
         }),
       }),
@@ -148,26 +147,26 @@ export const generalValidationFields = {
     z
       .string({
         message: chooseLanguage({
-           lang,
+          lang,
           code: 222,
         }),
       })
       .trim()
       .min(3, {
         message: chooseLanguage({
-           lang,
+          lang,
           code: 223,
         }),
       })
       .max(30, {
         message: chooseLanguage({
-           lang,
+          lang,
           code: 223,
         }),
       })
       .regex(/^[a-zA-Z]+(?: [a-zA-Z]+)*$/, {
         message: chooseLanguage({
-           lang,
+          lang,
           code: 223,
         }),
       }),
@@ -184,13 +183,13 @@ export const generalValidationFields = {
     z
       .string({
         message: chooseLanguage({
-           lang,
+          lang,
           code: 229,
         }),
       })
       .regex(/^(\+201|01)[0-2,5]{1}[0-9]{8}$/, {
         message: chooseLanguage({
-           lang,
+          lang,
           code: 230,
         }),
       }),
@@ -199,7 +198,7 @@ export const generalValidationFields = {
     z.coerce
       .date({
         message: chooseLanguage({
-           lang,
+          lang,
           code: 225,
         }),
       })
@@ -214,7 +213,7 @@ export const generalValidationFields = {
         },
         {
           message: chooseLanguage({
-             lang,
+            lang,
             code: 227,
           }),
         }
@@ -230,7 +229,7 @@ export const generalValidationFields = {
         },
         {
           message: chooseLanguage({
-             lang,
+            lang,
             code: 226,
           }),
         }
@@ -240,13 +239,13 @@ export const generalValidationFields = {
     z
       .string({
         message: chooseLanguage({
-           lang,
+          lang,
           code: 231,
         }),
       })
       .url({
         message: chooseLanguage({
-           lang,
+          lang,
           code: 231,
         }),
       })
@@ -257,13 +256,13 @@ export const generalValidationFields = {
     z
       .string({
         message: chooseLanguage({
-           lang,
+          lang,
           code: 232,
         }),
       })
       .url({
         message: chooseLanguage({
-           lang,
+          lang,
           code: 232,
         }),
       })
@@ -271,11 +270,10 @@ export const generalValidationFields = {
       .optional(),
 
   token: (lang) =>
-    z
-      .string({
-        message: chooseLanguage({
-           lang,
-          code: 233,
-        }),
-      })
-}
+    z.string({
+      message: chooseLanguage({
+        lang,
+        code: 233,
+      }),
+    }),
+};

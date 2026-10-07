@@ -3,7 +3,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '#/common/exception/error.js';
-import { TokenTypeEnum, SystemRoleEnum } from '#/common/value/enum.js';
+import { TokenTypeEnum, SystemRoleEnum, LogoutTypeEnum } from '#/common/value/enum.js';
 
 import {
   ACCESS_ADMIN_TOKEN_SECRET,
@@ -20,7 +20,7 @@ import { findById } from '#/core/db/repo/repo.js';
 import { randomUUID } from 'node:crypto';
 import jwt from 'jsonwebtoken';
 
-const getRevokedTokenKey = ({ sub, jti, sid }) => `USER::${sub}::REVOKE-TOKEN::${jti}`;
+const getRevokedTokenKey = ({ sub, jti }) => `USER::${sub}::REVOKE-TOKEN::${jti}`;
 
 
 
@@ -130,7 +130,27 @@ export const getToken = (authorization) => {
   return token;
 };
 
-export const createLoginCredential = ({ id, role = SystemRoleEnum.USER, iss }) => {
+
+export const setCacheToken = async ({ accessToken, refreshToken, role }) => {
+  const { sub: accSub, jti: accJti } = verifyToken({
+    token: accessToken,
+    secret: getTokenSignature({
+      role,
+      tokenType: TokenTypeEnum.ACCESS,
+    }),
+  });
+  await setCache({ key: getRevokedTokenKey({ sub: accSub, jti: accJti }), value: accJti, options: { EX: ACCESS_USER_TOKEN_EXPIRY } })
+  const { sub : refSub  , jti : refJti } = verifyToken({
+    token: refreshToken,
+    secret: getTokenSignature({
+      role,
+      tokenType: TokenTypeEnum.REFRESH,
+    }),
+  });
+  await setCache({ key: getRevokedTokenKey({ sub: refSub, jti: refJti }), value: refJti, options: { EX: REFRESH_SYSTEM_TOKEN_EXPIRY } })
+};
+
+export const createLoginCredential = async ({ id, role = SystemRoleEnum.USER, iss }) => {
 
   const accessToken = createToken({
     payload: {
@@ -173,27 +193,28 @@ export const createLoginCredential = ({ id, role = SystemRoleEnum.USER, iss }) =
     },
   });
 
+  await setCacheToken({ accessToken, refreshToken, role });
   return {
     accessToken,
     refreshToken,
   };
 };
 
-export const revokeToken = async ({ payload } = {}) => {
+export const revokeToken = async ({ payload } = {},) => {
   if (!payload?.sub || !payload?.jti || !payload?.exp) {
     throw BadRequestException({
       messageCode: 302,
     });
   }
-  
+
   const ttl = Math.ceil((payload.exp) - Date.now() / 1000);
   if (ttl <= 0) return;
 
   await setCache({
     key: getRevokedTokenKey(payload),
     value: payload.jti,
-    options: { EX: ttl },
-  });
+    options: { EX: ttl }
+  })
 };
 
 export const decodeToken = async ({ authorization, tokenType = TokenTypeEnum.ACCESS } = {}) => {

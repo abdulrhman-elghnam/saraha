@@ -26,6 +26,19 @@ export const BadRequestException = ({
   });
 };
 
+export const TooManyRequestsException = ({
+  message = 'Too many requests',
+  messageCode,
+  extra = undefined,
+} = {}) => {
+  return ErrorResponse({
+    message,
+    messageCode,
+    status: 429,
+    extra,
+  });
+};
+
 export const UnauthorizedException = ({
   message = 'Unauthorized',
   messageCode,

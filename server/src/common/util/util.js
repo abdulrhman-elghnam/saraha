@@ -31,15 +31,11 @@ export const sendSuccess = ({
 } = {}) => {
   return res.status(statusCode).json({
     success: true,
-    message:
-      messageCode === undefined
-        ? message
-        : chooseLanguage({ lang, code: messageCode }),
+    message: messageCode === undefined ? message : chooseLanguage({ lang, code: messageCode }),
     data,
     ...extra,
   });
 };
-
 
 export const globalErrorHandling = (error, req, res, next) => {
   const status = error.cause?.status ?? 500;
@@ -48,7 +44,7 @@ export const globalErrorHandling = (error, req, res, next) => {
     Language: acceptLanguage({ req }),
     code: error.cause?.messageCode ?? 103,
   });
-  
+
   const isProduction = ENV === 'prod';
 
   return res.status(status).json({

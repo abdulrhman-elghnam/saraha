@@ -5,9 +5,9 @@ dotenv.config({
   path: path.resolve(process.cwd(), `.env.${process.env.NODE_ENV || 'dev'}`),
 });
 
-export const APP_NAME = process.env.APP_NAME ;
-export const APP_MAIL = process.env.APP_MAIL ;
-export const APP_PASSWORD = process.env.APP_PASSWORD ;
+export const APP_NAME = process.env.APP_NAME;
+export const APP_MAIL = process.env.APP_MAIL;
+export const APP_PASSWORD = process.env.APP_PASSWORD;
 
 export const ENV = process.env.NODE_ENV || 'dev';
 export const PORT = parseInt(process.env.PORT || '3000', 10);

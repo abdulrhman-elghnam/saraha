@@ -17,16 +17,13 @@ export const signUpSchema = (lang) => ({
       profileImage: generalValidationFields.profileImage(lang),
       coverImage: generalValidationFields.coverImage(lang),
     })
-    .refine(
-      (data) => data.password === data.confirmPassword,
-      {
-        message: chooseLanguage({
-          lang,
-          code: 217,
-        }),
-        path: ['confirmPassword'],
-      }
-    ),
+    .refine((data) => data.password === data.confirmPassword, {
+      message: chooseLanguage({
+        lang,
+        code: 217,
+      }),
+      path: ['confirmPassword'],
+    }),
 
   params: z.object({}),
 

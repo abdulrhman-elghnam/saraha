@@ -33,35 +33,36 @@ async function verifyGoogleAccount(idToken) {
   };
 }
 
-export const signUp = asyncHandler(async ({ fullName, gender, username, email, phoneNumber, password, DOB }) => {
-  const isFind = await findOne({
-    filter: { $or: [{ email }, { username }] },
-    select: '-_id',
-    model: UserModel,
-  });
+export const signUp = asyncHandler(
+  async ({ fullName, gender, username, email, phoneNumber, password, DOB }) => {
+    const isFind = await findOne({
+      filter: { $or: [{ email }, { username }] },
+      select: '-_id',
+      model: UserModel,
+    });
 
-  if (isFind) ConflictException({ messageCode: 402 });
+    if (isFind) ConflictException({ messageCode: 402 });
 
-  await create({
-    data: {
-      fullName,
-      username,
-      email,
-      gender,
-      phoneNumber: encrypt(phoneNumber),
-      password: await hash(password),
-      DOB: new Date(DOB),
-    },
-    model: UserModel,
-    options: {
-      lean: true,
-    },
-  });
-  return { messageCode: 104, statusCode: 201 };
-})
+    await create({
+      data: {
+        fullName,
+        username,
+        email,
+        gender,
+        phoneNumber: encrypt(phoneNumber),
+        password: await hash(password),
+        DOB: new Date(DOB),
+      },
+      model: UserModel,
+      options: {
+        lean: true,
+      },
+    });
+    return { messageCode: 104, statusCode: 201 };
+  }
+);
 
 export const signUpWithGoogle = asyncHandler(async ({ idToken } = {}, iss) => {
-
   const payload = await verifyGoogleAccount(idToken);
 
   const isExist = await findOne({
@@ -76,7 +77,7 @@ export const signUpWithGoogle = asyncHandler(async ({ idToken } = {}, iss) => {
       });
     }
 
-    const { accessToken, refreshToken } = createLoginCredential({
+    const { accessToken, refreshToken } = await createLoginCredential({
       id: isExist.id,
       role: isExist.role,
       iss,
@@ -113,7 +114,7 @@ export const signUpWithGoogle = asyncHandler(async ({ idToken } = {}, iss) => {
     options: { lean: true },
   });
 
-  const { accessToken, refreshToken } = createLoginCredential({
+  const { accessToken, refreshToken } = await createLoginCredential({
     id: user.id || user._id.toString(),
     role: user.role,
   });
@@ -146,7 +147,11 @@ export const login = asyncHandler(async ({ email, password }, iss) => {
     });
   }
 
-  const { accessToken, refreshToken } = createLoginCredential({ id: user.id, role: user.role, iss });
+  const { accessToken, refreshToken } = await createLoginCredential({
+    id: user.id,
+    role: user.role,
+    iss,
+  });
   return {
     messageCode: 309,
     statusCode: 200,
@@ -155,13 +160,15 @@ export const login = asyncHandler(async ({ email, password }, iss) => {
   };
 });
 
-export const profile = asyncHandler(async ({ firstName, lastName, username, DOB, phoneNumber, profileImage, coverImage }) => {
-  return {
-    messageCode: 127,
-    statusCode: 200,
-    data: { firstName, lastName, username, DOB, profileImage, coverImage },
-  };
-});
+export const profile = asyncHandler(
+  async ({ firstName, lastName, username, DOB, phoneNumber, profileImage, coverImage }) => {
+    return {
+      messageCode: 127,
+      statusCode: 200,
+      data: { firstName, lastName, username, DOB, profileImage, coverImage },
+    };
+  }
+);
 
 export const rotateToken = asyncHandler(async ({ expireToken } = {}, user, payload, iss) => {
   console.log(expireToken, user, payload, iss);
@@ -180,7 +187,7 @@ export const rotateToken = asyncHandler(async ({ expireToken } = {}, user, paylo
     });
   }
 
-  const { accessToken } = createLoginCredential({ id: user.id, role: user.role, iss });
+  const { accessToken } = await createLoginCredential({ id: user.id, role: user.role, iss });
   await revokeToken({ payload });
   return {
     accessToken,
@@ -189,5 +196,9 @@ export const rotateToken = asyncHandler(async ({ expireToken } = {}, user, paylo
 });
 
 export const logout = asyncHandler(async (payload) => {
+  return await revokeToken({ payload });
+});
+
+export const logoutAll = asyncHandler(async (payload) => {
   return await revokeToken({ payload });
 });

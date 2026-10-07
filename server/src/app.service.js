@@ -2,7 +2,6 @@ import { chooseLanguage } from './common/lang/lang.js';
 import { NotFoundException } from './common/exception/error.js';
 import { sendSuccess } from './common/util/util.js';
 
-
 export const mainController = (lang, res) => {
   sendSuccess({
     res,
