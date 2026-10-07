@@ -1,5 +1,16 @@
 import { Router } from 'express';
-import { login, profile, signUp, rotateToken, signUpWithGoogle, logout } from './auth.service.js';
+import {
+  login,
+  profile,
+  signUp,
+  rotateToken,
+  signUpWithGoogle,
+  logout,
+  resendEmailOtp,
+  confirmEmail,
+  forgotPassword,
+  resetPassword,
+} from './auth.service.js';
 import { signUpSchema } from './dto/sign-up.dto.js';
 import { loginSchema } from './dto/login.dto.js';
 import { authenticationGuard } from '#/common/guard/authentication.js';
@@ -9,26 +20,88 @@ import { SystemRoleEnum, TokenTypeEnum } from '#/common/value/enum.js';
 import { validationPipe } from '#/common/pipe/validation.js';
 import { rotateTokenSchema } from './dto/rotate-token.js';
 import { loginAttemptGuard } from '#/common/guard/attempt.js';
+import {
+  confirmEmailSchema,
+  emailSchema,
+  resetPasswordSchema,
+} from './dto/email-otp.dto.js';
 
 export const authController = Router();
 
 authController.post('/sign-up', validationPipe({ schema: signUpSchema }), async (req, res) => {
   const serviceFeedback = await signUp(req.body);
   return sendSuccess({
-    response: res,
-    language: acceptLanguage({ req }),
+    res,
+    lang: acceptLanguage({ req }),
     ...serviceFeedback,
   });
 });
 
-authController.post('/login', validationPipe({ schema: loginSchema }) , loginAttemptGuard(), async (req, res) => {
-  const serviceFeedback = await login(req.body, issuer({ req }));
-  return sendSuccess({
-    res,
-    language: acceptLanguage({ req }),
-    ...serviceFeedback,
-  });
-});
+authController.post(
+  '/login',
+  validationPipe({ schema: loginSchema }),
+  loginAttemptGuard(),
+  async (req, res) => {
+    const serviceFeedback = await login(req.body, issuer({ req }));
+    return sendSuccess({
+      res,
+      lang: acceptLanguage({ req }),
+      ...serviceFeedback,
+    });
+  }
+);
+
+authController.post(
+  '/resend-email-otp',
+  validationPipe({ schema: emailSchema }),
+  async (req, res) => {
+    const serviceFeedback = await resendEmailOtp(req.body);
+    return sendSuccess({
+      res,
+      lang: acceptLanguage({ req }),
+      ...serviceFeedback,
+    });
+  }
+);
+
+authController.post(
+  '/confirm-email',
+  validationPipe({ schema: confirmEmailSchema }),
+  async (req, res) => {
+    const serviceFeedback = await confirmEmail(req.body);
+    return sendSuccess({
+      res,
+      lang: acceptLanguage({ req }),
+      ...serviceFeedback,
+    });
+  }
+);
+
+authController.post(
+  '/forgot-password',
+  validationPipe({ schema: emailSchema }),
+  async (req, res) => {
+    const serviceFeedback = await forgotPassword(req.body);
+    return sendSuccess({
+      res,
+      lang: acceptLanguage({ req }),
+      ...serviceFeedback,
+    });
+  }
+);
+
+authController.post(
+  '/reset-password',
+  validationPipe({ schema: resetPasswordSchema }),
+  async (req, res) => {
+    const serviceFeedback = await resetPassword(req.body);
+    return sendSuccess({
+      res,
+      lang: acceptLanguage({ req }),
+      ...serviceFeedback,
+    });
+  }
+);
 
 authController.post('/google-sign-up', async (req, res) => {
   const serviceFeedback = await signUpWithGoogle(req.body, issuer({ req }));

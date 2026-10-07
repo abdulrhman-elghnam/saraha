@@ -8,6 +8,11 @@ dotenv.config({
 export const APP_NAME = process.env.APP_NAME;
 export const APP_MAIL = process.env.APP_MAIL;
 export const APP_PASSWORD = process.env.APP_PASSWORD;
+export const SMTP_HOST = process.env.SMTP_HOST;
+export const SMTP_PORT = parseInt(process.env.SMTP_PORT || '587', 10);
+export const SMTP_SECURE = process.env.SMTP_SECURE === 'true';
+export const SMTP_USER = process.env.SMTP_USER || APP_MAIL;
+export const SMTP_PASS = process.env.SMTP_PASS || APP_PASSWORD;
 
 export const ENV = process.env.NODE_ENV || 'dev';
 export const PORT = parseInt(process.env.PORT || '3000', 10);
