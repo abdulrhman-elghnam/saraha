@@ -1,78 +1,39 @@
 @Host = http://127.0.0.1:9090
 POST {{Host}}/authentication/sign-up HTTP/1.1
 Content-Type: application/json
-Accept-Language: 0
+Accept-Language: en
 
 {
     "fullName": "ahmed mohamed",
     "username":"ahmed123",
-    "email":"ahmed123@mail.com",
+    "email":"abdulrhman.mohamed.atya@gmail.com",
     "password":"@Aa334455",
     "confirmPassword":"@Aa334455",
-    "gender":0,
+    "gender":"MALE",
     "phoneNumber":"01008261140",
     "DOB" : "2000-9-9"
 }
 ###
 
-POST {{Host}}/authentication/confirm-email HTTP/1.1
-Content-Type: application/json
-Accept-Language: 0
-
-{
-    "email": "ahmed123@mail.com",
-    "otp": "123456"
-}
-###
-
-POST {{Host}}/authentication/resend-email-otp HTTP/1.1
-Content-Type: application/json
-Accept-Language: 0
-
-{
-    "email": "ahmed123@mail.com"
-}
-###
-
-POST {{Host}}/authentication/forgot-password HTTP/1.1
-Content-Type: application/json
-Accept-Language: 0
-
-{
-    "email": "ahmed123@mail.com"
-}
-###
-
-POST {{Host}}/authentication/reset-password HTTP/1.1
-Content-Type: application/json
-Accept-Language: 0
-
-{
-    "email": "ahmed123@mail.com",
-    "otp": "123456",
-    "password": "@Aa334455",
-    "confirmPassword": "@Aa334455"
-}
-###
-
 POST {{Host}}/authentication/login HTTP/1.1
 Content-Type: application/json
-Accept-Language: 0
+Accept-Language: en
 
 {
-    "email":"ahmed123@gmail.com",
+    "email":"abdulrhman.atya@gmail.com",
     "password":"@Aa334455"
 }
+
 
 ###
 
 POST {{Host}}/authentication/rotate-token HTTP/1.1
 Content-Type: application/json
 Accept-Language: 0
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWJkNzIzOWVkNGUwZDc1NTg2Nzk3NDYiLCJhdWQiOjAsInNpZCI6Ijk5NDc0ZDBhLWNkZGItNGE1ZC1iNDc0LThkOGQxYjQ5MWI0MyIsInNlc3Npb25FeHAiOjE4MjIzMzY3NzEsImlhdCI6MTc5MDgwMDc3MSwiZXhwIjoxODIyMzM2NzcxLCJqdGkiOiI1YzRiM2RjZi1mMjQzLTQxYjctYTYwOC0zNTU4NmViNWFhMTIifQ.EMrZ0WkvxEl_x_fUSgW2_MXQvkQ9DoXKRwQcScXgWmc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWNhNjY0YjAzNjdhYjVmMWRkMDY2NWQiLCJhdWQiOiJVU0VSIiwiaXNzdWVyIjoiaHR0cDovLzEyNy4wLjAuMTo5MDkwIiwiaWF0IjoxNzkxNjY1NTc0LCJleHAiOjE4MjMyMDE1NzQsImp0aSI6ImQ4NDAxNjczLTk1NmUtNDc3OS1hOWUxLTg0NTgxYTUxNjVkYyJ9.pmUM4EVdb5uD8pZXasBcW_VetY57fOO9dI3854yUu_Q
 
 {
-    "expireToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWJkM2MxZGJlYzE3MmM1ZDQ0OGUwZTkiLCJhdWQiOjAsImlzc3VlciI6Imh0dHA6Ly8xMjcuMC4wLjE6OTA5MCIsImlhdCI6MTc5MDc5NzM0MSwiZXhwIjoxNzkwNzk4MjQxLCJqdGkiOiIwZjJlZmRlOS05MWI1LTQwNWUtOGFjOS1jNzIyNjk5YzI5MmUifQ.9fuz2uFSzMsgooWiCcJnTizK6-hg-MYrgH70Ji3NQnI"
+    "expireToken":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWNhNjY0YjAzNjdhYjVmMWRkMDY2NWQiLCJhdWQiOiJVU0VSIiwiaXNzdWVyIjoiaHR0cDovLzEyNy4wLjAuMTo5MDkwIiwiaWF0IjoxNzkxNjYyNTkyLCJleHAiOjE3OTE2NjM0OTIsImp0aSI6IjVjOWZmNGQzLTkwM2ItNDkyOS05Nzk0LTIwMWY5ZjExZTA5NiJ9.sWuWl6bJ7o0x_H8ZXWr4gPgiwXNXM48tLuufBA_iY5U"
 }
 
 ###
@@ -83,7 +44,29 @@ Accept-Language: 1
 Authorization: Bearer 
 
 ###
-POST {{Host}}/authentication/logout HTTP/1.1
+post  {{Host}}/authentication/verify-email HTTP/1.1
 Content-Type: application/json
-Accept-Language: 0
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWJkNzIzOWVkNGUwZDc1NTg2Nzk3NDYiLCJhdWQiOjAsImlzc3VlciI6Imh0dHA6Ly8xMjcuMC4wLjE6OTA5MCIsImlhdCI6MTc5MDk3Mjc3MywiZXhwIjoxNzkwOTczNjczLCJqdGkiOiI4N2ExNTBjOS0wZWEzLTQ2Y2QtOWEzMy0xMjg0MTE0YTE1OWMifQ.lN4QfYHPZOsxHoHR-MoueTHMmes30Wk7aItxCtKZvP0
+Accept-Language: 1
+
+{
+    "email":"ahmed123@mail.com"
+}
+
+###
+
+post  {{Host}}/authentication/send-verify-email HTTP/1.1
+Content-Type: application/json
+Accept-Language: 1
+
+{
+    "email":"abdulrhman.mohamed.atya@gmail.com"
+}
+###
+post  {{Host}}/authentication/logout HTTP/1.1
+Content-Type: application/json
+Authorization:  Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWNhNjY0YjAzNjdhYjVmMWRkMDY2NWQiLCJhdWQiOiJVU0VSIiwiaXNzdWVyIjoiaHR0cDovLzEyNy4wLjAuMTo5MDkwIiwiaWF0IjoxNzkxNjY4Mjc3LCJleHAiOjE3OTE2NjkxNzcsImp0aSI6ImYwM2UyNjY4LWU1NDEtNGUwNi05ZWE0LTBhZWY4NGMwNWM0MSJ9.DuRVRLv40_nKbBFnoinOdm0bKeidXpzJ1XFWuA_Cr7E
+Accept-Language: 1
+
+{
+    "action" : "ALL"
+}

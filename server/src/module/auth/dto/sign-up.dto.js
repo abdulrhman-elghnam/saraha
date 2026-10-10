@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-import { chooseLanguage } from '../../../common/lang/lang.js';
-import { generalValidationFields } from '../../../common/pipe/validation.js';
+import { chooseLanguage } from '#/common/_EXPORT.js';
+import { generalValidationFields } from '#/common/middleware/_EXPORT.js';
 
 export const signUpSchema = (lang) => ({
   body: z
@@ -14,8 +14,6 @@ export const signUpSchema = (lang) => ({
       gender: generalValidationFields.gender(lang),
       phoneNumber: generalValidationFields.phoneNumber(lang),
       DOB: generalValidationFields.DOB(lang),
-      profileImage: generalValidationFields.profileImage(lang),
-      coverImage: generalValidationFields.coverImage(lang),
     })
     .refine((data) => data.password === data.confirmPassword, {
       message: chooseLanguage({
@@ -24,6 +22,16 @@ export const signUpSchema = (lang) => ({
       }),
       path: ['confirmPassword'],
     }),
+
+  params: z.object({}),
+
+  query: z.object({}),
+});
+
+export const googleSignUpSchema = (lang) => ({
+  body: z.object({
+    idToken: generalValidationFields.idToken(lang),
+  }),
 
   params: z.object({}),
 
