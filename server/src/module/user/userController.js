@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { BadRequestException, fileFieldValidation, localFileUpload, sendSuccess, TokenTypeEnum } from '#/common/_EXPORT.js';
+import { BadRequestException, fileFieldValidation, localFileUpload, processFile, sendSuccess, TokenTypeEnum } from '#/common/_EXPORT.js';
 import { authenticationGuard, userProfileCache } from '#/common/middleware/_EXPORT.js';
 import { profile, updateAvatar } from './userService.js';
 
@@ -22,15 +22,10 @@ userController.get(
 userController.post(
   '/avatar',
   authenticationGuard({ tokenType: TokenTypeEnum.ACCESS }),
-  localFileUpload({
-    customPath: 'avatar',
-    validation: fileFieldValidation.image,
-  }).single('avatar'),
   async (req, res) => {
     if (!req.file) {
       throw BadRequestException({ messageCode: 602 });
     }
-
     const serviceFeedback = await updateAvatar(req.user, req.file.finalPath);
     return sendSuccess({
       res,

@@ -3,11 +3,11 @@ import { databaseConnection, cacheClient, PORT } from '#/core/_EXPORT.js';
 import { globalErrorHandler } from './common/_EXPORT.js';
 import { appConfig } from './appConfig.js';
 import { appController } from './appController.js';
-import { LOCAL_UPLOAD_DIRECTORY } from './common/upload/multerLocal.js';
+
 const app = express();
 
 app.use(Object.values(appConfig));
-app.use('/assets', express.static(LOCAL_UPLOAD_DIRECTORY));
+app.use('/assets', express.static("./public/assets"));
 app.use(appController);
 app.use(globalErrorHandler);
 const main = async () => {
