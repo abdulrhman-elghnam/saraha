@@ -3,7 +3,7 @@ import { BadRequestException, fileFieldValidation, localFileUpload, processFile,
 import { authenticationGuard, userProfileCache } from '#/common/middleware/_EXPORT.js';
 import { profile, updateAvatar } from './userService.js';
 
-export const userController = Router({ caseSensitive: true, strict: true });
+export const userController =Router({ caseSensitive: true, strict: true ,mergeParams : true });
 
 userController.get(
   '/profile',

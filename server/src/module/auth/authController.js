@@ -7,7 +7,7 @@ import { signUpSchema, googleSignUpSchema } from './dto/sign-up.dto.js';
 import { authenticationGuard } from '#/common/middleware/_EXPORT.js';
 import { loginAttempt, loginBlock } from '#/common/middleware/cache/authCache.js';
 
-export const authController = Router({ caseSensitive: true, strict: true });
+export const authController = Router({ caseSensitive: true, strict: true ,mergeParams : true });
 
 authController.post(
     '/sign-up',
