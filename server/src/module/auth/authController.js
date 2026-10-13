@@ -39,15 +39,29 @@ authController.post(
     '/send-verify-email',
     async (req, res) => {
         await sendVerifyEmail(req.body)
-        return sendSuccess({ res, statusCode: 200, messageCode: 107, lang: req.acceptsLanguages()[0] });
-    });
 
-authController.get(
+        return sendSuccess({
+            res,
+            statusCode: 200,
+            messageCode: 107,
+            lang: req.acceptsLanguages()[0]
+        })
+    }
+)
+
+authController.post(
     '/verify-email',
     async (req, res) => {
-        await verifyEmail(req.query)
-        return sendSuccess({ res, statusCode: 200, messageCode: 107, lang: req.acceptsLanguages()[0] });
-    });
+        await verifyEmail(req.body)
+
+        return sendSuccess({
+            res,
+            statusCode: 200,
+            messageCode: 107,
+            lang: req.acceptsLanguages()[0]
+        })
+    }
+)
 
 
 authController.post(

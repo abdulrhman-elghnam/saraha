@@ -1,5 +1,5 @@
 export const getRevokedTokenKey = ({ sub, jti }) => `USER::${sub}::REVOKE-TOKEN::${jti}`;
-export const getEmailVerifyKey = (email)=>`EMAIL-VERIFY::${email}`
+export const getEmailVerifyKey = (email) =>`EMAIL-VERIFY::${email}`
 export const getUserProfileCache = (id) => `PROFILE::${id}` 
 
 

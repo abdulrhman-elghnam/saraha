@@ -62,6 +62,7 @@
   "230": "invalid phone number",
   "231": "invalid profile image",
   "232": "invalid cover image",
+  "233":"invalid otp",
 
 
   "301": "invalid credentials",
@@ -120,6 +121,7 @@
   "707": "password reset token is invalid",
   "708": "password reset token expired",
   "709": "password reset successfully",
+
 
   "801": "external service error",
   "802": "external service unavailable",

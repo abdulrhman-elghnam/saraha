@@ -1,4 +1,4 @@
-export const verifyEmailTem = ({ verifyUrl , email }) => `
+export const verifyEmailTem = ({ otp , email }) => `
 <!DOCTYPE html>
 <html lang="en">
 <body style="font-family: Arial; text-align: center; padding: 40px;">
@@ -6,8 +6,7 @@ export const verifyEmailTem = ({ verifyUrl , email }) => `
   <h2>Verify Your Email</h2>
   <p>Click below to verify your email address.</p>
 
-  <a
-    href="${verifyUrl}"
+  <div
     style="
       display: inline-block;
       padding: 14px 28px;
@@ -17,8 +16,8 @@ export const verifyEmailTem = ({ verifyUrl , email }) => `
       border-radius: 6px;
     "
   >
-    Verify Email
-  </a>
+     otp : ${otp}
+  </div>
 
 </body>
 </html>

@@ -46,10 +46,11 @@ Authorization: Bearer
 ###
 post  {{Host}}/authentication/verify-email HTTP/1.1
 Content-Type: application/json
-Accept-Language: 1
+Accept-Language: en
 
 {
-    "email":"ahmed123@mail.com"
+      "email":"abdulrhman.mohamed.atya@gmail.com",
+      "otp" : "906420"
 }
 
 ###

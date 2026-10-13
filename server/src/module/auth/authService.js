@@ -5,7 +5,7 @@ import {
     hash,
     verifyGoogleAccount,
 } from '#/common/security/_INDEX.js';
-import { asyncHandler, BadRequestException, ConflictException, GenderEnum, LogoutTypeEnum, NotFoundException, ProviderEnum, sendEmail, UnauthorizedException } from '#/common/_EXPORT.js';
+import { asyncHandler, BadRequestException, ConflictException, createNumberOtp, GenderEnum, LogoutTypeEnum, NotFoundException, ProviderEnum, sendEmail, UnauthorizedException } from '#/common/_EXPORT.js';
 import { create, deleteCache, findCacheKeys, findOne, getCache, getEmailVerifyKey, getRevokedTokenKey, PORT, setCache, UserModel } from '#/core/_EXPORT.js';
 import { verifyEmailTem } from '#/common/mail/emailTemplate.js';
 import { createLoginCredential } from '#/common/security/access/systemCredentialsSecurityAccess.js';
@@ -148,29 +148,64 @@ export const systemLogin = asyncHandler(async ({ email, password }, iss) => {
 });
 
 
-export const sendVerifyEmail = async ({ email }) => {
-    const user = await findOne({ filter: { email }, model: UserModel })
-    console.log(user);
 
-    if (user.emailVerifiedAt) ConflictException({ messageCode: 413 })
-    await sendEmail({ to: email, html: verifyEmailTem({ verifyUrl: `http://127.0.0.1:${PORT}/authentication/verify-email?email=${email}`, email }) })
-    await setCache({ key: getEmailVerifyKey(email), value: email, options: { EX: 120 } })
+
+export const sendVerifyEmail = async ({ email }) => {
+    const user = await findOne({
+        filter: { email },
+        model: UserModel
+    })
+
+    if (user.emailVerifiedAt) { ConflictException({ messageCode: 413 })
+    }
+
+    const otp = String(createNumberOtp())
+    const hashedOtp = await hash(otp)
+
+    await sendEmail({
+        to: email,
+        html: verifyEmailTem({ email, otp })
+    })
+
+    await setCache({
+        key: getEmailVerifyKey(email),
+        value: hashedOtp,
+        options: { EX: 120 }
+    })
 }
 
-export const verifyEmail = async ({ email }) => {
-    if (!await getCache({ key: getEmailVerifyKey(email) })) {
-        ConflictException({ messageCode: 318 })
-    }
-    const user = await findOne({ filter: { email }, model: UserModel })
-    if (!user) NotFoundException({ messageCode: 401 });
+export const verifyEmail = async ({ email, otp }) => {
+    const user = await findOne({
+        filter: { email },
+        model: UserModel
+    })
+
     if (user.emailVerifiedAt) {
-        ConflictException({ messageCode: 413 })
+     ConflictException({ messageCode: 413 })
     }
+
+    const hashedOtp = await getCache({
+        key: getEmailVerifyKey(email)
+    })
+
+    if (!hashedOtp) {
+     ConflictException({ messageCode: 233 })
+    }
+
+    const isValid = await compare(String(otp), hashedOtp)
+
+    if (!isValid) {
+     ConflictException({ messageCode: 233 })
+    }
+
     user.emailVerifiedAt = new Date()
     await user.save()
-    await deleteCache({ key: getEmailVerifyKey(email) })
-    return
+
+    await deleteCache({
+        key: getEmailVerifyKey(email)
+    })
 }
+
 
 export const rotateToken = asyncHandler(
     async ({ expireToken } = {}, user, payload, iss) => {
@@ -222,7 +257,7 @@ export const rotateToken = asyncHandler(
 export const logout = asyncHandler(async ({ action }, user, payload) => {
     switch (action) {
         case LogoutTypeEnum.SINGLE:
-            await deleteCache({key : getRevokedTokenKey({sub:payload.sub,jti:payload.jti})})
+            await deleteCache({ key: getRevokedTokenKey({ sub: payload.sub, jti: payload.jti }) })
             break;
         case LogoutTypeEnum.ALL:
             const sessions = await findCacheKeys({ pattern: `USER::${payload.sub}::REVOKE-TOKEN::*` })
