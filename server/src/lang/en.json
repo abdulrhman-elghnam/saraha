@@ -63,6 +63,9 @@
   "231": "invalid profile image",
   "232": "invalid cover image",
   "233": "invalid otp",
+  "234": "ID token is required",
+  "235": "OTP is required",
+  "236": "OTP must be a 6-digit code",
 
   "301": "invalid credentials",
   "302": "invalid token",

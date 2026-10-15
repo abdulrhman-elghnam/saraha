@@ -1,30 +1,41 @@
 import multer from 'multer';
 import { randomUUID } from 'node:crypto';
-import { resolve } from 'nodemailer/lib/shared/url.js';
-import { writeFile } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { fileTypeFromBuffer } from 'file-type';
-import { extname } from "node:path";
+import { extname, resolve } from 'node:path';
+import { BadRequestException } from '../exception/exceptionErr.js';
+
 export const fileFieldValidation = {
   image: ['image/jpeg', 'image/jpg', 'image/png'],
   video: ['video/mp4'],
 };
 
-export const localFileUpload = ({ maxFileSize = 5, validation = [] } = {}) => {
-  const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, './assets');
-    },
+export const localFileUpload = ({
+  maxFileSize = 5,
+  validation = [],
+  customPath = 'general',
+} = {}) => {
+  const destination = `./assets/${customPath}`;
 
-filename: (req, file, cb) => {
-  cb(null, `${randomUUID()}${extname(file.originalname).toLowerCase()}`);
-},
+  const storage = multer.diskStorage({
+    destination: async function (req, file, cb) {
+      try {
+        await mkdir(resolve(destination), { recursive: true });
+        cb(null, destination);
+      } catch (error) {
+        cb(error);
+      }
+    },
+    filename: (req, file, cb) => {
+      cb(null, `${randomUUID()}${extname(file.originalname).toLowerCase()}`);
+    },
   });
 
   function fileFilter(req, file, cb) {
     if (validation.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('Invalid format', { cause: { status: 400 } }), false);
+      cb(new Error('Invalid format', { cause: { status: 400, messageCode: 603 } }), false);
     }
   }
 
@@ -34,9 +45,9 @@ filename: (req, file, cb) => {
 export const processFile = async ({ customPath = 'general', file, validation = [] }) => {
   const result = await fileTypeFromBuffer(file.buffer);
   if (!result || !validation.includes(result.mime)) {
-    throw BadRequestException('Invalid file formats');
+    throw BadRequestException({ messageCode: 603 });
   } else {
-    await mkdir(resolve(`./assets/${customPath}`));
+    await mkdir(resolve(`./assets/${customPath}`), { recursive: true });
     const uniqueFilePath = `assets/${customPath}/${randomUUID()}.${result.ext}`;
     await writeFile(resolve(`./${uniqueFilePath}`), file.buffer);
     file.path = uniqueFilePath;
