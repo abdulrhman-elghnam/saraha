@@ -1,1 +1,381 @@
-{}
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Saraha API",
+    "version": "1.0.0",
+    "description": "API documentation for the Saraha server."
+  },
+  "servers": [
+    {
+      "url": "{{baseUrl}}",
+      "description": "Set this URL to the server base URL."
+    }
+  ],
+  "tags": [
+    {
+      "name": "Messages",
+      "description": "Send, list, retrieve, and delete messages."
+    }
+  ],
+  "paths": {
+    "/message/{receiverId}": {
+      "post": {
+        "tags": ["Messages"],
+        "summary": "Send a message",
+        "description": "Send a message to a verified recipient. Include text, up to two JPEG or PNG attachments (maximum 10 MB each), or both. Authentication is optional; when a valid access token is supplied, the message is associated with that sender.",
+        "security": [{}, { "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "receiverId",
+            "in": "path",
+            "required": true,
+            "description": "MongoDB ID of the recipient.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{24}$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/AcceptLanguage"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 50000,
+                    "description": "Optional message text. Required when no attachments are provided."
+                  },
+                  "attachments": {
+                    "type": "array",
+                    "maxItems": 2,
+                    "description": "Optional JPEG or PNG image files, up to 10 MB each.",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                }
+              },
+              "encoding": {
+                "attachments": {
+                  "style": "form",
+                  "explode": true
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Message created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input, no content or attachments supplied, or unsupported attachment.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Recipient not found, unverified, or deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/message/list": {
+      "get": {
+        "tags": ["Messages"],
+        "summary": "List messages for the authenticated user",
+        "description": "Returns messages where the authenticated user is the sender or recipient.",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AcceptLanguage"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Messages returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "messages": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Message"
+                          }
+                        }
+                      },
+                      "required": ["messages"]
+                    }
+                  },
+                  "required": ["success", "message", "data"]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/message/{messageId}": {
+      "parameters": [
+        {
+          "name": "messageId",
+          "in": "path",
+          "required": true,
+          "description": "MongoDB ID of the message.",
+          "schema": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{24}$"
+          }
+        },
+        {
+          "$ref": "#/components/parameters/AcceptLanguage"
+        }
+      ],
+      "get": {
+        "tags": ["Messages"],
+        "summary": "Get a message",
+        "description": "Retrieve a message if the authenticated user is its sender or recipient.",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Message returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleMessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Message not found or the user is not a participant.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Messages"],
+        "summary": "Delete a message",
+        "description": "Delete a message if the authenticated user is its sender or recipient.",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Message deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleMessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Message not found or the user is not a participant.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "parameters": {
+      "AcceptLanguage": {
+        "name": "Accept-Language",
+        "in": "header",
+        "required": false,
+        "description": "Preferred response language.",
+        "schema": {
+          "type": "string",
+          "enum": ["EN", "AR"],
+          "default": "EN"
+        }
+      }
+    },
+    "schemas": {
+      "Message": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "content": {
+            "type": "string",
+            "nullable": true
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "receiverId": {
+            "type": "string"
+          },
+          "senderId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Not returned by get/list endpoints."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": ["_id", "receiverId", "attachments", "createdAt", "updatedAt"]
+      },
+      "MessageResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "resource created successfully"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "$ref": "#/components/schemas/Message"
+              }
+            },
+            "required": ["message"]
+          }
+        },
+        "required": ["success", "message", "data"]
+      },
+      "SingleMessageResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "$ref": "#/components/schemas/Message"
+              }
+            },
+            "required": ["message"]
+          }
+        },
+        "required": ["success", "message", "data"]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "status": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": ["success", "status", "message"]
+      }
+    }
+  }
+}

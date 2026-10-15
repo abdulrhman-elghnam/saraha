@@ -5,3 +5,6 @@ Accept-Language: EN
 ###
 GET {{Host}}/any HTTP/1.1
 Accept-Language: AR
+###
+GET https://squirt-purity-resonate.ngrok-free.dev/ HTTP/1.1
+Accept-Language: EN

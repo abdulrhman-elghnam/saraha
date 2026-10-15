@@ -17,6 +17,14 @@
     {
       "key": "googleIdToken",
       "value": ""
+    },
+    {
+      "key": "receiverId",
+      "value": ""
+    },
+    {
+      "key": "messageId",
+      "value": ""
     }
   ],
   "item": [
@@ -139,6 +147,152 @@
               "raw": "{{baseUrl}}/authentication/test",
               "host": ["{{baseUrl}}"],
               "path": ["authentication", "test"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Messages",
+      "item": [
+        {
+          "name": "Send message",
+          "description": "Authentication is optional. Set the optional Authorization header to send this message as the logged-in user. Provide content, up to two image attachments, or both. Each image must be JPEG or PNG and no larger than 10 MB.",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.data?.message?._id) {",
+                  "    pm.collectionVariables.set('messageId', response.data.message._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text",
+                "disabled": true
+              },
+              {
+                "key": "Accept-Language",
+                "value": "EN"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "content",
+                  "value": "Hello, this is a message.",
+                  "type": "text"
+                },
+                {
+                  "key": "attachments",
+                  "type": "file",
+                  "src": "",
+                  "disabled": true
+                },
+                {
+                  "key": "attachments",
+                  "type": "file",
+                  "src": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/message/{{receiverId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["message", "{{receiverId}}"]
+            }
+          }
+        },
+        {
+          "name": "List my messages",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "EN"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/message/list",
+              "host": ["{{baseUrl}}"],
+              "path": ["message", "list"]
+            }
+          }
+        },
+        {
+          "name": "Get message",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "EN"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/message/{{messageId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["message", "{{messageId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete message",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept-Language",
+                "value": "EN"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/message/{{messageId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["message", "{{messageId}}"]
             }
           }
         }
