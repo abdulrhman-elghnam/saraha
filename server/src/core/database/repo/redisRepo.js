@@ -16,7 +16,7 @@ export const deleteCache = async ({ key } = {}) => {
 
 export const cacheExists = async ({ key } = {}) => {
   return (await cacheClient.exists(key)) > 0;
-}; 
+};
 
 export const expireCache = async ({ key, seconds } = {}) => {
   return await cacheClient.expire(key, seconds);
@@ -38,21 +38,19 @@ export const decrementCache = async ({ key, amount = 1 } = {}) => {
   return await cacheClient.decrBy(key, amount);
 };
 
-
-
 export const findCacheKeys = async ({ pattern = '*' } = {}) => {
-    const keys = [];
-    let cursor = '0';
+  const keys = [];
+  let cursor = '0';
 
-    do {
-        const result = await cacheClient.scan(cursor, {
-            MATCH: pattern,
-            COUNT: 100,
-        });
+  do {
+    const result = await cacheClient.scan(cursor, {
+      MATCH: pattern,
+      COUNT: 100,
+    });
 
-        cursor = result.cursor;
-        keys.push(...result.keys);
-    } while (cursor !== '0');
+    cursor = result.cursor;
+    keys.push(...result.keys);
+  } while (cursor !== '0');
 
-    return keys;
+  return keys;
 };

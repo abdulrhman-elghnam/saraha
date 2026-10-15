@@ -62,8 +62,7 @@
   "230": "invalid phone number",
   "231": "invalid profile image",
   "232": "invalid cover image",
-  "233":"invalid otp",
-
+  "233": "invalid otp",
 
   "301": "invalid credentials",
   "302": "invalid token",
@@ -82,7 +81,7 @@
   "315": "invalid token type",
   "316": "account is not authenticated",
   "317": "authentication failed",
-  "318":"time out",
+  "318": "time out",
 
   "401": "user not found",
   "402": "user already exists",
@@ -96,8 +95,8 @@
   "410": "phone number already exists",
   "411": "current password is incorrect",
   "412": "new password must be different from the current password",
-    "413": "email is verified before",
-    "414" : "can not get new access token until current token expire",
+  "413": "email is verified before",
+  "414": "can not get new access token until current token expire",
   "501": "database error",
   "502": "database connection failed",
   "503": "database query failed",
@@ -121,7 +120,6 @@
   "707": "password reset token is invalid",
   "708": "password reset token expired",
   "709": "password reset successfully",
-
 
   "801": "external service error",
   "802": "external service unavailable",

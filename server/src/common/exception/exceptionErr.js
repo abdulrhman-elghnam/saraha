@@ -1,4 +1,4 @@
-import { ErrorResponse } from "./errResponse.js";
+import { ErrorResponse } from './errResponse.js';
 
 export const BadRequestException = ({
   message = 'Bad request',

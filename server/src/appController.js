@@ -9,7 +9,7 @@ import { msgController } from './module/msg/msgController.js';
 export const appController = Router();
 
 appController.use('/authentication', authController);
-appController.use('/message', msgController)
+appController.use('/message', msgController);
 appController.use('/user', userController);
 appController.get('/', (req, res) => mainFeedbackService({ lang: acceptLanguage({ req }), res }));
 appController.all('/{*splash}', () => notFoundFeedbackService());

@@ -1,4 +1,4 @@
-export const verifyEmailTem = ({ otp , email }) => `
+export const verifyEmailTem = ({ otp, email }) => `
 <!DOCTYPE html>
 <html lang="en">
 <body style="font-family: Arial; text-align: center; padding: 40px;">

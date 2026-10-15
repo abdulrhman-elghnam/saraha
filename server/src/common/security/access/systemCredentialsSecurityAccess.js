@@ -2,7 +2,7 @@ import { createToken, getTokenExpiry, getTokenSignature, setCacheToken } from '.
 import { SystemRoleEnum, TokenTypeEnum } from '#/common/_EXPORT.js';
 import { getUserProfileCache, setCache } from '#/core/_EXPORT.js';
 
-export const createLoginCredential = async ({ id, role = SystemRoleEnum.USER, iss , user }) => {
+export const createLoginCredential = async ({ id, role = SystemRoleEnum.USER, iss, user }) => {
   const accessToken = createToken({
     payload: {
       sub: id,
@@ -44,11 +44,10 @@ export const createLoginCredential = async ({ id, role = SystemRoleEnum.USER, is
   });
 
   if (user) {
-     await setCache({key:getUserProfileCache(user._id.toString()),value: user})
+    await setCache({ key: getUserProfileCache(user._id.toString()), value: user });
   }
   await setCacheToken({ accessToken, refreshToken, role });
 
-  
   return {
     accessToken,
     refreshToken,

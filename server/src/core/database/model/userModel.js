@@ -64,9 +64,9 @@ const userSchema = new mongoose.Schema(
 
     credentialTime: {
       type: Date,
-      default: null
+      default: null,
     },
-    
+
     profileImage: {
       type: String,
       default: null,

@@ -1,11 +1,11 @@
-import { processMulterUpload } from "#/common/_EXPORT.js";
+import { processMulterUpload } from '#/common/_EXPORT.js';
 export const uploadMiddleware = ({
   multerMiddleware,
   customPath = 'general',
   validation = [],
   isRequired = true,
 }) => {
-  return (req, res, next) => {
+  return async (req, res, next) => {
     try {
       multerMiddleware(req, res, async (error) => {
         if (error) {
@@ -17,7 +17,7 @@ export const uploadMiddleware = ({
           return next(
             new Error('File is required', {
               cause: { status: 400, messageCode: 602 },
-            }),
+            })
           );
         }
 

@@ -6,8 +6,9 @@ import { appController } from './appController.js';
 
 const app = express();
 
+app.set('trust proxy', true);
 app.use(Object.values(appConfig));
-app.use('/assets', express.static("./public/assets"));
+app.use('/assets', express.static('./assets'));
 app.use(appController);
 app.use(globalErrorHandler);
 const main = async () => {

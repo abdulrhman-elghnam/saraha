@@ -1,9 +1,16 @@
 import { Router } from 'express';
-import { BadRequestException, fileFieldValidation, localFileUpload, processFile, sendSuccess, TokenTypeEnum } from '#/common/_EXPORT.js';
+import {
+  BadRequestException,
+  fileFieldValidation,
+  localFileUpload,
+  processFile,
+  sendSuccess,
+  TokenTypeEnum,
+} from '#/common/_EXPORT.js';
 import { authenticationGuard, userProfileCache } from '#/common/middleware/_EXPORT.js';
 import { profile, updateAvatar } from './userService.js';
 
-export const userController =Router({ caseSensitive: true, strict: true ,mergeParams : true });
+export const userController = Router({ caseSensitive: true, strict: true, mergeParams: true });
 
 userController.get(
   '/profile',
@@ -16,7 +23,7 @@ userController.get(
       data: serviceFeedback,
       lang: req.acceptsLanguages()[0],
     });
-  },
+  }
 );
 
 userController.post(
@@ -32,5 +39,5 @@ userController.post(
       data: serviceFeedback,
       lang: req.acceptsLanguages()[0],
     });
-  },
+  }
 );

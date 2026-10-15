@@ -4,13 +4,9 @@ import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import { TooManyRequestsException } from './common/_EXPORT.js';
 import helmet from 'helmet';
+import { generateLimiter } from './common/middleware/_EXPORT.js';
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  limit: 100,
-  handler: (req, res) => TooManyRequestsException({ messageCode: 114 }),
-});
-
+const limiter = generateLimiter({ limit: 1000, ttl: 15 });
 const appCors = cors({
   origin: true,
   credentials: true,
@@ -20,5 +16,6 @@ const appCors = cors({
 
 const jsonParse = express.json();
 const appMorgan = morgan('dev');
-const appHelmet = helmet()
+const appHelmet = helmet();
+
 export const appConfig = { limiter, appCors, appMorgan, appHelmet, jsonParse };

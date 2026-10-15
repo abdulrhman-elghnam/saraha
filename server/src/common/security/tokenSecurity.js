@@ -1,4 +1,3 @@
-
 import {
   BadRequestException,
   NotFoundException,
@@ -16,12 +15,7 @@ import {
   REFRESH_SYSTEM_TOKEN_EXPIRY,
 } from '#/core/config/configEnv.js';
 
-import {
-  setCache,
-  UserModel,
-  findById,
-  cacheExists,
-} from '#/core/_EXPORT.js';
+import { setCache, UserModel, findById, cacheExists } from '#/core/_EXPORT.js';
 
 import { getRevokedTokenKey } from '#/core/database/redis/keyCache.js';
 import { randomUUID } from 'node:crypto';
@@ -38,10 +32,7 @@ export const createToken = ({
   });
 };
 
-export const verifyToken = ({
-  token,
-  secret = ACCESS_USER_TOKEN_SECRET,
-} = {}) => {
+export const verifyToken = ({ token, secret = ACCESS_USER_TOKEN_SECRET } = {}) => {
   return jwt.verify(token, secret);
 };
 
@@ -59,9 +50,7 @@ export const getTokenExpiration = ({ token } = {}) => {
   let decodedPayload;
 
   try {
-    decodedPayload = JSON.parse(
-      Buffer.from(payload, 'base64url').toString(),
-    );
+    decodedPayload = JSON.parse(Buffer.from(payload, 'base64url').toString());
   } catch {
     throw BadRequestException({ messageCode: 302 });
   }
@@ -131,11 +120,7 @@ export const getToken = (authorization) => {
   return token;
 };
 
-export const setCacheToken = async ({
-  accessToken,
-  refreshToken,
-  role,
-} = {}) => {
+export const setCacheToken = async ({ accessToken, refreshToken, role } = {}) => {
   const accessPayload = verifyToken({
     token: accessToken,
     secret: getTokenSignature({
@@ -152,12 +137,7 @@ export const setCacheToken = async ({
     }),
   });
 
-  if (
-    !accessPayload.sub ||
-    !accessPayload.jti ||
-    !refreshPayload.sub ||
-    !refreshPayload.jti
-  ) {
+  if (!accessPayload.sub || !accessPayload.jti || !refreshPayload.sub || !refreshPayload.jti) {
     throw BadRequestException({ messageCode: 302 });
   }
 
@@ -211,10 +191,7 @@ export const revokeToken = async ({ payload } = {}) => {
   });
 };
 
-export const decodeToken = async ({
-  authorization,
-  tokenType = TokenTypeEnum.ACCESS,
-} = {}) => {
+export const decodeToken = async ({ authorization, tokenType = TokenTypeEnum.ACCESS } = {}) => {
   const token = getToken(authorization);
   const decoded = jwt.decode(token);
 
@@ -224,10 +201,7 @@ export const decodeToken = async ({
 
   const role = decoded.aud;
 
-  if (
-    role !== SystemRoleEnum.USER &&
-    role !== SystemRoleEnum.ADMIN
-  ) {
+  if (role !== SystemRoleEnum.USER && role !== SystemRoleEnum.ADMIN) {
     throw UnauthorizedException({ messageCode: 317 });
   }
 

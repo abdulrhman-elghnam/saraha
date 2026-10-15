@@ -1,4 +1,3 @@
-
 import { z } from 'zod';
 import { acceptLanguage, ConflictException } from '#/common/_EXPORT.js';
 
@@ -41,4 +40,4 @@ export const validationPipe = ({ schema }) => {
 
     next();
   };
-}
+};

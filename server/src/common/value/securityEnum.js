@@ -18,8 +18,6 @@ const TokenType = {
   REFRESH: 'REFRESH',
 };
 
-
-
 export const SystemRoleEnum = SystemRole;
 export const ProviderEnum = Provider;
 export const LogoutTypeEnum = LogoutType;

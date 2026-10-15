@@ -1,4 +1,3 @@
-
 import { z } from 'zod';
 import { chooseLanguage } from '#/common/_EXPORT.js';
 
@@ -229,7 +228,20 @@ export const generalValidationFields = {
         code: 233,
       }),
     }),
-
+  otp: (lang) =>
+    z
+      .string({
+        message: chooseLanguage({
+          lang,
+          code: 235,
+        }),
+      })
+      .regex(/^\d{6}$/, {
+        message: chooseLanguage({
+          lang,
+          code: 236,
+        }),
+      }),
   idToken: (lang) =>
     z.string({
       message: chooseLanguage({

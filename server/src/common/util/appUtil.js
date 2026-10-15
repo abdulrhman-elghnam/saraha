@@ -9,4 +9,3 @@ export const createNumberOtp = () => Math.floor(Math.random() * (999999 - 100000
 
 export const acceptLanguage = ({ req } = {}) =>
   req.headers['accept-language'] ?? ApiLanguageEnum.ENGLISH;
-
