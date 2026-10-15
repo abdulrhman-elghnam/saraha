@@ -76,8 +76,6 @@ export const processFields = async ({ customPath, fields = {}, validation = [] }
 
 export const processMulterUpload = ({ customPath = 'general', validation = [] }) => {
   return async (req, res, next) => {
-    console.log(req.files);
-
     if (req.file) {
       await processFile({ customPath, file: req.file, validation });
     } else if (Array.isArray(req.files)) {

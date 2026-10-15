@@ -17,3 +17,19 @@ export const updateAvatar = async ({ email }, profileImage) => {
 
   return { profileImage: user.profileImage };
 };
+
+export const getPublicProfile = async (identifier) => {
+  const isObjectId = /^[0-9a-fA-F]{24}$/.test(identifier);
+  const filter = isObjectId ? { _id: identifier } : { username: identifier };
+  const user = await findOne({ filter, model: UserModel });
+  if (!user || !user.emailVerifiedAt || user.deletedAt) {
+    throw NotFoundException({ messageCode: 401 });
+  }
+  return {
+    id: user._id.toString(),
+    username: user.username,
+    fullName: user.fullName,
+    profileImage: user.profileImage,
+    createdAt: user.createdAt,
+  };
+};

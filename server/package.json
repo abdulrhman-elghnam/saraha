@@ -9,7 +9,8 @@
   "scripts": {
     "gen:key": "openssl rand -hex 32",
     "start:dev": "cross-env NODE_ENV=dev node --watch ./src/main.js",
-    "start:prod": "cross-env NODE_ENV=prod node ./src/main.js",
+    "start:prod-local": "cross-env NODE_ENV=prod node --watch ./src/main.js",
+    "start:prod": "cross-env NODE_ENV=prod pm2 start ./src/main.js -i max",
     "format": "npx prettier . --write"
   },
   "imports": {

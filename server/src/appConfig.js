@@ -16,6 +16,8 @@ const appCors = cors({
 
 const jsonParse = express.json();
 const appMorgan = morgan('dev');
-const appHelmet = helmet();
+const appHelmet = helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+});
 
 export const appConfig = { limiter, appCors, appMorgan, appHelmet, jsonParse };
