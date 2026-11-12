@@ -3,9 +3,9 @@ import {
   BadRequestException,
   fileFieldValidation,
   localFileUpload,
-  processFile,
   sendSuccess,
   TokenTypeEnum,
+  verifyUploadedFiles,
 } from '#/common/_EXPORT.js';
 import { authenticationGuard, userProfileCache } from '#/common/middleware/_EXPORT.js';
 import { profile, updateAvatar, getPublicProfile } from './userService.js';
@@ -34,6 +34,7 @@ userController.post(
     customPath: 'avatars',
     maxFileSize: 5,
   }).single('avatar'),
+  verifyUploadedFiles({ validation: fileFieldValidation.image }),
   async (req, res) => {
     if (!req.file) {
       throw BadRequestException({ messageCode: 602 });
@@ -48,14 +49,11 @@ userController.post(
   }
 );
 
-userController.get(
-  '/:identifier',
-  async (req, res) => {
-    const serviceFeedback = await getPublicProfile(req.params.identifier);
-    return sendSuccess({
-      res,
-      data: serviceFeedback,
-      lang: req.acceptsLanguages()[0],
-    });
-  }
-);
+userController.get('/:identifier', async (req, res) => {
+  const serviceFeedback = await getPublicProfile(req.params.identifier);
+  return sendSuccess({
+    res,
+    data: serviceFeedback,
+    lang: req.acceptsLanguages()[0],
+  });
+});

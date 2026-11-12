@@ -1,10 +1,9 @@
 import { HASH_SALT } from '#/core/_EXPORT.js';
 import bcrypt from 'bcrypt';
 
+// Async bcrypt runs on the libuv threadpool instead of blocking the event loop.
 export const hash = async (plainText) => {
-  const salt = bcrypt.genSaltSync(HASH_SALT);
-  const hash = bcrypt.hashSync(plainText, salt);
-  return hash;
+  return await bcrypt.hash(plainText, HASH_SALT);
 };
 
 export const compare = async (plainText, hashedText) => {

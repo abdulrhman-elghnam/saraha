@@ -14,7 +14,7 @@ import { loginSchema } from './dto/login-dto.js';
 import { signUpSchema, googleSignUpSchema } from './dto/sign-up.dto.js';
 import { authenticationGuard } from '#/common/middleware/_EXPORT.js';
 import { loginAttempt, loginBlock } from '#/common/middleware/cache/authCache.js';
-import { otpSchema } from './dto/otp.dto.js';
+import { emailSchema, otpSchema } from './dto/otp.dto.js';
 
 export const authController = Router({ caseSensitive: true, strict: true, mergeParams: true });
 
@@ -27,12 +27,17 @@ authController.post(
   '/google-credential',
   validationPipe({ schema: googleSignUpSchema }),
   async (req, res) => {
-    const { statusCode } = await googleSignUp(req.body, issuer({ req }));
+    const { statusCode, messageCode, accessToken, refreshToken } = await googleSignUp(
+      req.body,
+      issuer({ req })
+    );
     return sendSuccess({
       res,
-      statusCode: statusCode,
-      messageCode: 104,
+      statusCode,
+      messageCode,
       lang: req.acceptsLanguages()[0],
+      accessToken,
+      refreshToken,
     });
   }
 );
@@ -53,16 +58,20 @@ authController.post(
   }
 );
 
-authController.post('/send-verify-email', async (req, res) => {
-  await sendVerifyEmail(req.body);
+authController.post(
+  '/send-verify-email',
+  validationPipe({ schema: emailSchema }),
+  async (req, res) => {
+    await sendVerifyEmail(req.body);
 
-  return sendSuccess({
-    res,
-    statusCode: 200,
-    messageCode: 107,
-    lang: req.acceptsLanguages()[0],
-  });
-});
+    return sendSuccess({
+      res,
+      statusCode: 200,
+      messageCode: 107,
+      lang: req.acceptsLanguages()[0],
+    });
+  }
+);
 
 authController.post('/verify-email', validationPipe({ schema: otpSchema }), async (req, res) => {
   await verifyEmail(req.body);

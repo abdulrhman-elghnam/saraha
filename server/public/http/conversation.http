@@ -1,0 +1,75 @@
+@Host = http://127.0.0.1:9090
+@Token = <access-token>
+@ConversationId = <conversation-id>
+@MessageId = <message-id>
+
+### Start (or reopen) a 1:1 conversation — 201 when created, 200 when it already exists
+POST {{Host}}/conversation
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+Accept-Language: en
+
+{
+    "participantId": "<user-id>"
+}
+
+### List my conversations (newest activity first)
+GET {{Host}}/conversation?page=1&size=20
+Authorization: Bearer {{Token}}
+
+### Poll: only conversations changed since the previous response's data.serverTime
+GET {{Host}}/conversation?since=2026-01-01T00:00:00.000Z
+Authorization: Bearer {{Token}}
+
+### Unread badge
+GET {{Host}}/conversation/unread-count
+Authorization: Bearer {{Token}}
+
+### One conversation
+GET {{Host}}/conversation/{{ConversationId}}
+Authorization: Bearer {{Token}}
+
+### Latest messages (initial load)
+GET {{Host}}/conversation/{{ConversationId}}/messages?limit=30
+Authorization: Bearer {{Token}}
+
+### Poll for new messages after the last one you have
+GET {{Host}}/conversation/{{ConversationId}}/messages?after={{MessageId}}
+Authorization: Bearer {{Token}}
+
+### Load older history
+GET {{Host}}/conversation/{{ConversationId}}/messages?before={{MessageId}}&limit=30
+Authorization: Bearer {{Token}}
+
+### Send a text message
+POST {{Host}}/conversation/{{ConversationId}}/messages
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+
+{
+    "content": "hello"
+}
+
+### Send with image attachments (field "attachments", up to 4 jpeg/png, 10MB each)
+POST {{Host}}/conversation/{{ConversationId}}/messages
+Authorization: Bearer {{Token}}
+Content-Type: multipart/form-data; boundary=Boundary
+
+--Boundary
+Content-Disposition: form-data; name="content"
+
+look at this
+--Boundary
+Content-Disposition: form-data; name="attachments"; filename="photo.png"
+Content-Type: image/png
+
+< ./photo.png
+--Boundary--
+
+### Mark the conversation as read
+PATCH {{Host}}/conversation/{{ConversationId}}/read
+Authorization: Bearer {{Token}}
+
+### Delete one of my own messages
+DELETE {{Host}}/conversation/{{ConversationId}}/messages/{{MessageId}}
+Authorization: Bearer {{Token}}

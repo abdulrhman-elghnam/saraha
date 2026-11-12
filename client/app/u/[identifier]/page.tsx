@@ -23,13 +23,14 @@ import {
   Heart,
   MessageSquare,
   UserX,
+  MessagesSquare,
 } from "lucide-react"
 import { toast } from "sonner"
 
 export default function PublicProfilePage() {
   const params = useParams()
   const router = useRouter()
-  const { lang, t, openAuthModal } = useAuth()
+  const { lang, t, openAuthModal, isAuthenticated, user: currentUser } = useAuth()
 
   const identifier = params?.identifier as string
 
@@ -43,6 +44,7 @@ export default function PublicProfilePage() {
   const [previews, setPreviews] = useState<string[]>([])
   const [sending, setSending] = useState(false)
   const [sentSuccess, setSentSuccess] = useState(false)
+  const [startingChat, setStartingChat] = useState(false)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -132,6 +134,22 @@ export default function PublicProfilePage() {
       toast.error(err.message || "Failed to send message")
     } finally {
       setSending(false)
+    }
+  }
+
+  const handleStartConversation = async () => {
+    if (!user) return
+    if (!isAuthenticated) {
+      openAuthModal("signin")
+      return
+    }
+    setStartingChat(true)
+    try {
+      const conversation = await api.conversations.start(user.id)
+      router.push(`/conversations/${conversation.id}`)
+    } catch (err) {
+      toast.error((err as Error).message)
+      setStartingChat(false)
     }
   }
 
@@ -260,6 +278,25 @@ export default function PublicProfilePage() {
                 <ShieldCheck className="size-3.5 text-emerald-600 dark:text-emerald-400" />
                 <span>{lang === "ar" ? "حساب مؤكد لاستقبال الصراحة" : "Ready for Honest Messages"}</span>
               </div>
+
+              {/* Named two-way chat (separate from the anonymous message below) */}
+              {currentUser?.id !== user.id ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleStartConversation}
+                  disabled={startingChat}
+                  className="mt-3 h-8 gap-1.5 rounded-2xl text-xs"
+                >
+                  {startingChat ? (
+                    <Loader2 className="size-3.5 animate-spin" />
+                  ) : (
+                    <MessagesSquare className="size-3.5" />
+                  )}
+                  <span>{t.conversations.messageUser}</span>
+                </Button>
+              ) : null}
             </div>
           </Card>
 

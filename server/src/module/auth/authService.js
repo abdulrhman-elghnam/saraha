@@ -25,7 +25,6 @@ import {
   getCache,
   getEmailVerifyKey,
   getRevokedTokenKey,
-  PORT,
   setCache,
   UserModel,
 } from '#/core/_EXPORT.js';
@@ -173,6 +172,10 @@ export const sendVerifyEmail = async ({ email }) => {
     model: UserModel,
   });
 
+  if (!user) {
+    throw NotFoundException({ messageCode: 401 });
+  }
+
   if (user.emailVerifiedAt) {
     ConflictException({ messageCode: 413 });
   }
@@ -197,6 +200,10 @@ export const verifyEmail = async ({ email, otp }) => {
     filter: { email },
     model: UserModel,
   });
+
+  if (!user) {
+    throw NotFoundException({ messageCode: 401 });
+  }
 
   if (user.emailVerifiedAt) {
     ConflictException({ messageCode: 413 });
@@ -274,10 +281,13 @@ export const logout = asyncHandler(async ({ action }, user, payload) => {
     case LogoutTypeEnum.SINGLE:
       await deleteCache({ key: getRevokedTokenKey({ sub: payload.sub, jti: payload.jti }) });
       break;
-    case LogoutTypeEnum.ALL:
+    case LogoutTypeEnum.ALL: {
       const sessions = await findCacheKeys({ pattern: `USER::${payload.sub}::REVOKE-TOKEN::*` });
-      await deleteCache({ key: sessions });
+      if (sessions.length) {
+        await deleteCache({ key: sessions });
+      }
       break;
+    }
     default:
       break;
   }

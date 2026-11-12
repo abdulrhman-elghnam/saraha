@@ -1,15 +1,16 @@
 import { Router } from 'express';
-
 import { authController } from './module/auth/authController.js';
 import { acceptLanguage } from './common/util/_INDEX.js';
 import { mainFeedbackService, notFoundFeedbackService } from './appService.js';
 import { userController } from './module/user/userController.js';
 import { msgController } from './module/msg/msgController.js';
+import { conversationController } from './module/conversation/conversationController.js';
 
 export const appController = Router();
 
 appController.use('/authentication', authController);
 appController.use('/message', msgController);
 appController.use('/user', userController);
+appController.use('/conversation', conversationController);
 appController.get('/', (req, res) => mainFeedbackService({ lang: acceptLanguage({ req }), res }));
 appController.all('/{*splash}', () => notFoundFeedbackService());

@@ -4,7 +4,6 @@ emailEvent.on('sendEmail', async (fn) => {
   try {
     await fn();
   } catch (error) {
-    console.log({error});
-    
+    console.log({ error });
   }
 });

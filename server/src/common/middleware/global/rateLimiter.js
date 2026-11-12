@@ -40,7 +40,7 @@ const redisStore = {
   },
 
   async resetKey(key) {
-    await cacheClient.delete(key);
+    await cacheClient.del(key);
   },
 };
 

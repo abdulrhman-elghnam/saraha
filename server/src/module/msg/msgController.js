@@ -6,20 +6,12 @@ import {
   localFileUpload,
   sendSuccess,
   TokenTypeEnum,
+  verifyUploadedFiles,
 } from '#/common/_EXPORT.js';
 import { authenticationGuard, validationPipe } from '#/common/middleware/_EXPORT.js';
 import { decodeToken } from '#/common/security/_INDEX.js';
-import {
-  createMessage,
-  deleteMessage,
-  getMessage,
-  getMessages,
-} from './msgService.js';
-import {
-  getMessageSchema,
-  listMessagesSchema,
-  sendMessageSchema,
-} from './dto/msg.dto.js';
+import { createMessage, deleteMessage, getMessage, getMessages } from './msgService.js';
+import { getMessageSchema, listMessagesSchema, sendMessageSchema } from './dto/msg.dto.js';
 
 export const msgController = Router({
   caseSensitive: true,
@@ -49,6 +41,7 @@ msgController.post(
     customPath: 'messages',
     maxFileSize: 10,
   }).array('attachments', 2),
+  verifyUploadedFiles({ validation: fileFieldValidation.image }),
   validationPipe({ schema: sendMessageSchema }),
   async (req, res) => {
     const files = req.files ?? [];

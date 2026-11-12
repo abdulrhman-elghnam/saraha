@@ -1,7 +1,7 @@
 import multer from 'multer';
 import { randomUUID } from 'node:crypto';
-import { mkdir, writeFile } from 'node:fs/promises';
-import { fileTypeFromBuffer } from 'file-type';
+import { mkdir, unlink, writeFile } from 'node:fs/promises';
+import { fileTypeFromBuffer, fileTypeFromFile } from 'file-type';
 import { extname, resolve } from 'node:path';
 import { BadRequestException } from '../exception/exceptionErr.js';
 
@@ -40,6 +40,35 @@ export const localFileUpload = ({
   }
 
   return multer({ fileFilter, storage, limits: { fileSize: maxFileSize * 1024 * 1024 } });
+};
+
+const collectUploadedFiles = (req) => {
+  if (req.file) return [req.file];
+  if (Array.isArray(req.files)) return req.files;
+  if (req.files && typeof req.files === 'object') return Object.values(req.files).flat();
+  return [];
+};
+
+/**
+ * Run after a `localFileUpload(...)` middleware. Multer's fileFilter only sees the
+ * client-declared mimetype, so this re-checks each saved file's magic bytes and
+ * deletes every uploaded file of the request if any one of them is not allowed.
+ */
+export const verifyUploadedFiles = ({ validation = [] } = {}) => {
+  return async (req, res, next) => {
+    const files = collectUploadedFiles(req);
+    if (!files.length) return next();
+
+    const detected = await Promise.all(files.map((file) => fileTypeFromFile(file.path)));
+    const isValid = detected.every((type) => type && validation.includes(type.mime));
+
+    if (!isValid) {
+      await Promise.all(files.map((file) => unlink(file.path).catch(() => {})));
+      throw BadRequestException({ messageCode: 603 });
+    }
+
+    return next();
+  };
 };
 
 export const processFile = async ({ customPath = 'general', file, validation = [] }) => {

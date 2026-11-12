@@ -38,6 +38,59 @@ export interface MessageItem {
   updatedAt: string
 }
 
+export interface ConversationParticipant {
+  id: string
+  username: string
+  fullName: string
+  profileImage?: string | null
+}
+
+export interface ConversationSummary {
+  id: string
+  participant: ConversationParticipant | null
+  lastMessage: {
+    messageId: string
+    content: string | null
+    senderId: string
+    hasAttachments: boolean
+    createdAt: string
+  } | null
+  unreadCount: number
+  lastReadAt: string | null
+  participantLastReadAt: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ConversationMessage {
+  _id: string
+  id: string
+  conversationId: string
+  senderId: string
+  content?: string
+  attachments?: string[]
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ConversationList {
+  conversations: ConversationSummary[]
+  pagination: {
+    docsCount?: number
+    limit?: number
+    pages?: number
+    currentPage?: number
+  }
+  /** Pass back as `since` on the next poll to receive only changed conversations. */
+  serverTime: string
+}
+
+export interface ConversationMessagePage {
+  messages: ConversationMessage[]
+  hasMore: boolean
+  participantLastReadAt: string | null
+}
+
 export interface ApiResponse<T = any> {
   success: boolean
   message: string
@@ -114,7 +167,11 @@ async function request<T = any>(
   }
 
   // If body is NOT FormData, set JSON Content-Type if not provided
-  if (options.body && !(options.body instanceof FormData) && !headers.has("Content-Type")) {
+  if (
+    options.body &&
+    !(options.body instanceof FormData) &&
+    !headers.has("Content-Type")
+  ) {
     headers.set("Content-Type", "application/json")
   }
 
@@ -128,15 +185,18 @@ async function request<T = any>(
     const refreshToken = getStoredRefreshToken()
     if (refreshToken && accessToken) {
       try {
-        const refreshRes = await fetch(`${API_BASE}/authentication/rotate-token`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept-Language": lang,
-            Authorization: `Bearer ${refreshToken}`,
-          },
-          body: JSON.stringify({ expireToken: `Bearer ${accessToken}` }),
-        })
+        const refreshRes = await fetch(
+          `${API_BASE}/authentication/rotate-token`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept-Language": lang,
+              Authorization: `Bearer ${refreshToken}`,
+            },
+            body: JSON.stringify({ expireToken: `Bearer ${accessToken}` }),
+          }
+        )
         const refreshData = await refreshRes.json()
         if (refreshRes.ok && refreshData.accessToken) {
           setStoredTokens(refreshData.accessToken, refreshData.refreshToken)
@@ -157,7 +217,8 @@ async function request<T = any>(
   }))
 
   if (!response.ok || payload.success === false) {
-    const errorMsg = payload.message || `Request failed with status ${response.status}`
+    const errorMsg =
+      payload.message || `Request failed with status ${response.status}`
     const error = new Error(errorMsg)
     ;(error as any).status = response.status
     ;(error as any).payload = payload
@@ -230,7 +291,9 @@ export const api = {
     },
 
     getPublicProfile: async (identifier: string) => {
-      const res = await request<PublicUser>(`/user/${encodeURIComponent(identifier)}`)
+      const res = await request<PublicUser>(
+        `/user/${encodeURIComponent(identifier)}`
+      )
       return res.data
     },
 
@@ -252,7 +315,9 @@ export const api = {
     },
 
     get: async (messageId: string) => {
-      const res = await request<{ message: MessageItem }>(`/message/${messageId}`)
+      const res = await request<{ message: MessageItem }>(
+        `/message/${messageId}`
+      )
       return res.data?.message
     },
 
@@ -281,10 +346,104 @@ export const api = {
     },
 
     delete: async (messageId: string) => {
-      const res = await request<{ message: MessageItem }>(`/message/${messageId}`, {
-        method: "DELETE",
-      })
+      const res = await request<{ message: MessageItem }>(
+        `/message/${messageId}`,
+        {
+          method: "DELETE",
+        }
+      )
       return res.data?.message
+    },
+  },
+  conversations: {
+    start: async (participantId: string) => {
+      const res = await request<{ conversation: ConversationSummary }>(
+        "/conversation",
+        {
+          method: "POST",
+          body: JSON.stringify({ participantId }),
+        }
+      )
+      return res.data!.conversation
+    },
+
+    /** Pass `since` (the previous response's serverTime) to poll for changed conversations only. */
+    list: async (
+      params: { page?: number; size?: number; since?: string } = {}
+    ) => {
+      const query = new URLSearchParams()
+      if (params.page) query.set("page", String(params.page))
+      if (params.size) query.set("size", String(params.size))
+      if (params.since) query.set("since", params.since)
+      const qs = query.toString()
+      const res = await request<ConversationList>(
+        `/conversation${qs ? `?${qs}` : ""}`
+      )
+      return res.data!
+    },
+
+    get: async (conversationId: string) => {
+      const res = await request<{ conversation: ConversationSummary }>(
+        `/conversation/${conversationId}`
+      )
+      return res.data!.conversation
+    },
+
+    unreadCount: async () => {
+      const res = await request<{
+        unreadMessages: number
+        unreadConversations: number
+      }>("/conversation/unread-count")
+      return res.data!
+    },
+
+    /** Use `after` (last message id you have) to poll for new messages, `before` for older history. */
+    messages: async (
+      conversationId: string,
+      params: { after?: string; before?: string; limit?: number } = {}
+    ) => {
+      const query = new URLSearchParams()
+      if (params.after) query.set("after", params.after)
+      if (params.before) query.set("before", params.before)
+      if (params.limit) query.set("limit", String(params.limit))
+      const qs = query.toString()
+      const res = await request<ConversationMessagePage>(
+        `/conversation/${conversationId}/messages${qs ? `?${qs}` : ""}`
+      )
+      return res.data!
+    },
+
+    send: async (
+      conversationId: string,
+      params: { content?: string; attachments?: File[] }
+    ) => {
+      const formData = new FormData()
+      if (params.content) formData.append("content", params.content)
+      for (const file of params.attachments ?? [])
+        formData.append("attachments", file)
+      const res = await request<{ message: ConversationMessage }>(
+        `/conversation/${conversationId}/messages`,
+        { method: "POST", body: formData }
+      )
+      return res.data!.message
+    },
+
+    markRead: async (conversationId: string) => {
+      const res = await request<{ readAt: string }>(
+        `/conversation/${conversationId}/read`,
+        {
+          method: "PATCH",
+        }
+      )
+      return res.data!
+    },
+
+    deleteMessage: async (conversationId: string, messageId: string) => {
+      const res = await request<{ message: ConversationMessage }>(
+        `/conversation/${conversationId}/messages/${messageId}`,
+        { method: "DELETE" }
+      )
+      return res.data!.message
     },
   },
 }

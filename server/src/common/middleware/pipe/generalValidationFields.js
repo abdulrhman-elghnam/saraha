@@ -126,7 +126,7 @@ export const generalValidationFields = {
   gender: (lang) =>
     z.enum(['MALE', 'FEMALE'], {
       message: chooseLanguage({
-        Language: lang,
+        lang,
         code: 228,
       }),
     }),

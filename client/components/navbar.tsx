@@ -4,6 +4,7 @@ import React, { useState } from "react"
 import Link from "next/link"
 import { useTheme } from "next-themes"
 import { useAuth } from "@/lib/auth-context"
+import { useConversations } from "@/lib/conversations-context"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import {
@@ -34,6 +35,7 @@ import {
   User as UserIcon,
   ShieldCheck,
   Inbox,
+  MessagesSquare,
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -49,6 +51,7 @@ export function Navbar() {
     logout,
   } = useAuth()
 
+  const { unreadMessages } = useConversations()
   const { theme, setTheme } = useTheme()
   const [searchOpen, setSearchOpen] = useState(false)
   const [qrOpen, setQrOpen] = useState(false)
@@ -169,6 +172,25 @@ export function Navbar() {
                   </Button>
                 </Link>
 
+                {/* Conversations link with unread badge */}
+                <Link href="/conversations">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="relative h-9 gap-1.5 rounded-2xl px-2.5 text-xs text-muted-foreground hover:text-foreground"
+                    title={t.conversations.title}
+                  >
+                    <MessagesSquare className="size-4" />
+                    <span className="hidden sm:inline">{t.conversations.navLabel}</span>
+                    {unreadMessages > 0 ? (
+                      <span className="absolute -top-0.5 -end-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[9px] font-bold text-primary-foreground">
+                        {unreadMessages > 99 ? "99+" : unreadMessages}
+                      </span>
+                    ) : null}
+                  </Button>
+                </Link>
+
                 {/* Fast Share Link Button */}
                 <Button
                   type="button"
@@ -226,6 +248,13 @@ export function Navbar() {
                         <DropdownMenuItem className="cursor-pointer gap-2 rounded-2xl text-xs py-2">
                           <Inbox className="size-3.5" />
                           <span>{t.nav.inbox}</span>
+                        </DropdownMenuItem>
+                      </Link>
+
+                      <Link href="/conversations" className="block w-full">
+                        <DropdownMenuItem className="cursor-pointer gap-2 rounded-2xl text-xs py-2">
+                          <MessagesSquare className="size-3.5" />
+                          <span>{t.conversations.title}</span>
                         </DropdownMenuItem>
                       </Link>
 

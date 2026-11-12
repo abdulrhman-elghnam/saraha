@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/lib/auth-context"
+import { ConversationsProvider } from "@/lib/conversations-context"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { AuthModal } from "@/components/auth/auth-modal"
@@ -43,12 +44,14 @@ export default function RootLayout({
       <body className="flex min-h-screen flex-col bg-background text-foreground selection:bg-emerald-500/20 selection:text-emerald-700 dark:selection:text-emerald-300">
         <ThemeProvider>
           <AuthProvider>
-            <Navbar />
-            <main className="flex-1">{children}</main>
-            <Footer />
-            <AuthModal />
-            <SettingsDialog />
-            <Toaster position="top-center" richColors />
+            <ConversationsProvider>
+              <Navbar />
+              <main className="flex-1">{children}</main>
+              <Footer />
+              <AuthModal />
+              <SettingsDialog />
+              <Toaster position="top-center" richColors />
+            </ConversationsProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

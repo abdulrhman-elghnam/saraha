@@ -126,5 +126,8 @@
 
   "801": "external service error",
   "802": "external service unavailable",
-  "803": "failed to communicate with external service"
+  "803": "failed to communicate with external service",
+
+  "901": "conversation not found",
+  "902": "you cannot start a conversation with yourself"
 }
