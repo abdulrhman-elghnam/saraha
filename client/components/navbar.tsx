@@ -158,8 +158,8 @@ export function Navbar() {
             {/* Auth Dependent Controls */}
             {isAuthenticated && user ? (
               <>
-                {/* Inbox / Dashboard link */}
-                <Link href="/dashboard">
+                {/* Inbox / Dashboard link (on phones it lives in the avatar menu to save room) */}
+                <Link href="/dashboard" className="hidden sm:block">
                   <Button
                     type="button"
                     variant="ghost"

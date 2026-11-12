@@ -335,7 +335,7 @@ export function ConversationThread({
                     </div>
                   ) : null}
                   {message.content ? (
-                    <p className="break-words whitespace-pre-wrap">
+                    <p dir="auto" className="break-words whitespace-pre-wrap">
                       {message.content}
                     </p>
                   ) : null}

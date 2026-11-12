@@ -15,6 +15,7 @@ import { signUpSchema, googleSignUpSchema } from './dto/sign-up.dto.js';
 import { authenticationGuard } from '#/common/middleware/_EXPORT.js';
 import { loginAttempt, loginBlock } from '#/common/middleware/cache/authCache.js';
 import { emailSchema, otpSchema } from './dto/otp.dto.js';
+import { deleteCache, getEmailIncrementKey } from '#/core/_EXPORT.js';
 
 export const authController = Router({ caseSensitive: true, strict: true, mergeParams: true });
 
@@ -49,6 +50,8 @@ authController.post(
   loginAttempt(),
   async (req, res) => {
     const serviceFeedback = await systemLogin(req.body, issuer({ req }));
+    // Only failed attempts should count towards the lockout; a successful login resets it.
+    await deleteCache({ key: getEmailIncrementKey(req.body.email) });
     return sendSuccess({
       res,
       ...serviceFeedback,

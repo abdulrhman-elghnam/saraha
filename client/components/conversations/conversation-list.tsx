@@ -189,7 +189,9 @@ export function ConversationList({ activeId }: { activeId?: string }) {
                           !c.lastMessage.content ? (
                             <ImageIcon className="size-3 shrink-0" />
                           ) : null}
-                          <span className="truncate">{preview}</span>
+                          <span dir="auto" className="truncate">
+                            {preview}
+                          </span>
                         </span>
                         {unread > 0 ? (
                           <span className="flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground">
